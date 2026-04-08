@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Solution Team — Roles & Responsibilities</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0f1e;
+      --surface:   #111827;
+      --surface2:  #1a2235;
+      --border:    rgba(99,179,237,.15);
+      --accent1:   #3b82f6;
+      --accent2:   #8b5cf6;
+      --accent3:   #06b6d4;
+      --accent4:   #10b981;
+      --accent5:   #f59e0b;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --heading:   #f8fafc;
+      --radius:    14px;
+      --glow:      0 0 40px rgba(59,130,246,.18);
+      --nav-bg:    rgba(10,15,30,.85);
+      --bar-track: rgba(255,255,255,.07);
+    }
+
+    [data-theme="light"] {
+      --bg:        #f0f4ff;
+      --surface:   #ffffff;
+      --surface2:  #e8eef8;
+      --border:    rgba(59,130,246,.18);
+      --text:      #1e293b;
+      --muted:     #64748b;
+      --heading:   #0f172a;
+      --glow:      0 0 40px rgba(59,130,246,.12);
+      --nav-bg:    rgba(240,244,255,.88);
+      --bar-track: rgba(0,0,0,.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent1); border-radius: 3px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px) saturate(160%);
+      padding: 0 32px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      /* gradient bottom border */
+      border-bottom: none;
+    }
+    nav::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(59,130,246,.5) 20%,
+        rgba(139,92,246,.6) 50%,
+        rgba(6,182,212,.5) 80%,
+        transparent 100%);
+    }
+    [data-theme="light"] nav::after {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(59,130,246,.3) 20%,
+        rgba(139,92,246,.4) 50%,
+        rgba(6,182,212,.3) 80%,
+        transparent 100%);
+    }
+
+    /* logo mark */
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; box-shadow: 0 0 12px rgba(99,102,241,.45);
+    }
+    .nav-brand-text {
+      display: flex; flex-direction: column; line-height: 1.15;
+    }
+    .nav-brand-top {
+      font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-brand-sub {
+      font-size: 10px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase;
+    }
+
+    .nav-links { display: flex; gap: 6px; list-style: none; }
+    .nav-links a {
+      position: relative;
+      color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
+      letter-spacing: .04em; padding: 7px 16px; border-radius: 8px;
+      border: 1px solid transparent;
+      transition: color .18s, background .18s, border-color .18s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      transition: width .22s ease;
+    }
+    .nav-links a:hover {
+      color: var(--heading);
+      background: rgba(99,179,237,.07);
+      border-color: var(--border);
+    }
+    .nav-links a:hover::after { width: 60%; }
+    .nav-links a.active {
+      color: var(--accent1); font-weight: 600;
+      background: rgba(59,130,246,.12);
+      border-color: rgba(59,130,246,.28);
+    }
+    .nav-links a.active::after { width: 60%; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Grid mesh */
+    .hero::after {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(59,130,246,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,.055) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+    }
+    [data-theme="light"] .hero::after {
+      background-image:
+        linear-gradient(rgba(59,130,246,.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,.09) 1px, transparent 1px);
+    }
+
+    .hero-orb {
+      position: absolute; border-radius: 50%; filter: blur(72px); pointer-events: none;
+    }
+    .orb1 { width: 700px; height: 700px; background: rgba(59,130,246,.18); top: -180px; left: -240px; animation: orbFloat 12s ease-in-out infinite alternate; }
+    .orb2 { width: 580px; height: 580px; background: rgba(139,92,246,.16); bottom: -120px; right: -180px; animation: orbFloat 16s ease-in-out infinite alternate-reverse; }
+    .orb3 { width: 380px; height: 380px; background: rgba(6,182,212,.12); top: 50%; left: 50%; transform: translate(-50%,-50%); animation: orbFloat 10s ease-in-out infinite alternate; }
+    @keyframes orbFloat { from{transform:translate(0,0) scale(1)} to{transform:translate(18px,14px) scale(1.04)} }
+    .orb3 { animation: orb3Float 10s ease-in-out infinite alternate; }
+    @keyframes orb3Float { from{transform:translate(-50%,-50%) scale(1)} to{transform:translate(-50%,-48%) scale(1.06)} }
+
+    /* Badge */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.35);
+      color: var(--accent1); border-radius: 999px;
+      padding: 7px 18px; font-size: 12px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 32px;
+      backdrop-filter: blur(8px);
+      animation: fadeDown .8s ease both;
+    }
+    .hero-badge::before { content:''; width:8px; height:8px; border-radius:50%; background:var(--accent1); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.75)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:none} }
+
+    /* Eyebrow label */
+    .hero-eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+      animation: fadeUp .7s .15s ease both;
+    }
+
+    /* Main title */
+    .hero h1 {
+      font-size: clamp(48px, 8.5vw, 96px); font-weight: 900; line-height: 1.0;
+      letter-spacing: -.03em; margin-bottom: 14px;
+      animation: fadeUp .7s .25s ease both;
+    }
+    .hero h1 .line1 { display: block; color: var(--heading); }
+    .hero h1 .line2 {
+      display: block;
+      background: linear-gradient(100deg, #3b82f6 0%, #8b5cf6 40%, #06b6d4 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite, fadeUp .7s .25s ease both;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+    /* Subtitle */
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 19px); color: var(--muted);
+      max-width: 580px; margin: 0 auto 48px; line-height: 1.65;
+      animation: fadeUp .7s .35s ease both;
+    }
+
+    /* Stats row */
+    .hero-meta {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 48px;
+      animation: fadeUp .7s .45s ease both;
+    }
+    .hero-meta-item {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 22px;
+      backdrop-filter: blur(8px);
+      transition: border-color .2s, transform .2s;
+    }
+    .hero-meta-item:hover { border-color: rgba(59,130,246,.4); transform: translateY(-2px); }
+    [data-theme="light"] .hero-meta-item { background: rgba(255,255,255,.7); }
+    .hero-meta-icon { font-size: 26px; }
+    .hero-meta-text { text-align: left; }
+    .hero-meta-item .val {
+      font-size: 26px; font-weight: 900; display: block; line-height: 1;
+      background: linear-gradient(135deg, var(--accent1), var(--accent3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-meta-item .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-top: 3px; display: block; }
+
+    /* CTA */
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: #fff; text-decoration: none; border-radius: 12px;
+      padding: 15px 36px; font-weight: 700; font-size: 15px;
+      box-shadow: 0 0 0 0 rgba(59,130,246,.5);
+      transition: transform .2s, box-shadow .2s;
+      animation: fadeUp .7s .55s ease both, ctaPulse 3s 1.5s ease-in-out infinite;
+    }
+    .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(59,130,246,.55); animation: none; }
+    @keyframes ctaPulse {
+      0%,100%{ box-shadow: 0 8px 32px rgba(59,130,246,.35); }
+      50%{ box-shadow: 0 8px 48px rgba(139,92,246,.55); }
+    }
+
+    /* Scroll hint line */
+    .hero-scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      opacity: .6;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--accent1));
+      animation: scrollDrop 2s ease-in-out infinite;
+    }
+    @keyframes scrollDrop { 0%,100%{transform:scaleY(1);opacity:.6} 50%{transform:scaleY(.6);opacity:1} }
+
+    /* ── Section wrapper ── */
+    section { padding: 96px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent1); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px); font-weight: 800; color: var(--heading);
+      margin-bottom: 16px; letter-spacing: -.02em;
+    }
+    .section-desc { color: var(--muted); max-width: 580px; margin-bottom: 56px; font-size: 15px; }
+
+    /* ── Mission ── */
+    .mission-wrap {
+      background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.08));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 56px 48px; text-align: center; position: relative; overflow: hidden;
+    }
+    .mission-wrap::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,.12), transparent 70%);
+    }
+    .mission-icon { font-size: 48px; margin-bottom: 20px; }
+    .mission-text {
+      font-size: clamp(18px, 2.5vw, 24px); font-weight: 600; color: var(--heading);
+      line-height: 1.5; max-width: 700px; margin: 0 auto;
+    }
+
+    /* ── Responsibility cards ── */
+    .resp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .resp-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; position: relative; overflow: hidden;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+    }
+    .resp-card:hover { transform: translateY(-4px); border-color: rgba(99,179,237,.35); box-shadow: var(--glow); }
+    .resp-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background: var(--card-accent, linear-gradient(90deg, var(--accent1), var(--accent2)));
+    }
+    .resp-num {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+    .resp-icon { font-size: 32px; margin-bottom: 14px; }
+    .resp-title { font-size: 17px; font-weight: 700; color: var(--heading); margin-bottom: 10px; }
+    .resp-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .resp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .tag {
+      font-size: 11px; padding: 3px 10px; border-radius: 999px;
+      background: rgba(99,179,237,.1); color: var(--accent3); border: 1px solid rgba(99,179,237,.2);
+    }
+
+    /* Card accent overrides */
+    .card-blue::before  { background: linear-gradient(90deg,#3b82f6,#06b6d4); }
+    .card-violet::before{ background: linear-gradient(90deg,#8b5cf6,#ec4899); }
+    .card-cyan::before  { background: linear-gradient(90deg,#06b6d4,#10b981); }
+    .card-green::before { background: linear-gradient(90deg,#10b981,#84cc16); }
+    .card-amber::before { background: linear-gradient(90deg,#f59e0b,#ef4444); }
+    .card-indigo::before{ background: linear-gradient(90deg,#6366f1,#8b5cf6); }
+
+    /* ── Overview section ── */
+    .overview-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px;
+    }
+    @media(max-width:680px){ .overview-grid { grid-template-columns: 1fr; } }
+    .overview-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px;
+    }
+    .overview-card-title {
+      font-size: 13px; font-weight: 700; color: var(--accent1); text-transform: uppercase;
+      letter-spacing: .07em; margin-bottom: 12px;
+    }
+    .overview-text { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .overview-text p { margin-bottom: 8px; }
+    .overview-text p:last-child { margin-bottom: 0; }
+    .overview-text strong { color: var(--text); }
+    .overview-list { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted); }
+    .overview-list li { display: flex; gap: 8px; align-items: flex-start; }
+    .overview-list li::before { content: '→'; color: var(--accent1); flex-shrink: 0; font-weight: 700; }
+    .overview-intro {
+      background: linear-gradient(135deg, rgba(59,130,246,.06), rgba(139,92,246,.06));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px 28px; margin-bottom: 20px; font-size: 15px; color: var(--text); line-height: 1.7;
+    }
+
+    /* ── Report line block ── */
+    .overview-meta-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;
+    }
+    @media(max-width:680px){ .overview-meta-row { grid-template-columns: 1fr; } }
+
+    .meta-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 22px 24px;
+    }
+    .meta-card-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+    }
+    .meta-card-label::before {
+      content: ''; width: 3px; height: 14px; border-radius: 2px;
+      background: var(--mc-accent, linear-gradient(180deg, var(--accent1), var(--accent3)));
+      display: inline-block;
+    }
+    .mc-size { --mc-accent: linear-gradient(180deg,#3b82f6,#06b6d4); }
+    .mc-report { --mc-accent: linear-gradient(180deg,#8b5cf6,#ec4899); }
+
+    /* size card */
+    .meta-size-val {
+      font-size: 48px; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--accent1), var(--accent3));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .meta-size-unit {
+      font-size: 15px; font-weight: 700; color: var(--text); margin-left: 6px; vertical-align: middle;
+    }
+    .meta-size-note {
+      font-size: 12px; color: var(--muted); margin-top: 4px;
+    }
+
+    /* report line card */
+    .reportline-list { display: flex; flex-direction: column; gap: 12px; }
+    .reportline-item {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 12px 14px; border-radius: 10px;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .reportline-when {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--muted);
+    }
+    .reportline-to {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .reportline-arrow { font-size: 13px; color: var(--accent1); font-weight: 700; }
+    .reportline-badge {
+      font-size: 12px; font-weight: 700; padding: 3px 11px; border-radius: 999px;
+    }
+    .badge-pm   { background: rgba(59,130,246,.12); color: var(--accent1); border: 1px solid rgba(59,130,246,.3); }
+    .badge-lead { background: rgba(245,158,11,.12); color: var(--accent5); border: 1px solid rgba(245,158,11,.3); }
+    .badge-dc   { background: rgba(139,92,246,.12); color: var(--accent2); border: 1px solid rgba(139,92,246,.3); }
+    .reportline-about {
+      font-size: 12px; color: var(--muted); padding-left: 2px;
+    }
+
+    /* ── Resp list (bullet points inside cards) ── */
+    .resp-list {
+      list-style: none; display: flex; flex-direction: column; gap: 7px;
+      margin-top: 12px; font-size: 13px; color: var(--muted);
+    }
+    .resp-list li { display: flex; gap: 8px; align-items: flex-start; line-height: 1.55; }
+    .resp-list li::before { content: '·'; color: var(--accent1); font-size: 18px; line-height: 1.1; flex-shrink: 0; font-weight: 700; }
+    .resp-process { margin-top: 14px; }
+    .resp-process-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .resp-process-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .resp-process-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .rp-num {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(59,130,246,.15); color: var(--accent1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; margin-top: 1px;
+    }
+
+    /* ── Note box ── */
+    .note {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 10px; padding: 14px 16px; margin-top: 16px; font-size: 13px; color: var(--muted);
+    }
+    .note-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Priority list ── */
+    .priority-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .priority-item {
+      display: flex; align-items: center; gap: 20px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px 24px; transition: border-color .2s;
+    }
+    .priority-item:hover { border-color: rgba(99,179,237,.3); }
+    .pnum {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 16px;
+    }
+    .p1 { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+    .p2 { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+    .p3 { background: rgba(59,130,246,.15); color: #3b82f6; border: 1px solid rgba(59,130,246,.3); }
+    .p4 { background: rgba(99,102,241,.15); color: #6366f1; border: 1px solid rgba(99,102,241,.3); }
+    .p5 { background: rgba(16,185,129,.15); color: #10b981; border: 1px solid rgba(16,185,129,.3); }
+    .ptext strong { display: block; color: var(--heading); font-size: 15px; margin-bottom: 2px; }
+    .ptext span { font-size: 13px; color: var(--muted); }
+
+    /* ── Time allocation ── */
+    .alloc-grid { display: flex; flex-direction: column; gap: 14px; }
+    .alloc-row { display: flex; flex-direction: column; gap: 6px; }
+    .alloc-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--text); }
+    .alloc-label span:last-child { color: var(--muted); font-size: 13px; }
+    .bar-bg {
+      height: 10px; background: var(--bar-track); border-radius: 999px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 999px;
+      background: var(--bar-color, linear-gradient(90deg,var(--accent1),var(--accent3)));
+      width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Roles ── */
+    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media(max-width:680px){ .roles-grid { grid-template-columns: 1fr; } }
+    .role-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 32px; position: relative; overflow: hidden;
+    }
+    .role-card::after {
+      content:''; position:absolute; bottom:0; right:0;
+      width:120px; height:120px; border-radius: 50%;
+      background: var(--role-glow, rgba(59,130,246,.06));
+      transform: translate(40px,40px);
+    }
+    .role-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
+    }
+    .badge-lead { background: rgba(245,158,11,.15); color: var(--accent5); border: 1px solid rgba(245,158,11,.25); }
+    .badge-member { background: rgba(59,130,246,.15); color: var(--accent1); border: 1px solid rgba(59,130,246,.25); }
+    .role-title { font-size: 20px; font-weight: 800; color: var(--heading); margin-bottom: 20px; }
+    .role-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .role-list li {
+      display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--muted);
+    }
+    .role-list li::before {
+      content:'→'; color: var(--accent1); flex-shrink: 0; font-weight: 700; margin-top: 1px;
+    }
+
+    /* ── Collaboration ── */
+    .collab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .collab-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px;
+    }
+    .collab-icon { font-size: 28px; margin-bottom: 14px; }
+    .collab-title { font-size: 16px; font-weight: 700; color: var(--heading); margin-bottom: 12px; }
+    .collab-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .collab-steps li {
+      display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted);
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(59,130,246,.15); color: var(--accent1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; margin-top: 1px;
+    }
+
+    /* ── Roadmap ── */
+    .roadmap { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .roadmap::before {
+      content:''; position:absolute; left:28px; top:32px; bottom:32px; width:2px;
+      background: linear-gradient(to bottom, var(--accent1), var(--accent2), var(--accent4));
+      border-radius: 2px;
+    }
+    .rmap-item { display: flex; gap: 28px; align-items: flex-start; padding: 20px 0; position: relative; }
+    .rmap-dot {
+      width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; z-index: 1; border: 3px solid var(--bg);
+    }
+    .dot1 { background: linear-gradient(135deg, rgba(59,130,246,.3), rgba(6,182,212,.3)); }
+    .dot2 { background: linear-gradient(135deg, rgba(139,92,246,.3), rgba(236,72,153,.3)); }
+    .dot3 { background: linear-gradient(135deg, rgba(16,185,129,.3), rgba(132,204,22,.3)); }
+    .rmap-content { flex: 1; }
+    .rmap-phase {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .rmap-title { font-size: 20px; font-weight: 800; color: var(--heading); margin-bottom: 10px; }
+    .rmap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .rmap-tag {
+      font-size: 12px; padding: 4px 12px; border-radius: 999px;
+      background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+    }
+
+    /* ── Principles grid (redesigned) ── */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media(max-width:640px){ .principles-grid { grid-template-columns: 1fr; } }
+
+    .principle-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex; gap: 18px; align-items: flex-start;
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+      position: relative; overflow: hidden;
+    }
+    .principle-card::before {
+      content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+      background: var(--pc-accent, linear-gradient(180deg,#3b82f6,#06b6d4));
+      border-radius: 0 2px 2px 0;
+    }
+    .principle-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,0,0,.25);
+      border-color: rgba(99,179,237,.3);
+    }
+
+    .pc-icon-wrap {
+      width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      background: var(--pc-bg, rgba(59,130,246,.1));
+    }
+    .pc-body { flex: 1; min-width: 0; }
+    .principle-title { font-size: 14px; font-weight: 700; color: var(--heading); margin-bottom: 5px; line-height: 1.3; }
+    .principle-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* Per-principle accent colours */
+    .pc-blue  { --pc-accent: linear-gradient(180deg,#3b82f6,#06b6d4); --pc-bg: rgba(59,130,246,.1); }
+    .pc-violet{ --pc-accent: linear-gradient(180deg,#8b5cf6,#ec4899); --pc-bg: rgba(139,92,246,.1); }
+    .pc-cyan  { --pc-accent: linear-gradient(180deg,#06b6d4,#10b981); --pc-bg: rgba(6,182,212,.1); }
+    .pc-amber { --pc-accent: linear-gradient(180deg,#f59e0b,#ef4444); --pc-bg: rgba(245,158,11,.1); }
+    .pc-green { --pc-accent: linear-gradient(180deg,#10b981,#84cc16); --pc-bg: rgba(16,185,129,.1); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center; color: var(--muted); font-size: 13px;
+    }
+    footer strong { color: var(--text); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px; background: var(--border);
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; line-height: 1; padding: 0;
+      transition: background .2s, border-color .2s, transform .2s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: var(--accent1); transform: rotate(20deg); }
+
+    /* Light mode surface tweaks */
+    [data-theme="light"] .resp-card,
+    [data-theme="light"] .priority-item,
+    [data-theme="light"] .role-card,
+    [data-theme="light"] .collab-card,
+    [data-theme="light"] .principle-card {
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    [data-theme="light"] .mission-wrap {
+      background: linear-gradient(135deg, rgba(59,130,246,.06), rgba(139,92,246,.06));
+    }
+    [data-theme="light"] .rmap-dot { border-color: var(--bg); }
+    [data-theme="light"] .hero-orb { opacity: .6; }
+    [data-theme="light"] .orb1 { background: rgba(59,130,246,.18); }
+    [data-theme="light"] .orb2 { background: rgba(139,92,246,.14); }
+    [data-theme="light"] .orb3 { background: rgba(6,182,212,.12); }
+
+    /* ── Responsive nav ── */
+    @media(max-width:640px){
+      .nav-links { display: none; }
+      .hero-meta { gap: 20px; }
+    }
+
+    /* ── Fade-in animation ── */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">⚡</div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-top">Technical Solution</span>
+      <span class="nav-brand-sub">Delivery Center</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#overview">Tổng quan</a></li>
+    <li><a href="#mission">Sứ mệnh</a></li>
+    <li><a href="#responsibilities">Trách nhiệm</a></li>
+    <li><a href="#principles">Nguyên tắc</a></li>
+    <li><a href="#roles">Vai trò</a></li>
+    <li><a href="#roadmap">Lộ trình</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+
+  <div class="hero-badge">Delivery Center · Version 1.0 · 08/04/2026</div>
+
+  <p class="hero-eyebrow">Roles &amp; Responsibilities</p>
+
+  <h1>
+    <span class="line1">Technical</span>
+    <span class="line2">Solution Team</span>
+  </h1>
+
+  <p class="hero-sub">Đội ngũ fullstack/senior cross-functional — hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ và nâng cao năng lực toàn diện cho Delivery Center.</p>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">👥</span>
+      <div class="hero-meta-text">
+        <span class="val">5</span>
+        <span class="label">Thành viên</span>
+      </div>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">🎯</span>
+      <div class="hero-meta-text">
+        <span class="val">6</span>
+        <span class="label">Trách nhiệm cốt lõi</span>
+      </div>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">🗺️</span>
+      <div class="hero-meta-text">
+        <span class="val">3</span>
+        <span class="label">Giai đoạn phát triển</span>
+      </div>
+    </div>
+  </div>
+
+  <a href="#mission" class="hero-cta">Khám phá ngay ↓</a>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="fade-in">
+    <p class="section-label">Tổng quan</p>
+    <h2 class="section-title">Tổng quan về Team</h2>
+    <div class="overview-intro">
+      <strong>Technical Solution Team</strong> là đội ngũ gồm các thành viên fullstack/senior có năng lực kỹ thuật mạnh, hoạt động như một lực lượng hỗ trợ liên dự án (cross-project) và liên phòng ban (cross-functional) trong Delivery Center.
+    </div>
+    <div class="overview-meta-row" style="grid-template-columns:1fr">
+      <div class="meta-card mc-report">
+        <div class="meta-card-label">Report line</div>
+        <div class="reportline-list">
+          <div class="reportline-item">
+            <div class="reportline-when">Khi tham gia dự án cụ thể</div>
+            <div class="reportline-to">
+              <span class="reportline-arrow">Report to</span>
+              <span class="reportline-badge badge-pm">PM dự án</span>
+            </div>
+            <div class="reportline-about">về tiến độ và deliverables</div>
+          </div>
+          <div class="reportline-item">
+            <div class="reportline-when">Về mặt tổ chức và định hướng</div>
+            <div class="reportline-to">
+              <span class="reportline-arrow">Report to</span>
+              <span class="reportline-badge badge-lead">Solution Team Lead</span>
+              <span style="font-size:12px;color:var(--muted)">&amp;</span>
+              <span class="reportline-badge badge-dc">DC Lead</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MISSION -->
+<section id="mission">
+  <div class="fade-in">
+    <p class="section-label">Sứ mệnh</p>
+    <div class="mission-wrap">
+      <div class="mission-icon">🎯</div>
+      <p class="mission-text">
+        Nâng cao năng lực tổng thể của Delivery Center thông qua hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ, và đảm bảo chất lượng đầu ra ở mức cao nhất cho khách hàng.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESPONSIBILITIES -->
+<section id="responsibilities">
+  <div class="fade-in">
+    <p class="section-label">Trách nhiệm chính</p>
+    <h2 class="section-title">Core Responsibilities</h2>
+    <p class="section-desc">6 lĩnh vực trách nhiệm cốt lõi định nghĩa hoạt động và giá trị mà Solution Team mang lại.</p>
+  </div>
+
+  <div class="resp-grid">
+    <!-- 3.1 -->
+    <div class="resp-card card-blue fade-in">
+      <div class="resp-num">3.1</div>
+      <div class="resp-icon">✅</div>
+      <div class="resp-title">Đảm bảo cam kết dự án</div>
+      <div class="resp-desc">Khi được assign vào dự án, thành viên Solution Team có trách nhiệm <strong>hoàn thành đầy đủ công việc</strong> được giao như một thành viên chính thức của dự án. Cụ thể:</div>
+      <ul class="resp-list">
+        <li>Tuân thủ timeline, sprint plan và quy trình của dự án.</li>
+        <li>Đảm bảo chất lượng deliverables theo tiêu chuẩn của dự án và của team Solution.</li>
+        <li>Tham gia đầy đủ các buổi meeting của dự án (standup, sprint review, retrospective...).</li>
+        <li>Phối hợp chặt chẽ với PM và các thành viên khác trong dự án.</li>
+        <li>Chủ động escalate khi có risk hoặc blocker ảnh hưởng đến tiến độ.</li>
+      </ul>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">⚠️</span>
+        <span><strong>Nguyên tắc:</strong> Công việc dự án được ưu tiên số 1. Các hoạt động khác của Solution Team không được ảnh hưởng đến cam kết dự án.</span>
+      </div>
+    </div>
+
+    <!-- 3.2 -->
+    <div class="resp-card card-violet fade-in">
+      <div class="resp-num">3.2</div>
+      <div class="resp-icon">🔧</div>
+      <div class="resp-title">Hỗ trợ kỹ thuật theo yêu cầu (On-demand Technical Support)</div>
+      <div class="resp-desc">Cung cấp hỗ trợ kỹ thuật chuyên sâu cho các dự án và đồng nghiệp trong DC khi có request. Bao gồm:</div>
+      <ul class="resp-list">
+        <li>Hỗ trợ giải quyết vấn đề kỹ thuật phức tạp (troubleshooting, debugging, architecture review).</li>
+        <li>Tư vấn lựa chọn tech stack, giải pháp kỹ thuật cho dự án.</li>
+        <li>Code review chuyên sâu khi được request.</li>
+        <li>Hỗ trợ performance optimization, security review.</li>
+      </ul>
+      <div class="resp-process">
+        <div class="resp-process-title">Quy trình tiếp nhận request</div>
+        <ol class="resp-process-list">
+          <li><span class="rp-num">1</span><span>Request được gửi từ PM hoặc Team Lead dự án.</span></li>
+          <li><span class="rp-num">2</span><span>Solution Team Lead đánh giá mức độ ưu tiên và phân công.</span></li>
+          <li><span class="rp-num">3</span><span>Thành viên được phân công xử lý và báo cáo kết quả.</span></li>
+          <li><span class="rp-num">4</span><span>Ghi nhận effort và kết quả vào log của team.</span></li>
+        </ol>
+      </div>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">💡</span>
+        <span><strong>Ranh giới:</strong> Solution Team <strong>hỗ trợ và tư vấn</strong>, không thay thế trách nhiệm của team dự án. Sau khi hỗ trợ, team dự án chịu trách nhiệm duy trì và phát triển tiếp.</span>
+      </div>
+    </div>
+
+    <!-- 3.3 -->
+    <div class="resp-card card-cyan fade-in">
+      <div class="resp-num">3.3</div>
+      <div class="resp-icon">📋</div>
+      <div class="resp-title">Proposal &amp; Presale</div>
+      <div class="resp-desc">Là <strong>lực lượng chính</strong> trong công tác làm proposal và hỗ trợ presale. Bao gồm:</div>
+      <ul class="resp-list">
+        <li>Phân tích yêu cầu kỹ thuật từ RFP/RFI của khách hàng.</li>
+        <li>Đề xuất solution architecture và tech stack phù hợp.</li>
+        <li>Ước lượng effort (estimation) cho phần kỹ thuật.</li>
+        <li>Viết phần technical proposal, bao gồm diagrams và tài liệu kỹ thuật.</li>
+        <li>Tham gia các buổi technical demo hoặc Q&amp;A với khách hàng tiềm năng khi cần.</li>
+        <li>Phối hợp với BD/Sales team để đảm bảo tính khả thi của proposal.</li>
+      </ul>
+    </div>
+
+    <!-- 3.4 -->
+    <div class="resp-card card-green fade-in">
+      <div class="resp-num">3.4</div>
+      <div class="resp-icon">🔍</div>
+      <div class="resp-title">Hỗ trợ chủ động trong Delivery Center</div>
+      <div class="resp-desc">Không chỉ đợi request, mà <strong>chủ động</strong> phát hiện và hỗ trợ khi cần:</div>
+      <ul class="resp-list">
+        <li>Theo dõi tình hình các dự án trong DC để phát hiện sớm rủi ro kỹ thuật.</li>
+        <li>Chủ động đề xuất cải tiến khi phát hiện vấn đề (code quality, performance, security...).</li>
+        <li>Hỗ trợ đồng nghiệp mới hoặc junior khi gặp khó khăn kỹ thuật.</li>
+        <li>Tham gia "firefighting" khi dự án gặp sự cố cần giải quyết gấp.</li>
+      </ul>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">🤝</span>
+        <span><strong>Lưu ý:</strong> Hỗ trợ chủ động phải được thực hiện một cách <strong>khéo léo và tôn trọng</strong>. Không can thiệp vào quy trình làm việc của team khác mà không có sự đồng ý. Khi phát hiện vấn đề, thông báo qua PM/Team Lead dự án trước.</span>
+      </div>
+    </div>
+
+    <!-- 3.5 -->
+    <div class="resp-card card-amber fade-in">
+      <div class="resp-num">3.5</div>
+      <div class="resp-icon">🧪</div>
+      <div class="resp-title">Nghiên cứu &amp; Đổi mới (R&amp;D / Innovation)</div>
+      <div class="resp-desc">Đi đầu trong việc nghiên cứu, thử nghiệm và triển khai công nghệ mới:</div>
+      <ul class="resp-list">
+        <li>Nghiên cứu các công nghệ, framework, tool mới phù hợp với định hướng của công ty.</li>
+        <li>Xây dựng PoC (Proof of Concept) để đánh giá tính khả thi.</li>
+        <li>Tạo boilerplate, template, và reusable components cho toàn DC.</li>
+        <li>Cập nhật và duy trì tech radar của công ty.</li>
+        <li>Đề xuất lộ trình áp dụng công nghệ mới vào các dự án.</li>
+        <li>Tham gia phân tích sau sự cố (post-mortem) khi dự án gặp incident, rút ra bài học và chuyển hóa thành checklist, guideline hoặc process để phòng ngừa cho toàn DC.</li>
+      </ul>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">📊</span>
+        <span><strong>Output kỳ vọng:</strong> Mỗi quý có ít nhất 1-2 chủ đề R&amp;D được nghiên cứu và báo cáo kết quả.</span>
+      </div>
+    </div>
+
+    <!-- 3.6 -->
+    <div class="resp-card card-indigo fade-in">
+      <div class="resp-num">3.6</div>
+      <div class="resp-icon">📚</div>
+      <div class="resp-title">Chia sẻ kiến thức (Knowledge Sharing)</div>
+      <div class="resp-desc">Tổ chức và dẫn dắt các hoạt động chia sẻ kiến thức ở <strong>cấp độ DC và công ty</strong>:</div>
+      <ul class="resp-list">
+        <li>Tổ chức các buổi Tech Talk / Workshop định kỳ.</li>
+        <li>Viết technical blog / documentation nội bộ.</li>
+        <li>Xây dựng và duy trì knowledge base (best practices, coding standards, architecture patterns).</li>
+        <li>Ban hành và định kỳ cập nhật bộ tiêu chuẩn kỹ thuật chung của DC: coding convention, architecture guidelines, branching strategy, security baseline — để các dự án có "luật chung" thống nhất để tuân theo.</li>
+        <li>Mentor cho các thành viên tiềm năng trong DC.</li>
+        <li>Phối hợp với HR/Training để tổ chức chương trình đào tạo nội bộ.</li>
+      </ul>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">💡</span>
+        <span><strong>Phân biệt với Functional Team:</strong> Functional team sharing tập trung vào kiến thức chuyên môn của team đó. Solution Team sharing tập trung vào kiến thức <strong>cross-cutting</strong>, kiến thức mới, và best practices áp dụng chung cho toàn DC/công ty.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRINCIPLES -->
+<section id="principles">
+  <div class="fade-in">
+    <p class="section-label">Nguyên tắc hoạt động</p>
+    <h2 class="section-title">Operating Principles</h2>
+    <p class="section-desc">Các nguyên tắc định hướng cách Solution Team vận hành và phối hợp với toàn bộ tổ chức.</p>
+  </div>
+
+  <!-- Priority -->
+  <div class="fade-in" style="margin-bottom:60px">
+    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Thứ tự ưu tiên công việc</h3>
+    <ul class="priority-list">
+      <li class="priority-item">
+        <div class="pnum p1">1</div>
+        <div class="ptext">
+          <strong>Dự án đang assign</strong>
+          <span>Ưu tiên cao nhất, không được ảnh hưởng.</span>
+        </div>
+      </li>
+      <li class="priority-item">
+        <div class="pnum p2">2</div>
+        <div class="ptext">
+          <strong>Presale / Proposal</strong>
+          <span>Ưu tiên cao, có deadline rõ ràng.</span>
+        </div>
+      </li>
+      <li class="priority-item">
+        <div class="pnum p3">3</div>
+        <div class="ptext">
+          <strong>Request hỗ trợ khẩn cấp</strong>
+          <span>Production issue, blocker nghiêm trọng.</span>
+        </div>
+      </li>
+      <li class="priority-item">
+        <div class="pnum p4">4</div>
+        <div class="ptext">
+          <strong>Request hỗ trợ thông thường</strong>
+          <span>Theo queue, first-come-first-served hoặc theo mức độ impact.</span>
+        </div>
+      </li>
+      <li class="priority-item">
+        <div class="pnum p5">5</div>
+        <div class="ptext">
+          <strong>R&amp;D và Knowledge Sharing</strong>
+          <span>Thực hiện khi không bị block bởi các mục trên.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Time allocation -->
+  <div class="fade-in" style="margin-bottom:60px">
+    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Phân bổ thời gian đề xuất</h3>
+    <div class="alloc-grid">
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Công việc dự án</span>
+          <span>50–70%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="60" style="--bar-color:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Presale / Proposal</span>
+          <span>10–20%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="15" style="--bar-color:linear-gradient(90deg,#8b5cf6,#ec4899)"></div></div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Hỗ trợ kỹ thuật (on-demand)</span>
+          <span>10–15%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="12" style="--bar-color:linear-gradient(90deg,#06b6d4,#10b981)"></div></div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>R&D / Innovation</span>
+          <span>5–10%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="7" style="--bar-color:linear-gradient(90deg,#f59e0b,#ef4444)"></div></div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Knowledge Sharing / Mentoring</span>
+          <span>5–10%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="7" style="--bar-color:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non-conflict principles -->
+  <div class="fade-in">
+    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:8px;">Nguyên tắc không xung đột (Non-conflict Principles)</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Để tránh conflict với các bộ phận khác trong công ty:</p>
+    <div class="principles-grid">
+      <div class="principle-card pc-blue">
+        <div class="pc-icon-wrap">🔗</div>
+        <div class="pc-body">
+          <div class="principle-title">Không thay thế, chỉ bổ sung</div>
+          <div class="principle-desc">Solution Team hỗ trợ để nâng cao năng lực, không thay thế vai trò của bất kỳ team nào.</div>
+        </div>
+      </div>
+      <div class="principle-card pc-violet">
+        <div class="pc-icon-wrap">👑</div>
+        <div class="pc-body">
+          <div class="principle-title">Tôn trọng ownership</div>
+          <div class="principle-desc">Mọi quyết định cuối cùng về dự án thuộc về PM và Team Lead dự án.</div>
+        </div>
+      </div>
+      <div class="principle-card pc-cyan">
+        <div class="pc-icon-wrap">📋</div>
+        <div class="pc-body">
+          <div class="principle-title">Quy trình request rõ ràng</div>
+          <div class="principle-desc">Hỗ trợ chỉ được kích hoạt qua quy trình chính thức, trừ trường hợp khẩn cấp.</div>
+        </div>
+      </div>
+      <div class="principle-card pc-amber">
+        <div class="pc-icon-wrap">📢</div>
+        <div class="pc-body">
+          <div class="principle-title">Transparent communication</div>
+          <div class="principle-desc">Mọi hoạt động hỗ trợ đều được ghi nhận và thông báo cho các bên liên quan.</div>
+        </div>
+      </div>
+      <div class="principle-card pc-green">
+        <div class="pc-icon-wrap">🤲</div>
+        <div class="pc-body">
+          <div class="principle-title">Không đánh giá</div>
+          <div class="principle-desc">Solution Team không có quyền đánh giá năng lực hay hiệu suất của team khác. Vai trò là hỗ trợ và nâng đỡ.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="fade-in">
+    <p class="section-label">Vai trò</p>
+    <h2 class="section-title">Role-based Responsibilities</h2>
+    <p class="section-desc">Trách nhiệm cụ thể của từng vai trò trong Solution Team.</p>
+  </div>
+
+  <div class="roles-grid fade-in">
+    <!-- Lead -->
+    <div class="role-card" style="--role-glow:rgba(245,158,11,.08)">
+      <span class="role-badge badge-lead">Team Lead</span>
+      <div class="role-title">Solution Team Lead</div>
+      <ul class="role-list">
+        <li>Định hướng chiến lược và lộ trình phát triển của team.</li>
+        <li>Phân công và điều phối công việc trong team.</li>
+        <li>Là đầu mối tiếp nhận và đánh giá request hỗ trợ.</li>
+        <li>Phối hợp với PM, Team Lead các dự án và DC Lead.</li>
+        <li>Đảm bảo chất lượng output của team (proposal, R&amp;D, hỗ trợ kỹ thuật).</li>
+        <li>Báo cáo định kỳ cho DC Lead về hoạt động và kết quả của team.</li>
+        <li>Đề xuất kế hoạch tuyển dụng và phát triển thành viên.</li>
+      </ul>
+    </div>
+
+    <!-- Member -->
+    <div class="role-card" style="--role-glow:rgba(59,130,246,.08)">
+      <span class="role-badge badge-member">Member</span>
+      <div class="role-title">Solution Engineer (Thành viên)</div>
+      <ul class="role-list">
+        <li>Hoàn thành công việc dự án được assign với chất lượng cao.</li>
+        <li>Hỗ trợ kỹ thuật cho đồng nghiệp theo phân công từ Team Lead.</li>
+        <li>Tham gia làm proposal và presale khi được yêu cầu.</li>
+        <li>Nghiên cứu và chia sẻ kiến thức theo kế hoạch của team.</li>
+        <li>Chủ động nâng cao năng lực bản thân, đi đầu trong việc học hỏi cái mới.</li>
+        <li>Ghi nhận và chia sẻ lessons learned từ các dự án và hỗ trợ.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COLLABORATION -->
+<section>
+  <div class="fade-in">
+    <p class="section-label">Phối hợp</p>
+    <h2 class="section-title">Collaboration Framework</h2>
+    <p class="section-desc">Quy trình phối hợp chính thức với các bộ phận trong tổ chức.</p>
+  </div>
+
+  <div class="collab-grid fade-in">
+    <div class="collab-card">
+      <div class="collab-icon">👔</div>
+      <div class="collab-title">Với PM / Team Lead dự án</div>
+      <ul class="collab-steps">
+        <li><span class="step-num">1</span><span>PM/Team Lead gửi request hỗ trợ qua kênh chính thức (email, Slack channel, hoặc tool quản lý task).</span></li>
+        <li><span class="step-num">2</span><span>Solution Team Lead đánh giá và phản hồi trong vòng <strong style="color:var(--accent1)">4 giờ làm việc</strong>.</span></li>
+        <li><span class="step-num">3</span><span>Sau khi hoàn thành hỗ trợ, bàn giao kết quả và tài liệu (nếu có) cho team dự án.</span></li>
+      </ul>
+    </div>
+
+    <div class="collab-card">
+      <div class="collab-icon">💼</div>
+      <div class="collab-title">Với BD / Sales (Presale)</div>
+      <ul class="collab-steps">
+        <li><span class="step-num">1</span><span>BD/Sales thông báo cơ hội presale với đầy đủ thông tin cơ bản (RFP, timeline, budget range).</span></li>
+        <li><span class="step-num">2</span><span>Solution Team phân công người chịu trách nhiệm chính cho proposal.</span></li>
+        <li><span class="step-num">3</span><span>Phối hợp hoàn thành proposal theo deadline của BD/Sales.</span></li>
+      </ul>
+    </div>
+
+    <div class="collab-card">
+      <div class="collab-icon">🎓</div>
+      <div class="collab-title">Với HR / Training</div>
+      <ul class="collab-steps">
+        <li><span class="step-num">1</span><span>Phối hợp tổ chức các chương trình đào tạo, workshop.</span></li>
+        <li><span class="step-num">2</span><span>Đề xuất lộ trình phát triển kỹ năng cho nhân sự trong DC.</span></li>
+        <li><span class="step-num">3</span><span>Tham gia đánh giá kỹ thuật khi tuyển dụng (nếu được yêu cầu).</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="fade-in">
+    <p class="section-label">Lộ trình</p>
+    <h2 class="section-title">Expansion Roadmap</h2>
+    <p class="section-desc">Lộ trình phát triển 3 giai đoạn — từ technical excellence đến cross-functional leadership.</p>
+  </div>
+
+  <div class="roadmap fade-in">
+    <div class="rmap-item">
+      <div class="rmap-dot dot1">⚙️</div>
+      <div class="rmap-content">
+        <div class="rmap-phase">Giai đoạn 1 — Hiện tại</div>
+        <div class="rmap-title">Technical</div>
+        <p style="font-size:14px;color:var(--muted)">Tập trung vào Technical — hỗ trợ kỹ thuật, proposal, presale, R&amp;D.</p>
+        <div class="rmap-tags">
+          <span class="rmap-tag">Technical Support</span>
+          <span class="rmap-tag">Proposal</span>
+          <span class="rmap-tag">Presale</span>
+          <span class="rmap-tag">R&amp;D</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rmap-item">
+      <div class="rmap-dot dot2">📐</div>
+      <div class="rmap-content">
+        <div class="rmap-phase">Giai đoạn 2 — Ngắn hạn</div>
+        <div class="rmap-title">PM &amp; Process</div>
+        <p style="font-size:14px;color:var(--muted)">Khi mở rộng sang mảng PM, team sẽ bổ sung thêm trách nhiệm:</p>
+        <ul class="resp-list" style="margin-top:8px">
+          <li>Xây dựng và chuẩn hóa quy trình quản lý dự án cho DC.</li>
+          <li>Tạo template cho project plan, risk management, status report.</li>
+          <li>Hỗ trợ PM trong việc estimation, planning và risk assessment.</li>
+          <li>Đào tạo và mentor cho PM mới.</li>
+        </ul>
+        <div class="rmap-tags" style="margin-top:12px">
+          <span class="rmap-tag">Project Management</span>
+          <span class="rmap-tag">Process Standardization</span>
+          <span class="rmap-tag">Risk Management</span>
+          <span class="rmap-tag">PM Mentoring</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rmap-item">
+      <div class="rmap-dot dot3">🌐</div>
+      <div class="rmap-content">
+        <div class="rmap-phase">Giai đoạn 3 — Dài hạn</div>
+        <div class="rmap-title">Cross-functional</div>
+        <p style="font-size:14px;color:var(--muted)">Mở rộng cover các mảng khác: QA process, BA methodology, Design system, DevOps practices, v.v. Chi tiết sẽ được bổ sung khi đến giai đoạn triển khai.</p>
+        <div class="rmap-tags">
+          <span class="rmap-tag">QA Process</span>
+          <span class="rmap-tag">BA Methodology</span>
+          <span class="rmap-tag">Design System</span>
+          <span class="rmap-tag">DevOps Practices</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Technical Solution Team</strong> — Delivery Center</p>
+  <p style="margin-top:8px">Version 1.0 · Ban hành: 08/04/2026 · Tài liệu sẽ được review và cập nhật định kỳ mỗi quý hoặc khi có thay đổi lớn về cơ cấu tổ chức.</p>
+</footer>
+
+<script>
+  // ── Theme toggle ──
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { html.dataset.theme = 'light'; toggle.textContent = '☀️'; }
+
+  toggle.addEventListener('click', () => {
+    const isLight = html.dataset.theme === 'light';
+    html.dataset.theme = isLight ? '' : 'light';
+    toggle.textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('theme', isLight ? 'dark' : 'light');
+  });
+
+  // ── Active nav link on scroll ──
+  const sections = document.querySelectorAll('section[id]');
+  const navAs = document.querySelectorAll('.nav-links a');
+  const activeSpy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  sections.forEach(s => activeSpy.observe(s));
+
+  // ── Intersection Observer for fade-in ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Animate bars inside this element
+        e.target.querySelectorAll('.bar-fill').forEach(bar => {
+          const w = bar.dataset.width;
+          bar.style.width = w + '%';
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Also trigger bars that are already visible on load
+  document.querySelectorAll('.bar-fill').forEach(bar => {
+    const w = bar.dataset.width;
+    if (bar.closest('.visible')) bar.style.width = w + '%';
+  });
+</script>
+</body>
+</html>
