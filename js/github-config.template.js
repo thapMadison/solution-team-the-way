@@ -2,7 +2,7 @@
 const GITHUB_CONFIG = {
   owner: 'thapMadison',
   repo: 'solution-team-the-way',
-  token: 'TOKEN-HERE', // Replace with actual Fine-grained PAT
+  token: 'YOUR_GITHUB_TOKEN_HERE', // Replace with your GitHub Fine-grained PAT
   branch: 'main',
   apiBase: 'https://api.github.com',
 
