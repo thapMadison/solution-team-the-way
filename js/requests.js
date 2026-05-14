@@ -85,24 +85,21 @@ async function handleFormSubmit(e) {
     await saveRequest(requestData);
 
     // Success
-    showNotification('success', '✅ Request đang được tạo... Đợi ~30 giây để thấy kết quả!');
+    showNotification('success', '✅ Request đã được tạo thành công!');
     form.reset();
     document.querySelector('.char-count').textContent = '0/2000';
 
     // Close modal
     closeNewRequestModal();
 
+    // Reload requests
+    await loadRequests();
+    updateStats();
+
     // Scroll to requests list
     setTimeout(() => {
       document.getElementById('active').scrollIntoView({ behavior: 'smooth' });
     }, 500);
-
-    // Auto-reload after 30 seconds
-    setTimeout(async () => {
-      await loadRequests();
-      updateStats();
-      showNotification('info', '🔄 Đã reload! Nếu chưa thấy request mới, đợi thêm và reload lại.');
-    }, 30000); // 30 seconds
 
   } catch (error) {
     console.error('Error submitting request:', error);
@@ -147,15 +144,68 @@ function escapeHtml(text) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// GITHUB DATA OPERATIONS (via GitHub Actions)
+// GITHUB DATA OPERATIONS
 // ══════════════════════════════════════════════════════════════
 
 async function saveRequest(requestData) {
-  // Trigger GitHub Action to create request
-  await GitHubAPI.dispatchAction('new-request', requestData);
+  // Get month path (YYYY-MM)
+  const date = new Date(requestData.timestamp);
+  const monthPath = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
-  // Note: GitHub Action will handle creating the file and updating index
-  // The action takes ~10-30 seconds to complete
+  // Save individual request file
+  const requestFilePath = `${GITHUB_CONFIG.requestsDataPath}/${monthPath}/request-${requestData.id}.json`;
+  await GitHubAPI.putFile(
+    requestFilePath,
+    requestData,
+    `New request: ${requestData.title} (ID: ${requestData.id})`
+  );
+
+  // Update index file
+  await updateRequestIndex(requestData);
+}
+
+async function updateRequestIndex(newRequest) {
+  // Get current index
+  let indexData = await GitHubAPI.getFile(GITHUB_CONFIG.requestsIndexPath);
+
+  if (!indexData) {
+    // Create new index if doesn't exist
+    indexData = {
+      content: {
+        lastUpdated: new Date().toISOString(),
+        totalCount: 0,
+        requests: []
+      },
+      sha: null
+    };
+  }
+
+  // Add new request to index (prepend to show latest first)
+  const date = new Date(newRequest.timestamp);
+  const monthPath = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+  indexData.content.requests.unshift({
+    id: newRequest.id,
+    timestamp: newRequest.timestamp,
+    requester: newRequest.requester,
+    type: newRequest.type,
+    priority: newRequest.priority,
+    status: newRequest.status,
+    title: newRequest.title,
+    assignee: newRequest.assignee,
+    path: `${GITHUB_CONFIG.requestsDataPath}/${monthPath}/request-${newRequest.id}.json`
+  });
+
+  indexData.content.totalCount = indexData.content.requests.length;
+  indexData.content.lastUpdated = new Date().toISOString();
+
+  // Save updated index
+  await GitHubAPI.putFile(
+    GITHUB_CONFIG.requestsIndexPath,
+    indexData.content,
+    `Update index: +1 request (${newRequest.id})`,
+    indexData.sha
+  );
 }
 
 async function loadRequests() {
@@ -426,30 +476,60 @@ async function openRequestDetail(requestId) {
 
 async function updateRequest(requestId, requestPath, currentSha) {
   try {
+    // Get current data
+    const fullRequest = await GitHubAPI.getFile(requestPath);
+    const data = fullRequest.content;
+
     // Get new values from modal
     const newStatus = document.getElementById('statusSelect').value;
     const newAssignee = document.getElementById('assigneeSelect').value;
 
-    // Trigger GitHub Action to update request
-    await GitHubAPI.dispatchAction('update-request', {
-      id: requestId,
-      path: requestPath,
-      status: newStatus,
-      assignee: newAssignee
-    });
+    // Update data
+    data.status = newStatus;
+    data.assignee = newAssignee;
+    data.updatedAt = new Date().toISOString();
 
-    showNotification('success', '✅ Request đang được cập nhật... (đợi ~30 giây)');
+    // Save to GitHub
+    await GitHubAPI.putFile(
+      requestPath,
+      data,
+      `Update request #${requestId}: status=${newStatus}, assignee=${newAssignee}`,
+      fullRequest.sha
+    );
+
+    // Update index
+    await updateRequestIndexItem(requestId, { status: newStatus, assignee: newAssignee });
+
+    showNotification('success', '✅ Request đã được cập nhật!');
     closeModal();
-
-    // Wait a bit then reload
-    setTimeout(async () => {
-      await loadRequests();
-      showNotification('info', '🔄 Đã reload! Nếu chưa thấy thay đổi, đợi thêm và reload lại.');
-    }, 30000); // 30 seconds
+    await loadRequests();
 
   } catch (error) {
     console.error('Error updating request:', error);
     showNotification('error', `❌ Lỗi: ${error.message}`);
+  }
+}
+
+async function updateRequestIndexItem(requestId, updates) {
+  const indexData = await GitHubAPI.getFile(GITHUB_CONFIG.requestsIndexPath);
+
+  if (!indexData) return;
+
+  // Find and update request in index
+  const requestIndex = indexData.content.requests.findIndex(r => r.id === requestId);
+  if (requestIndex !== -1) {
+    indexData.content.requests[requestIndex] = {
+      ...indexData.content.requests[requestIndex],
+      ...updates
+    };
+    indexData.content.lastUpdated = new Date().toISOString();
+
+    await GitHubAPI.putFile(
+      GITHUB_CONFIG.requestsIndexPath,
+      indexData.content,
+      `Update index for request #${requestId}`,
+      indexData.sha
+    );
   }
 }
 
@@ -459,20 +539,31 @@ async function deleteRequest(requestId, requestPath, sha) {
   }
 
   try {
-    // Trigger GitHub Action to delete request
-    await GitHubAPI.dispatchAction('delete-request', {
-      id: requestId,
-      path: requestPath
-    });
+    // Delete file from GitHub
+    await GitHubAPI.deleteFile(
+      requestPath,
+      sha,
+      `Delete request #${requestId}`
+    );
 
-    showNotification('success', '✅ Request đang được xóa... (đợi ~30 giây)');
+    // Remove from index
+    const indexData = await GitHubAPI.getFile(GITHUB_CONFIG.requestsIndexPath);
+    if (indexData) {
+      indexData.content.requests = indexData.content.requests.filter(r => r.id !== requestId);
+      indexData.content.totalCount = indexData.content.requests.length;
+      indexData.content.lastUpdated = new Date().toISOString();
+
+      await GitHubAPI.putFile(
+        GITHUB_CONFIG.requestsIndexPath,
+        indexData.content,
+        `Remove request #${requestId} from index`,
+        indexData.sha
+      );
+    }
+
+    showNotification('success', '✅ Request đã được xóa!');
     closeModal();
-
-    // Wait a bit then reload
-    setTimeout(async () => {
-      await loadRequests();
-      showNotification('info', '🔄 Đã reload! Nếu vẫn thấy request, đợi thêm và reload lại.');
-    }, 30000); // 30 seconds
+    await loadRequests();
 
   } catch (error) {
     console.error('Error deleting request:', error);
