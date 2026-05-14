@@ -103,7 +103,7 @@ nav::after {
 .nav-links { display: flex; gap: 6px; list-style: none; }
 .nav-links a {
   position: relative;
-  color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500;
   letter-spacing: .04em; padding: 7px 16px; border-radius: 8px;
   border: 1px solid transparent;
   transition: color .18s, background .18s, border-color .18s;
