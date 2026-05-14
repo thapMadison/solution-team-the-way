@@ -1,0 +1,66 @@
+name: Delete Request
+
+on:
+  repository_dispatch:
+    types: [delete-request]
+
+jobs:
+  delete-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Delete request file
+        run: |
+          echo '${{ toJSON(github.event.client_payload) }}' > delete_data.json
+
+          REQUEST_PATH=$(node -pe "JSON.parse(fs.readFileSync('delete_data.json')).path")
+          REQUEST_ID=$(node -pe "JSON.parse(fs.readFileSync('delete_data.json')).id")
+
+          # Delete the file
+          if [ -f "$REQUEST_PATH" ]; then
+            rm "$REQUEST_PATH"
+            echo "Deleted: $REQUEST_PATH"
+          else
+            echo "File not found: $REQUEST_PATH"
+          fi
+
+          echo "request_id=$REQUEST_ID" >> $GITHUB_OUTPUT
+
+      - name: Update index file
+        run: |
+          REQUEST_ID=$(node -pe "JSON.parse(fs.readFileSync('delete_data.json')).id")
+
+          node -e "
+          const fs = require('fs');
+          const index = JSON.parse(fs.readFileSync('data/requests-index.json'));
+          const requestId = '$REQUEST_ID';
+
+          index.requests = index.requests.filter(r => r.id !== requestId);
+          index.totalCount = index.requests.length;
+          index.lastUpdated = new Date().toISOString();
+
+          fs.writeFileSync('data/requests-index.json', JSON.stringify(index, null, 2));
+          "
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+          git add data/
+          git commit -m "Delete request #$(node -pe "JSON.parse(fs.readFileSync('delete_data.json')).id")" || echo "No changes"
+          git push
+
+      - name: Cleanup
+        if: always()
+        run: rm -f delete_data.json

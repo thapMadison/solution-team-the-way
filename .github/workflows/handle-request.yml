@@ -1,0 +1,102 @@
+name: Handle New Request
+
+on:
+  repository_dispatch:
+    types: [new-request]
+
+jobs:
+  create-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Process request data
+        id: process
+        run: |
+          # Get request data from event payload
+          echo '${{ toJSON(github.event.client_payload) }}' > request_data.json
+
+          # Extract values
+          REQUEST_ID=$(node -pe "JSON.parse(fs.readFileSync('request_data.json')).id")
+          TIMESTAMP=$(node -pe "JSON.parse(fs.readFileSync('request_data.json')).timestamp")
+          TITLE=$(node -pe "JSON.parse(fs.readFileSync('request_data.json')).title")
+
+          # Calculate month path (YYYY-MM)
+          YEAR=$(echo $TIMESTAMP | cut -d'-' -f1)
+          MONTH=$(echo $TIMESTAMP | cut -d'-' -f2)
+          MONTH_PATH="${YEAR}-${MONTH}"
+
+          # Set outputs
+          echo "request_id=$REQUEST_ID" >> $GITHUB_OUTPUT
+          echo "month_path=$MONTH_PATH" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+      - name: Create request file
+        run: |
+          MONTH_PATH="${{ steps.process.outputs.month_path }}"
+          REQUEST_ID="${{ steps.process.outputs.request_id }}"
+
+          # Create directory if not exists
+          mkdir -p "data/requests/${MONTH_PATH}"
+
+          # Save request data
+          echo '${{ toJSON(github.event.client_payload) }}' | \
+            node -pe "JSON.stringify(JSON.parse(fs.readFileSync(0)), null, 2)" \
+            > "data/requests/${MONTH_PATH}/request-${REQUEST_ID}.json"
+
+      - name: Update index file
+        run: |
+          REQUEST_ID="${{ steps.process.outputs.request_id }}"
+          MONTH_PATH="${{ steps.process.outputs.month_path }}"
+
+          # Read current index
+          if [ ! -f data/requests-index.json ]; then
+            echo '{"lastUpdated":"","totalCount":0,"requests":[]}' > data/requests-index.json
+          fi
+
+          # Update index with new request
+          node -e "
+          const fs = require('fs');
+          const index = JSON.parse(fs.readFileSync('data/requests-index.json'));
+          const payload = JSON.parse(fs.readFileSync('request_data.json'));
+
+          // Add new request to index (prepend)
+          index.requests.unshift({
+            id: payload.id,
+            timestamp: payload.timestamp,
+            requester: payload.requester,
+            type: payload.type,
+            priority: payload.priority,
+            status: payload.status,
+            title: payload.title,
+            assignee: payload.assignee,
+            path: \`data/requests/${MONTH_PATH}/request-\${payload.id}.json\`
+          });
+
+          index.totalCount = index.requests.length;
+          index.lastUpdated = new Date().toISOString();
+
+          fs.writeFileSync('data/requests-index.json', JSON.stringify(index, null, 2));
+          "
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+          git add data/
+          git commit -m "New request: ${{ steps.process.outputs.title }} (#${{ steps.process.outputs.request_id }})" || echo "No changes to commit"
+          git push
+
+      - name: Cleanup
+        if: always()
+        run: rm -f request_data.json

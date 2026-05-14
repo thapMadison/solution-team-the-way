@@ -2,11 +2,13 @@
 const GITHUB_CONFIG = {
   owner: 'thapMadison',
   repo: 'solution-team-the-way',
-  token: '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', // Replace with actual Fine-grained PAT
+  // Token chỉ cần quyền trigger workflow (không cần Contents write)
+  // Permissions: Actions = Read and Write
+  token: 'PASTE_YOUR_TOKEN_HERE', // Replace with Fine-grained PAT
   branch: 'main',
   apiBase: 'https://api.github.com',
 
-  // Data paths
+  // Data paths (for reading)
   requestsDataPath: 'data/requests',
   requestsIndexPath: 'data/requests-index.json',
 
@@ -23,13 +25,12 @@ const GITHUB_CONFIG = {
 
 // GitHub API helper functions
 const GitHubAPI = {
-  // Get file from GitHub
+  // Get file from GitHub (unauthenticated - works for public repos)
   async getFile(path) {
     const url = `${GITHUB_CONFIG.apiBase}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
 
     const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${GITHUB_CONFIG.token}`,
         'Accept': 'application/vnd.github+json'
       }
     });
@@ -44,7 +45,7 @@ const GitHubAPI = {
     const data = await response.json();
 
     // Decode base64 content
-    const content = atob(data.content);
+    const content = atob(data.content.replace(/\s/g, ''));
 
     return {
       content: JSON.parse(content),
@@ -52,60 +53,29 @@ const GitHubAPI = {
     };
   },
 
-  // Create or update file on GitHub
-  async putFile(path, content, message, sha = null) {
-    const url = `${GITHUB_CONFIG.apiBase}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
-
-    const body = {
-      message: message,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
-      branch: GITHUB_CONFIG.branch
-    };
-
-    if (sha) {
-      body.sha = sha; // Required for updates
-    }
+  // Trigger GitHub Action via repository_dispatch
+  async dispatchAction(eventType, payload) {
+    const url = `${GITHUB_CONFIG.apiBase}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/dispatches`;
 
     const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${GITHUB_CONFIG.token}`,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`GitHub API error: ${error.message || response.statusText}`);
-    }
-
-    return await response.json();
-  },
-
-  // Delete file from GitHub
-  async deleteFile(path, sha, message) {
-    const url = `${GITHUB_CONFIG.apiBase}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
-
-    const response = await fetch(url, {
-      method: 'DELETE',
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${GITHUB_CONFIG.token}`,
         'Accept': 'application/vnd.github+json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: message,
-        sha: sha,
-        branch: GITHUB_CONFIG.branch
+        event_type: eventType,
+        client_payload: payload
       })
     });
 
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.statusText}`);
+      const error = await response.text();
+      throw new Error(`GitHub Actions dispatch error: ${response.status} ${error}`);
     }
 
-    return await response.json();
+    // repository_dispatch returns 204 No Content on success
+    return { success: true };
   }
 };
