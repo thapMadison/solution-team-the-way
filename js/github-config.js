@@ -4,7 +4,7 @@ const GITHUB_CONFIG = {
   repo: 'solution-team-the-way',
   // Token chỉ cần quyền trigger workflow (không cần Contents write)
   // Permissions: Actions = Read and Write
-  token: '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', // Replace with Fine-grained PAT
+  token: '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', // Replace with Fine-grained PAT
   branch: 'main',
   apiBase: 'https://api.github.com',
 
