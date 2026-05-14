@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quy trình tiếp nhận Request — Solution Team</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-logo"><img src="assets/the-mandalorian.png" alt="The Mandalorian" /></div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-top">Technical Solution</span>
+      <span class="nav-brand-sub">Delivery Center</span>
+    </div>
+  </a>
+  <ul class="nav-links nav-main">
+    <li><a href="index.html">Roles & Responsibilities</a></li>
+    <li><a href="request-process.html" class="active">Request Process</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
+</nav>
+
+<!-- SUB NAV -->
+<div class="subnav">
+  <div class="subnav-container">
+    <a href="#criteria" class="subnav-link">Tiêu chí</a>
+    <a href="#template" class="subnav-link">Template</a>
+    <a href="#cost" class="subnav-link">Cost Model</a>
+    <a href="#priority" class="subnav-link">Priority</a>
+    <a href="#workflow" class="subnav-link">Workflow</a>
+    <a href="#logging" class="subnav-link">Tracking</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+
+  <div class="hero-badge">Solution Team · Request Process</div>
+
+  <p class="hero-eyebrow">Hướng dẫn cho PM & Team Lead</p>
+
+  <h1>
+    <span class="line1">Quy trình</span>
+    <span class="line2">Tiếp nhận Request</span>
+  </h1>
+
+  <p class="hero-sub">Quy trình chuẩn hóa để request hỗ trợ từ Solution Team — đơn giản, rõ ràng, minh bạch về cost và timeline.</p>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">📋</span>
+      <div class="hero-meta-text">
+        <span class="val">5</span>
+        <span class="label">Phần trong Template</span>
+      </div>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">⏱️</span>
+      <div class="hero-meta-text">
+        <span class="val">4</span>
+        <span class="label">Priority Levels</span>
+      </div>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-icon">🔄</span>
+      <div class="hero-meta-text">
+        <span class="val">7</span>
+        <span class="label">Bước Workflow</span>
+      </div>
+    </div>
+  </div>
+
+  <a href="#criteria" class="hero-cta">Bắt đầu ↓</a>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</div>
+
+<!-- CRITERIA -->
+<section id="criteria">
+  <div class="fade-in">
+    <p class="section-label">Tiêu chí</p>
+    <h2 class="section-title">Khi nào nên raise request?</h2>
+    <p class="section-desc">Hiểu rõ khi nào phù hợp hoặc không phù hợp để raise request cho Solution Team.</p>
+  </div>
+
+  <div class="fade-in" style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px">
+    <div>
+      <h3 style="font-size:18px;font-weight:700;color:var(--accent1);margin-bottom:16px">✅ Phù hợp</h3>
+      <ul class="resp-list">
+        <li>Vấn đề kỹ thuật phức tạp vượt quá năng lực team</li>
+        <li>Tư vấn architecture, tech stack</li>
+        <li>Code review chuyên sâu (security, performance-critical)</li>
+        <li>Production issue nghiêm trọng</li>
+        <li>Công nghệ mới chưa có kinh nghiệm</li>
+        <li>Security review, performance optimization</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="font-size:18px;font-weight:700;color:#ef4444;margin-bottom:16px">❌ Không phù hợp</h3>
+      <ul class="resp-list">
+        <li>Bug/issue thông thường team có thể tự xử lý</li>
+        <li>Vấn đề lặp đi lặp lại → cần training, không phải support</li>
+        <li>Yêu cầu về process, workflow* → chưa hỗ trợ (chờ giai đoạn 2)</li>
+        <li>"Outsource" công việc team → Solution Team hỗ trợ, không thay thế</li>
+      </ul>
+      <div class="note" style="margin-top:14px">
+        <span class="note-icon">ℹ️</span>
+        <span><em>*Process/workflow support sẽ được xem xét từ giai đoạn 2 (PM & Process) trở đi</em></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEMPLATE -->
+<section id="template">
+  <div class="fade-in">
+    <p class="section-label">Request Template</p>
+    <h2 class="section-title">Template gồm 5 phần</h2>
+    <p class="section-desc">Copy template này vào Microsoft Teams Group Chat "DC1 PM & Leader" và điền thông tin.</p>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px">
+    <div style="background:var(--bg-alt);padding:24px;border-radius:8px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="margin:0;font-size:15px;font-weight:700">📋 Template để copy</h3>
+        <div style="display:flex;gap:8px">
+          <button onclick="selectTemplate()" style="padding:8px 16px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">
+            👆 Select All
+          </button>
+          <button onclick="copyTemplate()" style="padding:8px 16px;background:var(--accent1);color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">
+            📋 Copy
+          </button>
+        </div>
+      </div>
+      <pre id="templateContent" style="background:var(--bg);padding:20px;border-radius:6px;font-size:13px;line-height:1.8;overflow-x:auto;margin:0;user-select:text;-webkit-user-select:text;cursor:text"><code>@Solution-Team-Lead
+
+REQUEST HỖ TRỢ TỪ SOLUTION TEAM
+
+1. THÔNG TIN CƠ BẢN
+- Người yêu cầu:
+- Dự án:
+- PM dự án:
+
+2. MÔ TẢ YÊU CẦU
+- Loại hỗ trợ: [Troubleshooting/Architecture Review/Code Review/Security/Performance/Tech Consulting]
+- Vấn đề:
+- Context:
+- Tech details:
+
+3. PRIORITY & TIMELINE
+- Priority: [Critical/High/Medium/Low]
+- Timeline cần:
+- Deadline dự án:
+
+4. KẾT QUẢ MONG ĐỢI
+- Output mong đợi:
+- Tiêu chí hoàn thành:
+
+5. BUDGET (Bỏ qua nếu chấp nhận default Yes/Yes)
+- Dự án có budget: Yes
+- Chấp nhận allocation: Yes</code></pre>
+    </div>
+
+    <div class="note" style="margin-top:20px">
+      <span class="note-icon">💡</span>
+      <span><strong>Cách copy:</strong> Click "Copy" để copy tự động, hoặc click "Select All" → Ctrl+C để copy thủ công</span>
+    </div>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;padding:24px;background:var(--bg-alt);border-radius:8px;border-left:4px solid var(--accent1)">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">📍 Kênh submit request</h3>
+    <p style="font-size:15px;line-height:1.7">
+      Post vào <strong>Microsoft Teams Group Chat "DC1 PM & Leader"</strong> và mention <strong>@Solution-Team-Lead</strong><br>
+      <span style="font-size:13px;color:var(--muted)">Với Critical request: có thể DM trực tiếp Team Lead để xử lý nhanh</span>
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COST MODEL -->
+<section id="cost">
+  <div class="fade-in">
+    <p class="section-label">Cost Model</p>
+    <h2 class="section-title">Cost Model & Allocation</h2>
+    <p class="section-desc">Minh bạch về chi phí và allocation để PM có thể ra quyết định.</p>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px">
+    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px">Nguyên tắc quan trọng</h3>
+
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="background:var(--bg-alt);border-bottom:2px solid var(--border)">
+          <th style="padding:12px;text-align:left;font-weight:700">Điều</th>
+          <th style="padding:12px;text-align:left;font-weight:700">Giải thích</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:12px;font-weight:600">Allocation chính thức</td>
+          <td style="padding:12px">Member được allocate vào dự án, update vào hệ thống resource</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:12px;font-weight:600">Chi phí = Effort</td>
+          <td style="padding:12px">Tính dựa trên estimation + actual effort</td>
+        </tr>
+        <tr>
+          <td style="padding:12px;font-weight:600">Ảnh hưởng P&L</td>
+          <td style="padding:12px">Chi phí trừ vào budget dự án, ảnh hưởng P&L</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;padding:20px;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius:8px;border:1px solid rgba(16,185,129,0.3)">
+    <h3 style="font-size:16px;font-weight:700;color:#10b981;margin-bottom:12px">🆓 Miễn phí</h3>
+    <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.8">
+      <li>Consultation < 2h</li>
+      <li>Emergency triage (đánh giá nhanh)</li>
+      <li>Tư vấn direction (không implementation)</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRIORITY -->
+<section id="priority">
+  <div class="fade-in">
+    <p class="section-label">Priority</p>
+    <h2 class="section-title">Priority Levels</h2>
+    <p class="section-desc">4 mức độ ưu tiên với Response Time và Resolution Target rõ ràng.</p>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:700px">
+      <thead>
+        <tr style="background:var(--bg-alt);border-bottom:2px solid var(--border)">
+          <th style="padding:14px;text-align:left;font-weight:700;width:120px">Priority</th>
+          <th style="padding:14px;text-align:left;font-weight:700">Mô tả</th>
+          <th style="padding:14px;text-align:left;font-weight:700;width:150px">Response Time</th>
+          <th style="padding:14px;text-align:left;font-weight:700;width:180px">Resolution Target</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px"><strong style="color:#ef4444">🔴 Critical</strong></td>
+          <td style="padding:14px">Production down, security breach, blocker nghiêm trọng</td>
+          <td style="padding:14px"><strong>1 giờ</strong></td>
+          <td style="padding:14px">Urgent (same day nếu có thể)</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px"><strong style="color:#f97316">🟠 High</strong></td>
+          <td style="padding:14px">Ảnh hưởng deadline dự án, risk cao</td>
+          <td style="padding:14px"><strong>4 giờ làm việc</strong></td>
+          <td style="padding:14px">2-3 ngày làm việc</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px"><strong style="color:#eab308">🟡 Medium</strong></td>
+          <td style="padding:14px">Cần support nhưng không urgent</td>
+          <td style="padding:14px"><strong>1 ngày làm việc</strong></td>
+          <td style="padding:14px">1-2 tuần</td>
+        </tr>
+        <tr>
+          <td style="padding:14px"><strong style="color:#10b981">🟢 Low</strong></td>
+          <td style="padding:14px">Nice to have, tư vấn, improvement</td>
+          <td style="padding:14px"><strong>2 ngày làm việc</strong></td>
+          <td style="padding:14px">Theo capacity, queue-based</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fade-in" style="margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div style="padding:16px;background:var(--bg-alt);border-radius:8px;border-left:3px solid var(--accent1)">
+      <strong style="display:block;margin-bottom:8px">Response Time</strong>
+      <span style="font-size:14px;color:var(--muted)">Thời gian Solution Team Lead phản hồi đánh giá request</span>
+    </div>
+    <div style="padding:16px;background:var(--bg-alt);border-radius:8px;border-left:3px solid var(--accent2)">
+      <strong style="display:block;margin-bottom:8px">Resolution Target</strong>
+      <span style="font-size:14px;color:var(--muted)">Thời gian dự kiến hoàn thành (có thể thay đổi tùy scope)</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="fade-in">
+    <p class="section-label">Workflow</p>
+    <h2 class="section-title">Quy trình 7 bước</h2>
+    <p class="section-desc">Workflow rõ ràng từ submit đến closure với ownership cụ thể ở từng bước.</p>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;text-align:center;padding:30px;background:var(--bg-alt);border-radius:12px">
+    <div style="font-size:32px;line-height:1.5">
+      📥 Submit → 🔍 Assess → ✅ Confirm → 👤 Assign → ⚙️ Execute → 📦 Handover → ✔️ Close
+    </div>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:800px">
+      <thead>
+        <tr style="background:var(--bg-alt);border-bottom:2px solid var(--border)">
+          <th style="padding:14px;text-align:center;font-weight:700;width:50px">#</th>
+          <th style="padding:14px;text-align:left;font-weight:700;width:120px">Bước</th>
+          <th style="padding:14px;text-align:left;font-weight:700;width:140px">Ai làm</th>
+          <th style="padding:14px;text-align:left;font-weight:700">Làm gì</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">1</td>
+          <td style="padding:14px;font-weight:600">Submit</td>
+          <td style="padding:14px">PM/Team Lead</td>
+          <td style="padding:14px">Post request lên <strong>Teams Group Chat "DC1 PM & Leader"</strong> + mention @Solution-Team-Lead. Critical: có thể DM</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">2</td>
+          <td style="padding:14px;font-weight:600">Assess</td>
+          <td style="padding:14px">Team Lead</td>
+          <td style="padding:14px">Review → Phản hồi: ✅ Accept (effort + timeline) / 🔄 Need info / ❌ Decline (lý do)</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">3</td>
+          <td style="padding:14px;font-weight:600">Confirm</td>
+          <td style="padding:14px">PM</td>
+          <td style="padding:14px">Xác nhận cost, allocation, timeline. Không OK → discuss/adjust</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">4</td>
+          <td style="padding:14px;font-weight:600">Assign</td>
+          <td style="padding:14px">Team Lead</td>
+          <td style="padding:14px">Assign member → Update allocation → Member join dự án (channels, access, kickoff)</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">5</td>
+          <td style="padding:14px;font-weight:600">Execute</td>
+          <td style="padding:14px">Member</td>
+          <td style="padding:14px">Thực hiện → Report progress → Track effort</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">6</td>
+          <td style="padding:14px;font-weight:600">Handover</td>
+          <td style="padding:14px">Member</td>
+          <td style="padding:14px">Deliver kết quả + docs → Knowledge transfer → Report actual effort</td>
+        </tr>
+        <tr>
+          <td style="padding:14px;text-align:center;font-weight:700;color:var(--accent1)">7</td>
+          <td style="padding:14px;font-weight:600">Close</td>
+          <td style="padding:14px">Team Lead</td>
+          <td style="padding:14px">Review → Log effort → Collect feedback → Finance update P&L → Lessons learned</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LOGGING -->
+<section id="logging">
+  <div class="fade-in">
+    <p class="section-label">Tracking</p>
+    <h2 class="section-title">Request Log & Tracking</h2>
+    <p class="section-desc">Solution Team maintain Request Log để transparency và continuous improvement.</p>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:30px">
+    <div>
+      <h3 style="font-size:16px;font-weight:700;color:var(--heading);margin-bottom:16px">📊 Tracking fields</h3>
+      <ul class="resp-list">
+        <li>Request ID, Date, Requestor, Project</li>
+        <li>Type of support, Priority</li>
+        <li>Detail Info</li>
+        <li>Estimated effort vs. Actual effort</li>
+        <li>Status: Open / In Progress / Completed / Declined</li>
+        <li>Outcome & Feedback</li>
+        <li>Lessons learned</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="font-size:16px;font-weight:700;color:var(--heading);margin-bottom:16px">🎯 Mục đích</h3>
+      <ul class="resp-list">
+        <li>Transparency về workload và effort</li>
+        <li>Dữ liệu để improve estimation accuracy</li>
+        <li>Report cho DC Lead về hoạt động của team</li>
+        <li>Reference cho các request tương tự trong tương lai</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fade-in" style="margin-top:40px;padding:24px;background:var(--bg-alt);border-radius:8px;text-align:center">
+    <p style="font-size:15px;margin:0">
+      <strong>Có câu hỏi về quy trình?</strong><br>
+      <span style="font-size:14px;color:var(--muted)">Liên hệ Solution Team Lead hoặc tham khảo tài liệu đầy đủ tại
+      <a href="index.html" style="color:var(--accent1);text-decoration:none;font-weight:600">Role & Responsibilities</a></span>
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Technical Solution Team</strong> — Delivery Center</p>
+  <p style="margin-top:8px">Quy trình tiếp nhận Request · Version 1.0 · Cập nhật: 13/05/2026</p>
+  <p style="margin-top:8px"><a href="index.html" style="color:var(--accent1);text-decoration:none">← Về trang chính</a></p>
+</footer>
+
+<script>
+  // ── Select template function ──
+  function selectTemplate() {
+    const pre = document.getElementById('templateContent');
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    // Visual feedback
+    const btn = event.target;
+    const originalText = btn.textContent;
+    const originalBg = btn.style.background || 'var(--bg)';
+    const originalColor = btn.style.color || 'var(--text)';
+
+    btn.textContent = '✓ Selected!';
+    btn.style.background = '#10b981';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = originalBg;
+      btn.style.color = originalColor;
+    }, 1500);
+  }
+
+  // ── Copy template function ──
+  function copyTemplate() {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    const originalBg = getComputedStyle(btn).backgroundColor;
+    const templateText = document.getElementById('templateContent').textContent;
+
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(templateText).then(() => {
+        btn.textContent = '✓ Đã copy!';
+        btn.style.background = '#10b981';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = 'var(--accent1)';
+        }, 2000);
+      }).catch(() => {
+        fallbackCopy(templateText, btn, originalText);
+      });
+    } else {
+      fallbackCopy(templateText, btn, originalText);
+    }
+  }
+
+  function fallbackCopy(text, btn, originalText) {
+    // Fallback: create temporary textarea
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      document.execCommand('copy');
+      btn.textContent = '✓ Đã copy!';
+      btn.style.background = '#10b981';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = 'var(--accent1)';
+      }, 2000);
+    } catch (err) {
+      btn.textContent = '❌ Lỗi';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  }
+
+  // ── Theme toggle ──
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { html.dataset.theme = 'light'; toggle.textContent = '☀️'; }
+
+  toggle.addEventListener('click', () => {
+    const isLight = html.dataset.theme === 'light';
+    html.dataset.theme = isLight ? '' : 'light';
+    toggle.textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('theme', isLight ? 'dark' : 'light');
+  });
+
+  // ── Active subnav link on scroll ──
+  const sections = document.querySelectorAll('section[id]');
+  const subnavLinks = document.querySelectorAll('.subnav-link');
+  const activeSpy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        subnavLinks.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.subnav-link[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+  sections.forEach(s => activeSpy.observe(s));
+
+  // ── Intersection Observer for fade-in ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

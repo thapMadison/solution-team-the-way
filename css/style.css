@@ -127,6 +127,78 @@ nav::after {
 }
 .nav-links a.active::after { width: 60%; }
 
+/* ── Sub Navigation ── */
+.subnav {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 0 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.subnav-container {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px 0;
+  scrollbar-width: thin;
+}
+
+.subnav-container::-webkit-scrollbar {
+  height: 3px;
+}
+
+.subnav-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.subnav-container::-webkit-scrollbar-thumb {
+  background: var(--accent1);
+  border-radius: 3px;
+}
+
+.subnav-link {
+  position: relative;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  padding: 6px 14px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: all .18s;
+  border: 1px solid transparent;
+}
+
+.subnav-link:hover {
+  color: var(--heading);
+  background: rgba(59,130,246,.08);
+  border-color: var(--border);
+}
+
+.subnav-link.active {
+  color: var(--accent1);
+  background: rgba(59,130,246,.1);
+  font-weight: 600;
+  border-color: rgba(59,130,246,.25);
+}
+
+/* Adjust hero and content padding for subnav */
+.hero {
+  padding-top: 160px; /* 64px nav + 40px subnav + spacing */
+}
+
+section {
+  scroll-margin-top: 120px; /* offset for fixed nav + subnav */
+}
+
 /* ── Hero ── */
 .hero {
   min-height: 100vh;

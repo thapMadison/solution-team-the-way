@@ -18,16 +18,24 @@
       <span class="nav-brand-sub">Delivery Center</span>
     </div>
   </a>
-  <ul class="nav-links">
-    <li><a href="#overview">Tổng quan</a></li>
-    <li><a href="#mission">Sứ mệnh</a></li>
-    <li><a href="#responsibilities">Trách nhiệm</a></li>
-    <li><a href="#principles">Nguyên tắc</a></li>
-    <li><a href="#roles">Vai trò</a></li>
-    <li><a href="#roadmap">Lộ trình</a></li>
+  <ul class="nav-links nav-main">
+    <li><a href="index.html" class="active">Roles & Responsibilities</a></li>
+    <li><a href="request-process.html">Request Process</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
+
+<!-- SUB NAV -->
+<div class="subnav">
+  <div class="subnav-container">
+    <a href="#overview" class="subnav-link">Tổng quan</a>
+    <a href="#mission" class="subnav-link">Sứ mệnh</a>
+    <a href="#responsibilities" class="subnav-link">Trách nhiệm</a>
+    <a href="#principles" class="subnav-link">Nguyên tắc</a>
+    <a href="#roles" class="subnav-link">Vai trò</a>
+    <a href="#roadmap" class="subnav-link">Lộ trình</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -170,15 +178,6 @@
         <li>Code review chuyên sâu khi được request.</li>
         <li>Hỗ trợ performance optimization, security review.</li>
       </ul>
-      <div class="resp-process">
-        <div class="resp-process-title">Quy trình tiếp nhận request</div>
-        <ol class="resp-process-list">
-          <li><span class="rp-num">1</span><span>Request được gửi từ PM hoặc Team Lead dự án.</span></li>
-          <li><span class="rp-num">2</span><span>Solution Team Lead đánh giá mức độ ưu tiên và phân công.</span></li>
-          <li><span class="rp-num">3</span><span>Thành viên được phân công xử lý và báo cáo kết quả.</span></li>
-          <li><span class="rp-num">4</span><span>Ghi nhận effort và kết quả vào log của team.</span></li>
-        </ol>
-      </div>
       <div class="note" style="margin-top:14px">
         <span class="note-icon">💡</span>
         <span><strong>Ranh giới:</strong> Solution Team <strong>hỗ trợ và tư vấn</strong>, không thay thế trách nhiệm của team dự án. Sau khi hỗ trợ, team dự án chịu trách nhiệm duy trì và phát triển tiếp.</span>
@@ -271,6 +270,31 @@
     <p class="section-desc">Các nguyên tắc định hướng cách Solution Team vận hành và phối hợp với toàn bộ tổ chức.</p>
   </div>
 
+  <!-- Time allocation -->
+  <div class="fade-in" style="margin-bottom:60px">
+    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Phân bổ thời gian đề xuất</h3>
+    <div class="alloc-grid">
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Công việc dự án</span>
+          <span>80%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="80" style="--bar-color:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-label">
+          <span>Các việc khác (Presale, Hỗ trợ kỹ thuật, R&D, Knowledge Sharing)</span>
+          <span>20%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" data-width="20" style="--bar-color:linear-gradient(90deg,#8b5cf6,#ec4899)"></div></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      <span class="note-icon">💡</span>
+      <span>20% thời gian cho các hoạt động khác bao gồm: Presale/Proposal, Hỗ trợ kỹ thuật on-demand, R&D/Innovation, và Knowledge Sharing/Mentoring</span>
+    </div>
+  </div>
+
   <!-- Priority -->
   <div class="fade-in" style="margin-bottom:60px">
     <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Thứ tự ưu tiên công việc</h3>
@@ -311,48 +335,6 @@
         </div>
       </li>
     </ul>
-  </div>
-
-  <!-- Time allocation -->
-  <div class="fade-in" style="margin-bottom:60px">
-    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Phân bổ thời gian đề xuất</h3>
-    <div class="alloc-grid">
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Công việc dự án</span>
-          <span>50–70%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="60" style="--bar-color:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Presale / Proposal</span>
-          <span>10–20%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="15" style="--bar-color:linear-gradient(90deg,#8b5cf6,#ec4899)"></div></div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Hỗ trợ kỹ thuật (on-demand)</span>
-          <span>10–15%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="12" style="--bar-color:linear-gradient(90deg,#06b6d4,#10b981)"></div></div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>R&D / Innovation</span>
-          <span>5–10%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="7" style="--bar-color:linear-gradient(90deg,#f59e0b,#ef4444)"></div></div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Knowledge Sharing / Mentoring</span>
-          <span>5–10%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="7" style="--bar-color:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>
-      </div>
-    </div>
   </div>
 
   <!-- Non-conflict principles -->
@@ -568,18 +550,18 @@
     localStorage.setItem('theme', isLight ? 'dark' : 'light');
   });
 
-  // ── Active nav link on scroll ──
+  // ── Active subnav link on scroll ──
   const sections = document.querySelectorAll('section[id]');
-  const navAs = document.querySelectorAll('.nav-links a');
+  const subnavLinks = document.querySelectorAll('.subnav-link');
   const activeSpy = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        navAs.forEach(a => a.classList.remove('active'));
-        const match = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        subnavLinks.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.subnav-link[href="#${e.target.id}"]`);
         if (match) match.classList.add('active');
       }
     });
-  }, { rootMargin: '-40% 0px -50% 0px' });
+  }, { rootMargin: '-20% 0px -60% 0px' });
   sections.forEach(s => activeSpy.observe(s));
 
   // ── Intersection Observer for fade-in ──
