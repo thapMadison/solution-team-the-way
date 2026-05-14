@@ -2,7 +2,7 @@
 const GITHUB_CONFIG = {
   owner: 'thapMadison',
   repo: 'solution-team-the-way',
-  token: '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', // Replace with actual Fine-grained PAT
+  token: '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', // Replace with actual Fine-grained PAT
   branch: 'main',
   apiBase: 'https://api.github.com',
 
