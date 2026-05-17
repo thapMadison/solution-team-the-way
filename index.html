@@ -21,7 +21,7 @@
   <ul class="nav-links nav-main">
     <li><a href="index.html" class="active">Roles & Responsibilities</a></li>
     <li><a href="request-process.html">Request Process</a></li>
-    <li><a href="requests.html">📋 Request Log</a></li>
+    <li><a href="requests-log.html">📋 Request Log</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
@@ -29,8 +29,8 @@
 <!-- SUB NAV -->
 <div class="subnav">
   <div class="subnav-container">
-    <a href="#overview" class="subnav-link">Tổng quan</a>
     <a href="#mission" class="subnav-link">Sứ mệnh</a>
+    <a href="#overview" class="subnav-link">Tổng quan</a>
     <a href="#responsibilities" class="subnav-link">Trách nhiệm</a>
     <a href="#principles" class="subnav-link">Nguyên tắc</a>
     <a href="#roles" class="subnav-link">Vai trò</a>
@@ -57,13 +57,6 @@
 
   <div class="hero-meta">
     <div class="hero-meta-item">
-      <span class="hero-meta-icon">👥</span>
-      <div class="hero-meta-text">
-        <span class="val">5</span>
-        <span class="label">Thành viên</span>
-      </div>
-    </div>
-    <div class="hero-meta-item">
       <span class="hero-meta-icon">🎯</span>
       <div class="hero-meta-text">
         <span class="val">6</span>
@@ -86,6 +79,21 @@
     <span>scroll</span>
   </div>
 </div>
+
+<!-- MISSION -->
+<section id="mission">
+  <div class="fade-in">
+    <p class="section-label">Sứ mệnh</p>
+    <div class="mission-wrap">
+      <img src="assets/this-is-the-way.png" alt="This is the way" class="mission-image" />
+      <p class="mission-text">
+        Nâng cao năng lực tổng thể của Delivery Center thông qua hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ, và đảm bảo chất lượng đầu ra ở mức cao nhất cho khách hàng.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- OVERVIEW -->
 <section id="overview">
@@ -124,35 +132,21 @@
 
 <div class="divider"></div>
 
-<!-- MISSION -->
-<section id="mission">
-  <div class="fade-in">
-    <p class="section-label">Sứ mệnh</p>
-    <div class="mission-wrap">
-      <img src="assets/this-is-the-way.png" alt="This is the way" class="mission-image" />
-      <p class="mission-text">
-        Nâng cao năng lực tổng thể của Delivery Center thông qua hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ, và đảm bảo chất lượng đầu ra ở mức cao nhất cho khách hàng.
-      </p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
 <!-- RESPONSIBILITIES -->
 <section id="responsibilities">
   <div class="fade-in">
     <p class="section-label">Trách nhiệm chính</p>
     <h2 class="section-title">Core Responsibilities</h2>
-    <p class="section-desc">6 lĩnh vực trách nhiệm cốt lõi định nghĩa hoạt động và giá trị mà Solution Team mang lại.</p>
+    <p class="section-desc">6 trách nhiệm cốt lõi định nghĩa hoạt động và giá trị mà Solution Team mang lại.</p>
   </div>
 
   <div class="resp-grid">
     <!-- 3.1 -->
     <div class="resp-card card-blue fade-in">
-      <div class="resp-num">3.1</div>
-      <div class="resp-icon">✅</div>
-      <div class="resp-title">Đảm bảo cam kết dự án</div>
+      <div class="resp-header">
+        <div class="resp-icon">🎯</div>
+        <div class="resp-title">Đảm bảo cam kết dự án</div>
+      </div>
       <div class="resp-desc">Khi được assign vào dự án, thành viên Solution Team có trách nhiệm <strong>hoàn thành đầy đủ công việc</strong> được giao như một thành viên chính thức của dự án. Cụ thể:</div>
       <ul class="resp-list">
         <li>Tuân thủ timeline, sprint plan và quy trình của dự án.</li>
@@ -169,9 +163,10 @@
 
     <!-- 3.2 -->
     <div class="resp-card card-violet fade-in">
-      <div class="resp-num">3.2</div>
-      <div class="resp-icon">🔧</div>
-      <div class="resp-title">Hỗ trợ kỹ thuật theo yêu cầu (On-demand Technical Support)</div>
+      <div class="resp-header">
+        <div class="resp-icon">⚡</div>
+        <div class="resp-title">Hỗ trợ kỹ thuật theo yêu cầu (On-demand Technical Support)</div>
+      </div>
       <div class="resp-desc">Cung cấp hỗ trợ kỹ thuật chuyên sâu cho các dự án và đồng nghiệp trong DC khi có request. Bao gồm:</div>
       <ul class="resp-list">
         <li>Hỗ trợ giải quyết vấn đề kỹ thuật phức tạp (troubleshooting, debugging, architecture review).</li>
@@ -187,9 +182,10 @@
 
     <!-- 3.3 -->
     <div class="resp-card card-cyan fade-in">
-      <div class="resp-num">3.3</div>
-      <div class="resp-icon">📋</div>
-      <div class="resp-title">Proposal &amp; Presale</div>
+      <div class="resp-header">
+        <div class="resp-icon">💎</div>
+        <div class="resp-title">Proposal &amp; Presale</div>
+      </div>
       <div class="resp-desc">Là <strong>lực lượng chính</strong> trong công tác làm proposal và hỗ trợ presale. Bao gồm:</div>
       <ul class="resp-list">
         <li>Phân tích yêu cầu kỹ thuật từ RFP/RFI của khách hàng.</li>
@@ -203,9 +199,10 @@
 
     <!-- 3.4 -->
     <div class="resp-card card-green fade-in">
-      <div class="resp-num">3.4</div>
-      <div class="resp-icon">🔍</div>
-      <div class="resp-title">Hỗ trợ chủ động trong Delivery Center</div>
+      <div class="resp-header">
+        <div class="resp-icon">🛡️</div>
+        <div class="resp-title">Hỗ trợ chủ động trong Delivery Center</div>
+      </div>
       <div class="resp-desc">Không chỉ đợi request, mà <strong>chủ động</strong> phát hiện và hỗ trợ khi cần:</div>
       <ul class="resp-list">
         <li>Theo dõi tình hình các dự án trong DC để phát hiện sớm rủi ro kỹ thuật.</li>
@@ -221,9 +218,10 @@
 
     <!-- 3.5 -->
     <div class="resp-card card-amber fade-in">
-      <div class="resp-num">3.5</div>
-      <div class="resp-icon">🧪</div>
-      <div class="resp-title">Nghiên cứu &amp; Đổi mới (R&amp;D / Innovation)</div>
+      <div class="resp-header">
+        <div class="resp-icon">🚀</div>
+        <div class="resp-title">Nghiên cứu &amp; Đổi mới (R&amp;D / Innovation)</div>
+      </div>
       <div class="resp-desc">Đi đầu trong việc nghiên cứu, thử nghiệm và triển khai công nghệ mới:</div>
       <ul class="resp-list">
         <li>Nghiên cứu các công nghệ, framework, tool mới phù hợp với định hướng của công ty.</li>
@@ -241,9 +239,10 @@
 
     <!-- 3.6 -->
     <div class="resp-card card-indigo fade-in">
-      <div class="resp-num">3.6</div>
-      <div class="resp-icon">📚</div>
-      <div class="resp-title">Chia sẻ kiến thức (Knowledge Sharing)</div>
+      <div class="resp-header">
+        <div class="resp-icon">🧠</div>
+        <div class="resp-title">Chia sẻ kiến thức (Knowledge Sharing)</div>
+      </div>
       <div class="resp-desc">Tổ chức và dẫn dắt các hoạt động chia sẻ kiến thức ở <strong>cấp độ DC và công ty</strong>:</div>
       <ul class="resp-list">
         <li>Tổ chức các buổi Tech Talk / Workshop định kỳ.</li>
@@ -344,7 +343,7 @@
     <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Để tránh conflict với các bộ phận khác trong công ty:</p>
     <div class="principles-grid">
       <div class="principle-card pc-blue">
-        <div class="pc-icon-wrap">🔗</div>
+        <div class="pc-icon-wrap">🤝</div>
         <div class="pc-body">
           <div class="principle-title">Không thay thế, chỉ bổ sung</div>
           <div class="principle-desc">Solution Team hỗ trợ để nâng cao năng lực, không thay thế vai trò của bất kỳ team nào.</div>
@@ -358,21 +357,21 @@
         </div>
       </div>
       <div class="principle-card pc-cyan">
-        <div class="pc-icon-wrap">📋</div>
+        <div class="pc-icon-wrap">✅</div>
         <div class="pc-body">
           <div class="principle-title">Quy trình request rõ ràng</div>
           <div class="principle-desc">Hỗ trợ chỉ được kích hoạt qua quy trình chính thức, trừ trường hợp khẩn cấp.</div>
         </div>
       </div>
       <div class="principle-card pc-amber">
-        <div class="pc-icon-wrap">📢</div>
+        <div class="pc-icon-wrap">💬</div>
         <div class="pc-body">
           <div class="principle-title">Transparent communication</div>
           <div class="principle-desc">Mọi hoạt động hỗ trợ đều được ghi nhận và thông báo cho các bên liên quan.</div>
         </div>
       </div>
       <div class="principle-card pc-green">
-        <div class="pc-icon-wrap">🤲</div>
+        <div class="pc-icon-wrap">💚</div>
         <div class="pc-body">
           <div class="principle-title">Không đánh giá</div>
           <div class="principle-desc">Solution Team không có quyền đánh giá năng lực hay hiệu suất của team khác. Vai trò là hỗ trợ và nâng đỡ.</div>
@@ -537,55 +536,6 @@
   <p style="margin-top:8px">Version 1.0 · Ban hành: 08/04/2026 · Tài liệu sẽ được review và cập nhật định kỳ mỗi quý hoặc khi có thay đổi lớn về cơ cấu tổ chức.</p>
 </footer>
 
-<script>
-  // ── Theme toggle ──
-  const toggle = document.getElementById('themeToggle');
-  const html = document.documentElement;
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') { html.dataset.theme = 'light'; toggle.textContent = '☀️'; }
-
-  toggle.addEventListener('click', () => {
-    const isLight = html.dataset.theme === 'light';
-    html.dataset.theme = isLight ? '' : 'light';
-    toggle.textContent = isLight ? '🌙' : '☀️';
-    localStorage.setItem('theme', isLight ? 'dark' : 'light');
-  });
-
-  // ── Active subnav link on scroll ──
-  const sections = document.querySelectorAll('section[id]');
-  const subnavLinks = document.querySelectorAll('.subnav-link');
-  const activeSpy = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        subnavLinks.forEach(a => a.classList.remove('active'));
-        const match = document.querySelector(`.subnav-link[href="#${e.target.id}"]`);
-        if (match) match.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-20% 0px -60% 0px' });
-  sections.forEach(s => activeSpy.observe(s));
-
-  // ── Intersection Observer for fade-in ──
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        // Animate bars inside this element
-        e.target.querySelectorAll('.bar-fill').forEach(bar => {
-          const w = bar.dataset.width;
-          bar.style.width = w + '%';
-        });
-      }
-    });
-  }, { threshold: 0.12 });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // Also trigger bars that are already visible on load
-  document.querySelectorAll('.bar-fill').forEach(bar => {
-    const w = bar.dataset.width;
-    if (bar.closest('.visible')) bar.style.width = w + '%';
-  });
-</script>
+<script src="js/common.js"></script>
 </body>
 </html>

@@ -1,6 +1,3 @@
-# Token config (contains sensitive token)
-js/github-config.js
-
 # Node modules (if any)
 node_modules/
 
@@ -15,3 +12,7 @@ Thumbs.db
 # Temporary files
 *.log
 *.tmp
+
+# Build/cache
+.cache/
+dist/

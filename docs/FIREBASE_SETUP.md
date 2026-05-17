@@ -85,7 +85,7 @@ const firebaseConfig = {
 
 ### **Bước 4: Test Local**
 
-1. Mở `requests.html` trong browser (local file hoặc live server)
+1. Mở `requests-log.html` trong browser (local file hoặc live server)
 2. Open DevTools (F12) → Console tab
 3. Kiểm tra không có lỗi Firebase init
 4. Click nút ➕ → Tạo test request
@@ -94,7 +94,7 @@ const firebaseConfig = {
 ### **Bước 5: Push lên GitHub**
 
 ```bash
-git add js/firebase-config.js requests.html FIREBASE_SETUP.md
+git add js/firebase-config.js requests-log.html FIREBASE_SETUP.md
 git commit -m "Integrate Firebase Realtime Database for request management"
 git push origin main
 ```
@@ -104,7 +104,7 @@ git push origin main
 ### **Bước 6: Test trên GitHub Pages**
 
 1. Đợi 2-3 phút để deploy
-2. Vào: https://solution-way.madlab.tech/requests.html
+2. Vào: https://solution-way.madlab.tech/requests-log.html
 3. Test tạo request mới
 4. Kiểm tra real-time sync: Mở 2 tabs, tạo request ở tab 1 → thấy ngay ở tab 2!
 
@@ -202,7 +202,7 @@ Có thể:
 
 ### **Lỗi: "Firebase not defined"**
 
-→ Check Firebase SDK được load trong `requests.html`
+→ Check Firebase SDK được load trong `requests-log.html`
 
 ### **Request không xuất hiện:**
 

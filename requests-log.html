@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request Log — Technical Solution Team</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/requests-log.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+</head>
+<body class="requests-page">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-logo"><img src="assets/the-mandalorian.png" alt="The Mandalorian" /></div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-top">Technical Solution</span>
+      <span class="nav-brand-sub">Delivery Center</span>
+    </div>
+  </a>
+  <ul class="nav-links nav-main">
+    <li><a href="index.html">Roles &amp; Responsibilities</a></li>
+    <li><a href="request-process.html">Request Process</a></li>
+    <li><a href="requests-log.html" class="active">📋 Request Log</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
+</nav>
+
+<!-- COMPACT HEADER -->
+<div class="requests-header-compact">
+  <div class="header-main">
+    <div class="header-title-group">
+      <h1 class="page-title-compact">📋 Request Management</h1>
+    </div>
+    <div class="stats-inline">
+      <div class="stat-inline">
+        <span class="stat-num" id="totalRequests">0</span>
+        <span class="stat-txt">Total</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-inline stat-highlight">
+        <span class="stat-num" id="activeRequests">0</span>
+        <span class="stat-txt">Active</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-inline stat-success">
+        <span class="stat-num" id="completedRequests">0</span>
+        <span class="stat-txt">Done</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER & SEARCH -->
+<div class="filter-toolbar">
+  <div class="filter-row">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search by title, requester...">
+    </div>
+
+    <div class="filter-compact">
+      <select id="filterStatus">
+        <option value="all">All Status</option>
+        <option value="pending">⏳ Pending</option>
+        <option value="in-progress">🔄 In Progress</option>
+        <option value="completed">✅ Completed</option>
+        <option value="cancelled">❌ Cancelled</option>
+      </select>
+    </div>
+
+    <div class="filter-compact">
+      <select id="filterType">
+        <option value="all">All Types</option>
+        <option value="technical-support">🔧 Tech Support</option>
+        <option value="proposal">📋 Proposal</option>
+        <option value="code-review">🔍 Code Review</option>
+        <option value="architecture">🏗️ Architecture</option>
+        <option value="rd">🧪 R&amp;D</option>
+        <option value="training">📚 Training</option>
+        <option value="other">📦 Other</option>
+      </select>
+    </div>
+
+    <div class="filter-compact">
+      <select id="filterPriority">
+        <option value="all">All Priority</option>
+        <option value="critical">🔴 Critical</option>
+        <option value="high">🟠 High</option>
+        <option value="medium">🟡 Medium</option>
+        <option value="low">🔵 Low</option>
+      </select>
+    </div>
+
+    <button class="btn-icon" id="refreshBtn" title="Refresh">🔄</button>
+    <button class="btn-new-request" id="btnNewRequest" title="Tạo request mới">➕ New Request</button>
+  </div>
+</div>
+
+<!-- REQUESTS TABLE -->
+<section class="table-section">
+  <div class="table-container">
+    <table id="requestsTable" class="requests-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tiêu đề</th>
+          <th>Người yêu cầu</th>
+          <th>Loại</th>
+          <th>Ưu tiên</th>
+          <th>Trạng thái</th>
+          <th>Assignee</th>
+          <th>Ngày tạo</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="requestsTableBody">
+        <tr>
+          <td colspan="9" class="loading-state">
+            <div class="loader"></div>
+            <p>Đang tải requests...</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container">
+    <div class="pagination-info">
+      Hiển thị <span id="paginationInfo">0-0 of 0</span> requests
+    </div>
+    <div class="pagination-controls">
+      <button id="prevPage" class="pagination-btn" disabled>← Previous</button>
+      <span id="pageNumbers" class="page-numbers"></span>
+      <button id="nextPage" class="pagination-btn" disabled>Next →</button>
+    </div>
+    <div class="pagination-size">
+      <label>Rows per page:</label>
+      <select id="pageSize">
+        <option value="10">10</option>
+        <option value="25" selected>25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<!-- REQUEST DETAIL MODAL -->
+<div id="requestModal" class="modal" style="display:none;">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">×</button>
+    <div id="modalBody"><!-- populated dynamically --></div>
+  </div>
+</div>
+
+<!-- NEW REQUEST FORM MODAL -->
+<div id="newRequestModal" class="modal" style="display:none;">
+  <div class="modal-overlay" data-action="close-new-request"></div>
+  <div class="modal-content modal-content--wide">
+    <button class="modal-close" data-action="close-new-request">×</button>
+
+    <div class="modal-header">
+      <h2 class="modal-title">📝 Tạo Request Mới</h2>
+      <p class="modal-subtitle">Gửi yêu cầu hỗ trợ từ PM, Team Lead, hoặc các bộ phận khác đến Solution Team.</p>
+    </div>
+
+    <form id="requestForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="requester">Người yêu cầu *</label>
+          <input type="text" id="requester" required maxlength="100" placeholder="Tên và vị trí (vd: Nguyen Van A - PM)">
+        </div>
+
+        <div class="form-group">
+          <label for="requesterEmail">Email liên hệ *</label>
+          <input type="email" id="requesterEmail" required maxlength="100" placeholder="email@example.com">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="requestType">Loại request *</label>
+          <select id="requestType" required>
+            <option value="">-- Chọn loại --</option>
+            <option value="technical-support">🔧 Technical Support</option>
+            <option value="proposal">📋 Proposal / Presale</option>
+            <option value="code-review">🔍 Code Review</option>
+            <option value="architecture">🏗️ Architecture Consultation</option>
+            <option value="rd">🧪 R&amp;D Request</option>
+            <option value="training">📚 Training / Knowledge Sharing</option>
+            <option value="other">📦 Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Mức độ ưu tiên *</label>
+          <select id="priority" required>
+            <option value="">-- Chọn mức độ --</option>
+            <option value="low">🟢 Low - Không gấp</option>
+            <option value="medium">🟡 Medium - Bình thường</option>
+            <option value="high">🟠 High - Khá gấp</option>
+            <option value="critical">🔴 Critical - Rất gấp</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Tiêu đề request *</label>
+        <input type="text" id="title" required maxlength="200" placeholder="Tóm tắt ngắn gọn request">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Mô tả chi tiết *</label>
+        <textarea id="description" required rows="6" maxlength="2000" placeholder="Mô tả chi tiết về yêu cầu, context, và mục tiêu mong muốn..."></textarea>
+        <span class="char-count">0/2000</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="deadline">Deadline (nếu có)</label>
+          <input type="date" id="deadline">
+        </div>
+
+        <div class="form-group">
+          <label for="project">Dự án liên quan</label>
+          <input type="text" id="project" maxlength="100" placeholder="Tên dự án (nếu có)">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="modal-btn" data-action="close-new-request">❌ Hủy</button>
+        <button type="submit" class="submit-btn">
+          <span class="btn-text">📤 Gửi Request</span>
+          <span class="btn-loader" style="display:none;">⏳ Đang gửi...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- NOTIFICATION TOAST -->
+<div id="notification" class="notification" style="display:none;">
+  <span class="notif-icon"></span>
+  <span class="notif-text"></span>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<!-- App scripts (order matters) -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-api.js"></script>
+<script src="js/common.js"></script>
+<script src="js/requests-app.js"></script>
+</body>
+</html>
