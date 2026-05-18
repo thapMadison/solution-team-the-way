@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quy trình tiếp nhận Request — Solution Team</title>
+  <title>Request Process — Solution Team</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/charter.css" />
+  <link rel="stylesheet" href="css/request-process.css" />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
 </head>
-<body>
+<body class="charter-page process-page">
 
 <!-- NAV -->
 <nav>
@@ -19,86 +21,142 @@
     </div>
   </a>
   <ul class="nav-links nav-main">
-    <li><a href="index.html">Roles & Responsibilities</a></li>
+    <li><a href="index.html">Roles &amp; Responsibilities</a></li>
     <li><a href="request-process.html" class="active">Request Process</a></li>
-    <li><a href="requests-log.html">📋 Request Log</a></li>
+    <li><a href="requests-log.html">Request Log</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
 
-<!-- SUB NAV -->
-<div class="subnav">
-  <div class="subnav-container">
-    <a href="#criteria" class="subnav-link">Tiêu chí</a>
-    <a href="#template" class="subnav-link">Template</a>
-    <a href="#cost" class="subnav-link">Cost Model</a>
-    <a href="#priority" class="subnav-link">Priority</a>
-    <a href="#workflow" class="subnav-link">Workflow</a>
-    <a href="#logging" class="subnav-link">Tracking</a>
+<!-- FLOATING RIGHT RAIL -->
+<nav class="ch-rail" data-section-nav aria-label="Section navigation">
+  <div class="ch-rail__inner">
+    <div class="ch-rail__track"></div>
+    <div class="ch-rail__highlight"></div>
+    <button class="ch-rail__item is-active" data-section="criteria">
+      <span><span class="ch-rail__item-no">01</span><span class="ch-rail__item-label">Criteria</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="template">
+      <span><span class="ch-rail__item-no">02</span><span class="ch-rail__item-label">Template</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="cost">
+      <span><span class="ch-rail__item-no">03</span><span class="ch-rail__item-label">Cost Model</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="priority">
+      <span><span class="ch-rail__item-no">04</span><span class="ch-rail__item-label">Priority</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="workflow">
+      <span><span class="ch-rail__item-no">05</span><span class="ch-rail__item-label">Workflow</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="tracking">
+      <span><span class="ch-rail__item-no">06</span><span class="ch-rail__item-label">Tracking</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
   </div>
-</div>
+</nav>
+
+<main class="ch-main">
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-orb orb1"></div>
-  <div class="hero-orb orb2"></div>
-  <div class="hero-orb orb3"></div>
+<section id="intro" class="ch-hero">
+  <div class="ch-hero__mesh"></div>
 
-  <div class="hero-badge">Solution Team · Request Process</div>
+  <div class="ch-chip">
+    <span class="ch-chip__dot is-live"></span>
+    <span>solution-team / request-process</span>
+    <!-- <span class="ch-chip__sep">·</span>
+    <span class="ch-chip__code">v1.0.0</span> -->
+  </div>
 
-  <p class="hero-eyebrow">Hướng dẫn cho PM &amp; Team Lead</p>
+  <p class="ch-hero__eyebrow">Hướng dẫn cho PM &amp; Team Lead</p>
 
-  <h1>
-    <span class="line1">Quy trình</span>
-    <span class="line2">Tiếp nhận Request</span>
+  <h1 class="ch-hero__title">
+    Quy trình <span class="ch-hero__title-grad">Tiếp nhận Request</span>
   </h1>
 
-  <p class="hero-sub">Quy trình chuẩn hóa để request hỗ trợ từ Solution Team — đơn giản, rõ ràng, minh bạch về cost và timeline.</p>
+  <p class="ch-hero__sub">
+    Quy trình chuẩn hóa để raise request hỗ trợ từ Solution Team — đơn giản,
+    rõ ràng, minh bạch về cost và timeline.
+  </p>
 
-  <div class="hero-meta">
-    <div class="hero-meta-item">
-      <span class="hero-meta-icon">📋</span>
-      <div class="hero-meta-text">
-        <span class="val">5</span>
-        <span class="label">Phần trong Template</span>
-      </div>
+  <div class="ch-hero__stats">
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">5</span>
+      <span class="ch-hero__stat-label">phần trong template</span>
     </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-icon">⏱️</span>
-      <div class="hero-meta-text">
-        <span class="val">4</span>
-        <span class="label">Priority Levels</span>
-      </div>
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="22" x2="4" y2="15"/>
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">4</span>
+      <span class="ch-hero__stat-label">priority levels</span>
     </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-icon">🔄</span>
-      <div class="hero-meta-text">
-        <span class="val">7</span>
-        <span class="label">Bước Workflow</span>
-      </div>
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">7</span>
+      <span class="ch-hero__stat-label">bước workflow</span>
     </div>
   </div>
 
-  <a href="#criteria" class="hero-cta">Bắt đầu ↓</a>
-
-  <div class="hero-scroll-hint">
-    <div class="scroll-line"></div>
-    <span>scroll</span>
+  <div class="ch-hero__actions">
+    <a href="#criteria" class="ch-btn ch-btn--primary">
+      Bắt đầu
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    </a>
+    <a href="#template" class="ch-btn ch-btn--ghost">Xem template</a>
   </div>
-</div>
+
+  <!-- <div class="ch-hero__kbd">
+    press <kbd class="ch-kbd">G</kbd> then <kbd class="ch-kbd">1–7</kbd> to jump
+  </div> -->
+</section>
 
 <!-- CRITERIA -->
-<section id="criteria">
-  <div class="fade-in">
-    <p class="section-label">Tiêu chí</p>
-    <h2 class="section-title">Khi nào nên raise request?</h2>
-    <p class="section-desc">Hiểu rõ khi nào phù hợp hoặc không phù hợp để raise request cho Solution Team.</p>
+<section id="criteria" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">01</span>
+      <span class="ch-chip__sep">·</span>
+      <span>CRITERIA</span>
+    </div>
+    <h2>Khi nào nên raise request?</h2>
+    <p>Hiểu rõ khi nào phù hợp hoặc không phù hợp để raise request cho Solution Team.</p>
   </div>
 
-  <div class="fade-in two-col-grid block-mt-40">
-    <div>
-      <h3 class="subsection-title subsection-title--accent">✅ Phù hợp</h3>
-      <ul class="resp-list">
+  <div class="rp-criteria-grid">
+    <article class="rp-criteria-card fade-in" style="--h: 160">
+      <div class="rp-criteria-card__stripe"></div>
+      <div class="rp-criteria-card__glow"></div>
+      <div class="rp-criteria-head">
+        <div class="rp-criteria-head__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3>Phù hợp</h3>
+      </div>
+      <ul class="rp-list">
         <li>Vấn đề kỹ thuật phức tạp vượt quá năng lực team</li>
         <li>Tư vấn architecture, tech stack</li>
         <li>Code review chuyên sâu (security, performance-critical)</li>
@@ -106,283 +164,501 @@
         <li>Công nghệ mới chưa có kinh nghiệm</li>
         <li>Security review, performance optimization</li>
       </ul>
-    </div>
+    </article>
 
-    <div>
-      <h3 class="subsection-title subsection-title--danger">❌ Không phù hợp</h3>
-      <ul class="resp-list">
+    <article class="rp-criteria-card fade-in" style="--h: 0">
+      <div class="rp-criteria-card__stripe"></div>
+      <div class="rp-criteria-card__glow"></div>
+      <div class="rp-criteria-head">
+        <div class="rp-criteria-head__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <h3>Không phù hợp</h3>
+      </div>
+      <ul class="rp-list">
         <li>Bug/issue thông thường team có thể tự xử lý</li>
         <li>Vấn đề lặp đi lặp lại → cần training, không phải support</li>
         <li>Yêu cầu về process, workflow* → chưa hỗ trợ (chờ giai đoạn 2)</li>
         <li>"Outsource" công việc team → Solution Team hỗ trợ, không thay thế</li>
       </ul>
-      <div class="note">
-        <span class="note-icon">ℹ️</span>
-        <span><em>*Process/workflow support sẽ được xem xét từ giai đoạn 2 (PM &amp; Process) trở đi</em></span>
+      <div class="rp-criteria-footer">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>*Process/workflow support sẽ được xem xét từ giai đoạn 2 (PM &amp; Process) trở đi</p>
       </div>
-    </div>
+    </article>
   </div>
 </section>
 
-<div class="divider"></div>
-
 <!-- TEMPLATE -->
-<section id="template">
-  <div class="fade-in">
-    <p class="section-label">Request Template</p>
-    <h2 class="section-title">Template gồm 5 phần</h2>
-    <p class="section-desc">Copy template này vào Microsoft Teams Group Chat "DC1 PM &amp; Leader" và điền thông tin.</p>
+<section id="template" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">02</span>
+      <span class="ch-chip__sep">·</span>
+      <span>REQUEST TEMPLATE</span>
+    </div>
+    <h2>Template gồm 5 phần</h2>
+    <p>Copy template này vào Microsoft Teams Group Chat <strong>"DC1 PM &amp; Leader"</strong> và điền thông tin.</p>
   </div>
 
-  <div class="fade-in block-mt-40">
-    <div class="template-card">
-      <div class="template-card-head">
-        <h3>📋 Template để copy</h3>
-        <div class="template-actions">
-          <button class="template-btn" data-action="select-template">👆 Select All</button>
-          <button class="template-btn template-btn--primary" data-action="copy-template">📋 Copy</button>
-        </div>
+  <div class="rp-parts">
+    <div class="rp-part fade-in" style="--h: 264">
+      <div class="rp-part__stripe"></div>
+      <div class="rp-part__num">01</div>
+      <span class="rp-part__label">Thông tin cơ bản</span>
+    </div>
+    <div class="rp-part fade-in" style="--h: 290">
+      <div class="rp-part__stripe"></div>
+      <div class="rp-part__num">02</div>
+      <span class="rp-part__label">Mô tả yêu cầu</span>
+    </div>
+    <div class="rp-part fade-in" style="--h: 320">
+      <div class="rp-part__stripe"></div>
+      <div class="rp-part__num">03</div>
+      <span class="rp-part__label">Priority &amp; Timeline</span>
+    </div>
+    <div class="rp-part fade-in" style="--h: 30">
+      <div class="rp-part__stripe"></div>
+      <div class="rp-part__num">04</div>
+      <span class="rp-part__label">Kết quả mong đợi</span>
+    </div>
+    <div class="rp-part fade-in" style="--h: 160">
+      <div class="rp-part__stripe"></div>
+      <div class="rp-part__num">05</div>
+      <span class="rp-part__label">Budget (optional)</span>
+    </div>
+  </div>
+
+  <div class="rp-template fade-in">
+    <div class="rp-template__bg"></div>
+    <div class="rp-template__head">
+      <div class="rp-template__head-l">
+        <span class="rp-template__head-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </span>
+        <span class="rp-template__head-title">Template để copy</span>
+        <span class="rp-template__head-meta">· markdown</span>
       </div>
-      <pre id="templateContent" class="template-code"><code>@Solution-Team-Lead
+      <div class="rp-template__actions">
+        <button class="rp-template__btn" data-action="select-template">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span data-btn-label>Select All</span>
+        </button>
+        <button class="rp-template__btn rp-template__btn--primary" data-action="copy-template">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span data-btn-label>Copy</span>
+        </button>
+      </div>
+    </div>
+    <pre id="templateContent" class="rp-template__code"><code>@Solution-Team-Lead
 
 REQUEST HỖ TRỢ TỪ SOLUTION TEAM
 
 1. THÔNG TIN CƠ BẢN
-- Người yêu cầu:
-- Dự án:
-- PM dự án:
+   - Người yêu cầu:
+   - Dự án:
+   - PM dự án:
 
 2. MÔ TẢ YÊU CẦU
-- Loại hỗ trợ: [Troubleshooting/Architecture Review/Code Review/Security/Performance/Tech Consulting]
-- Vấn đề:
-- Context:
-- Tech details:
+   - Loại hỗ trợ: [Troubleshooting/Architecture Review/Code Review/Security/Performance/Tech Consulting]
+   - Vấn đề:
+   - Context:
+   - Tech details:
 
 3. PRIORITY &amp; TIMELINE
-- Priority: [Critical/High/Medium/Low]
-- Timeline cần:
-- Deadline dự án:
+   - Priority: [Critical/High/Medium/Low]
+   - Timeline cần:
+   - Deadline dự án:
 
 4. KẾT QUẢ MONG ĐỢI
-- Output mong đợi:
-- Tiêu chí hoàn thành:
+   - Output mong đợi:
+   - Tiêu chí hoàn thành:
 
 5. BUDGET (Bỏ qua nếu chấp nhận default Yes/Yes)
-- Dự án có budget: Yes
-- Chấp nhận allocation: Yes</code></pre>
-    </div>
-
-    <div class="note">
-      <span class="note-icon">💡</span>
-      <span><strong>Cách copy:</strong> Click "Copy" để copy tự động, hoặc click "Select All" → Ctrl+C để copy thủ công</span>
-    </div>
+   - Dự án có budget: Yes
+   - Chấp nhận allocation: Yes</code></pre>
   </div>
 
-  <div class="fade-in info-box info-box--accent block-mt-40">
-    <h3 class="subsection-title subsection-title--sm">📍 Kênh submit request</h3>
-    <p>
-      Post vào <strong>Microsoft Teams Group Chat "DC1 PM &amp; Leader"</strong> và mention <strong>@Solution-Team-Lead</strong><br>
-      <span class="muted-sm">Với Critical request: có thể DM trực tiếp Team Lead để xử lý nhanh</span>
-    </p>
+  <div class="rp-tip fade-in">
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+    <p><b>Cách copy:</b> Click "Copy" để copy tự động, hoặc click "Select All" → Ctrl+C để copy thủ công.</p>
   </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- COST MODEL -->
-<section id="cost">
-  <div class="fade-in">
-    <p class="section-label">Cost Model</p>
-    <h2 class="section-title">Cost Model &amp; Allocation</h2>
-    <p class="section-desc">Minh bạch về chi phí và allocation để PM có thể ra quyết định.</p>
+<section id="cost" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">03</span>
+      <span class="ch-chip__sep">·</span>
+      <span>COST MODEL</span>
+    </div>
+    <h2>Cost Model &amp; Allocation</h2>
+    <p>Minh bạch về chi phí và allocation để PM có thể ra quyết định.</p>
   </div>
 
-  <div class="fade-in block-mt-40">
-    <h3 class="subsection-title">Nguyên tắc quan trọng</h3>
+  <div class="rp-cost-grid">
+    <div class="rp-cost-principles">
+      <div class="rp-cost-kicker">Nguyên tắc quan trọng</div>
 
-    <table class="proc-table">
-      <thead>
-        <tr>
-          <th>Điều</th>
-          <th>Giải thích</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="role-cell">Allocation chính thức</td>
-          <td>Member được allocate vào dự án, update vào hệ thống resource</td>
-        </tr>
-        <tr>
-          <td class="role-cell">Chi phí = Effort</td>
-          <td>Tính dựa trên estimation + actual effort</td>
-        </tr>
-        <tr>
-          <td class="role-cell">Ảnh hưởng P&amp;L</td>
-          <td>Chi phí trừ vào budget dự án, ảnh hưởng P&amp;L</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+      <article class="rp-principle fade-in" style="--h: 264">
+        <div class="rp-principle__bar"></div>
+        <div class="rp-principle__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4z"/></svg>
+        </div>
+        <div class="rp-principle__body">
+          <h3 class="rp-principle__title">Allocation chính thức</h3>
+          <p class="rp-principle__desc">Member được allocate vào dự án, update vào hệ thống resource.</p>
+        </div>
+        <span class="rp-principle__no">01</span>
+      </article>
 
-  <div class="fade-in info-box info-box--success block-mt-40">
-    <h3 class="subsection-title subsection-title--sm subsection-title--success">🆓 Miễn phí</h3>
-    <ul class="resp-list">
-      <li>Consultation &lt; 2h</li>
-      <li>Emergency triage (đánh giá nhanh)</li>
-      <li>Tư vấn direction (không implementation)</li>
-    </ul>
+      <article class="rp-principle fade-in" style="--h: 290">
+        <div class="rp-principle__bar"></div>
+        <div class="rp-principle__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="12" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/></svg>
+        </div>
+        <div class="rp-principle__body">
+          <h3 class="rp-principle__title">Chi phí = Effort</h3>
+          <p class="rp-principle__desc">Tính dựa trên estimation + actual effort.</p>
+        </div>
+        <span class="rp-principle__no">02</span>
+      </article>
+
+      <article class="rp-principle fade-in" style="--h: 320">
+        <div class="rp-principle__bar"></div>
+        <div class="rp-principle__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div class="rp-principle__body">
+          <h3 class="rp-principle__title">Ảnh hưởng P&amp;L</h3>
+          <p class="rp-principle__desc">Chi phí trừ vào budget dự án, ảnh hưởng P&amp;L.</p>
+        </div>
+        <span class="rp-principle__no">03</span>
+      </article>
+    </div>
+
+    <article class="rp-free fade-in">
+      <div class="rp-free__bg"></div>
+      <div class="rp-free__stripe"></div>
+      <div class="rp-free__head">
+        <span class="rp-free__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        </span>
+        <div>
+          <div class="rp-free__kicker">No cost</div>
+          <h3 class="rp-free__title">Miễn phí</h3>
+        </div>
+      </div>
+      <ul class="rp-list">
+        <li>Consultation &lt; 2h</li>
+        <li>Emergency triage (đánh giá nhanh)</li>
+        <li>Tư vấn direction (không implementation)</li>
+      </ul>
+    </article>
   </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- PRIORITY -->
-<section id="priority">
-  <div class="fade-in">
-    <p class="section-label">Priority</p>
-    <h2 class="section-title">Priority Levels</h2>
-    <p class="section-desc">4 mức độ ưu tiên với Response Time và Resolution Target rõ ràng.</p>
+<section id="priority" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">04</span>
+      <span class="ch-chip__sep">·</span>
+      <span>PRIORITY</span>
+    </div>
+    <h2>Priority Levels</h2>
+    <p>4 mức độ ưu tiên với Response Time và Resolution Target rõ ràng.</p>
   </div>
 
-  <div class="fade-in proc-table--scroll block-mt-40">
-    <table class="proc-table">
-      <thead>
-        <tr>
-          <th style="width:120px">Priority</th>
-          <th>Mô tả</th>
-          <th style="width:150px">Response Time</th>
-          <th style="width:180px">Resolution Target</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong class="pill-critical">🔴 Critical</strong></td>
-          <td>Production down, security breach, blocker nghiêm trọng</td>
-          <td><strong>1 giờ</strong></td>
-          <td>Urgent (same day nếu có thể)</td>
-        </tr>
-        <tr>
-          <td><strong class="pill-high">🟠 High</strong></td>
-          <td>Ảnh hưởng deadline dự án, risk cao</td>
-          <td><strong>4 giờ làm việc</strong></td>
-          <td>2-3 ngày làm việc</td>
-        </tr>
-        <tr>
-          <td><strong class="pill-medium">🟡 Medium</strong></td>
-          <td>Cần support nhưng không urgent</td>
-          <td><strong>1 ngày làm việc</strong></td>
-          <td>1-2 tuần</td>
-        </tr>
-        <tr>
-          <td><strong class="pill-low">🟢 Low</strong></td>
-          <td>Nice to have, tư vấn, improvement</td>
-          <td><strong>2 ngày làm việc</strong></td>
-          <td>Theo capacity, queue-based</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="rp-prio-head-row">
+    <span>Priority</span>
+    <span>Mô tả</span>
+    <span>Response Time</span>
+    <span>Resolution Target</span>
   </div>
 
-  <div class="fade-in two-col-grid block-mt-30">
-    <div class="metric-card" style="--metric-accent: var(--accent1)">
-      <strong class="metric-label">Response Time</strong>
-      <span class="metric-desc">Thời gian Solution Team Lead phản hồi đánh giá request</span>
+  <div class="rp-prio-list">
+    <div class="rp-prio-item fade-in" style="--h: 10">
+      <div class="rp-prio-item__bar"></div>
+      <div class="rp-prio-item__row">
+        <div class="rp-prio-item__label">
+          <div class="rp-prio-item__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+          </div>
+          <span class="rp-prio-item__name">Critical</span>
+        </div>
+        <p class="rp-prio-item__desc">Production down, security breach, blocker nghiêm trọng</p>
+        <span class="rp-prio-item__resp">1 giờ</span>
+        <span class="rp-prio-item__res">Urgent (same day nếu có thể)</span>
+      </div>
     </div>
-    <div class="metric-card" style="--metric-accent: var(--accent2)">
-      <strong class="metric-label">Resolution Target</strong>
-      <span class="metric-desc">Thời gian dự kiến hoàn thành (có thể thay đổi tùy scope)</span>
+
+    <div class="rp-prio-item fade-in" style="--h: 30">
+      <div class="rp-prio-item__bar"></div>
+      <div class="rp-prio-item__row">
+        <div class="rp-prio-item__label">
+          <div class="rp-prio-item__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <span class="rp-prio-item__name">High</span>
+        </div>
+        <p class="rp-prio-item__desc">Ảnh hưởng deadline dự án, risk cao</p>
+        <span class="rp-prio-item__resp">4 giờ làm việc</span>
+        <span class="rp-prio-item__res">2–3 ngày làm việc</span>
+      </div>
     </div>
+
+    <div class="rp-prio-item fade-in" style="--h: 60">
+      <div class="rp-prio-item__bar"></div>
+      <div class="rp-prio-item__row">
+        <div class="rp-prio-item__label">
+          <div class="rp-prio-item__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="rp-prio-item__name">Medium</span>
+        </div>
+        <p class="rp-prio-item__desc">Cần support nhưng không urgent</p>
+        <span class="rp-prio-item__resp">1 ngày làm việc</span>
+        <span class="rp-prio-item__res">1–2 tuần</span>
+      </div>
+    </div>
+
+    <div class="rp-prio-item fade-in" style="--h: 160">
+      <div class="rp-prio-item__bar"></div>
+      <div class="rp-prio-item__row">
+        <div class="rp-prio-item__label">
+          <div class="rp-prio-item__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+          </div>
+          <span class="rp-prio-item__name">Low</span>
+        </div>
+        <p class="rp-prio-item__desc">Nice to have, tư vấn, improvement</p>
+        <span class="rp-prio-item__resp">2 ngày làm việc</span>
+        <span class="rp-prio-item__res">Theo capacity, queue-based</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rp-prio-info-row">
+    <article class="rp-info-card fade-in" style="--h: 264">
+      <div class="rp-info-card__stripe"></div>
+      <div class="rp-info-card__icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="2" x2="14" y2="2"/><line x1="12" y1="14" x2="15" y2="11"/><circle cx="12" cy="14" r="8"/></svg>
+      </div>
+      <div>
+        <h4>Response Time</h4>
+        <p>Thời gian Solution Team Lead phản hồi đánh giá request.</p>
+      </div>
+    </article>
+    <article class="rp-info-card fade-in" style="--h: 320">
+      <div class="rp-info-card__stripe"></div>
+      <div class="rp-info-card__icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div>
+        <h4>Resolution Target</h4>
+        <p>Thời gian dự kiến hoàn thành (có thể thay đổi tùy scope).</p>
+      </div>
+    </article>
   </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- WORKFLOW -->
-<section id="workflow">
-  <div class="fade-in">
-    <p class="section-label">Workflow</p>
-    <h2 class="section-title">Quy trình 7 bước</h2>
-    <p class="section-desc">Workflow rõ ràng từ submit đến closure với ownership cụ thể ở từng bước.</p>
+<section id="workflow" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">05</span>
+      <span class="ch-chip__sep">·</span>
+      <span>WORKFLOW</span>
+    </div>
+    <h2>Quy trình 7 bước</h2>
+    <p>Workflow rõ ràng từ submit đến closure với ownership cụ thể ở từng bước.</p>
   </div>
 
-  <div class="fade-in info-box info-box--workflow block-mt-40">
-    <div class="workflow-arrows">
-      📥 Submit → 🔍 Assess → ✅ Confirm → 👤 Assign → ⚙️ Execute → 📦 Handover → ✔️ Close
+  <div class="rp-pipeline fade-in">
+    <div class="rp-pipeline__bg"></div>
+    <div class="rp-pipeline__inner">
+      <div class="rp-pipeline__step" style="--h: 264">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Submit</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 280">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Assess</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 300">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Confirm</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 320">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Assign</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 20">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Execute</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 60">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Handover</span>
+      </div>
+      <span class="rp-pipeline__sep">→</span>
+      <div class="rp-pipeline__step" style="--h: 160">
+        <span class="rp-pipeline__step-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        </span>
+        <span class="rp-pipeline__step-label">Close</span>
+      </div>
     </div>
   </div>
 
-  <div class="fade-in proc-table--scroll block-mt-40">
-    <table class="proc-table">
-      <thead>
-        <tr>
-          <th class="col-center" style="width:50px">#</th>
-          <th style="width:120px">Bước</th>
-          <th style="width:140px">Ai làm</th>
-          <th>Làm gì</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="step-num-cell">1</td>
-          <td class="role-cell">Submit</td>
-          <td>PM/Team Lead</td>
-          <td>Post request lên <strong>Teams Group Chat "DC1 PM &amp; Leader"</strong> + mention @Solution-Team-Lead. Critical: có thể DM</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">2</td>
-          <td class="role-cell">Assess</td>
-          <td>Team Lead</td>
-          <td>Review → Phản hồi: ✅ Accept (effort + timeline) / 🔄 Need info / ❌ Decline (lý do)</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">3</td>
-          <td class="role-cell">Confirm</td>
-          <td>PM</td>
-          <td>Xác nhận cost, allocation, timeline. Không OK → discuss/adjust</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">4</td>
-          <td class="role-cell">Assign</td>
-          <td>Team Lead</td>
-          <td>Assign member → Update allocation → Member join dự án (channels, access, kickoff)</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">5</td>
-          <td class="role-cell">Execute</td>
-          <td>Member</td>
-          <td>Thực hiện → Report progress → Track effort</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">6</td>
-          <td class="role-cell">Handover</td>
-          <td>Member</td>
-          <td>Deliver kết quả + docs → Knowledge transfer → Report actual effort</td>
-        </tr>
-        <tr>
-          <td class="step-num-cell">7</td>
-          <td class="role-cell">Close</td>
-          <td>Team Lead</td>
-          <td>Review → Log effort → Collect feedback → Finance update P&amp;L → Lessons learned</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="rp-steps-head">
+    <span>#</span>
+    <span>Bước</span>
+    <span>Ai làm</span>
+    <span>Làm gì</span>
+  </div>
+
+  <div class="rp-steps">
+    <div class="rp-step fade-in" style="--h: 264">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">01</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+          <span class="rp-step__name">Submit</span>
+        </div>
+        <span class="rp-step__who">PM/Team Lead</span>
+        <p class="rp-step__what">Post request lên Teams Group Chat "DC1 PM &amp; Leader" + mention @Solution-Team-Lead. Critical có thể DM.</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 280">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">02</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <span class="rp-step__name">Assess</span>
+        </div>
+        <span class="rp-step__who">Team Lead</span>
+        <p class="rp-step__what">Review → Phản hồi: Accept (effort + timeline) / Need info / Decline (lý do)</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 300">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">03</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg></span>
+          <span class="rp-step__name">Confirm</span>
+        </div>
+        <span class="rp-step__who">PM</span>
+        <p class="rp-step__what">Xác nhận allocation, cost, timeline. Không OK → discuss/adjust</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 320">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">04</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
+          <span class="rp-step__name">Assign</span>
+        </div>
+        <span class="rp-step__who">Team Lead</span>
+        <p class="rp-step__what">Assign member + update allocation. Member join dự án (channels, access, kickoff)</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 20">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">05</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          <span class="rp-step__name">Execute</span>
+        </div>
+        <span class="rp-step__who">Member</span>
+        <p class="rp-step__what">Thực hiện → Report progress → Track effort</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 60">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">06</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+          <span class="rp-step__name">Handover</span>
+        </div>
+        <span class="rp-step__who">Member</span>
+        <p class="rp-step__what">Deliver kết quả + docs → Knowledge transfer → Report actual effort</p>
+      </div>
+    </div>
+
+    <div class="rp-step fade-in" style="--h: 160">
+      <div class="rp-step__bar"></div>
+      <div class="rp-step__row">
+        <span class="rp-step__num">07</span>
+        <div class="rp-step__label">
+          <span class="rp-step__icon"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
+          <span class="rp-step__name">Close</span>
+        </div>
+        <span class="rp-step__who">Team Lead</span>
+        <p class="rp-step__what">Review → Log effort → Collect feedback → Finance update P&amp;L → Lessons learned</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- LOGGING -->
-<section id="logging">
-  <div class="fade-in">
-    <p class="section-label">Tracking</p>
-    <h2 class="section-title">Request Log &amp; Tracking</h2>
-    <p class="section-desc">Solution Team maintain Request Log để transparency và continuous improvement.</p>
+<!-- TRACKING -->
+<section id="tracking" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">06</span>
+      <span class="ch-chip__sep">·</span>
+      <span>TRACKING</span>
+    </div>
+    <h2>Request Log &amp; Tracking</h2>
+    <p>Solution Team maintain Request Log để transparency và continuous improvement.</p>
   </div>
 
-  <div class="fade-in two-col-grid block-mt-40">
-    <div>
-      <h3 class="subsection-title subsection-title--sm">📊 Tracking fields</h3>
-      <ul class="resp-list">
+  <div class="rp-tracking-grid">
+    <article class="rp-list-card fade-in" style="--h: 264">
+      <div class="rp-list-card__stripe"></div>
+      <div class="rp-list-card__glow"></div>
+      <div class="rp-list-card__head">
+        <div class="rp-list-card__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+        </div>
+        <h3>Tracking fields</h3>
+      </div>
+      <ul class="rp-list">
         <li>Request ID, Date, Requestor, Project</li>
         <li>Type of support, Priority</li>
         <li>Detail Info</li>
@@ -391,38 +667,52 @@ REQUEST HỖ TRỢ TỪ SOLUTION TEAM
         <li>Outcome &amp; Feedback</li>
         <li>Lessons learned</li>
       </ul>
-    </div>
+    </article>
 
-    <div>
-      <h3 class="subsection-title subsection-title--sm">🎯 Mục đích</h3>
-      <ul class="resp-list">
+    <article class="rp-list-card fade-in" style="--h: 320">
+      <div class="rp-list-card__stripe"></div>
+      <div class="rp-list-card__glow"></div>
+      <div class="rp-list-card__head">
+        <div class="rp-list-card__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3>Mục đích</h3>
+      </div>
+      <ul class="rp-list">
         <li>Transparency về workload và effort</li>
         <li>Dữ liệu để improve estimation accuracy</li>
         <li>Report cho DC Lead về hoạt động của team</li>
         <li>Reference cho các request tương tự trong tương lai</li>
       </ul>
+    </article>
+  </div>
+
+  <div class="rp-end-card fade-in">
+    <div class="rp-end-card__bg"></div>
+    <h4>Có câu hỏi về quy trình?</h4>
+    <p>
+      Liên hệ Solution Team Lead hoặc tham khảo tài liệu đầy đủ tại
+      <a href="index.html">Roles &amp; Responsibilities</a>.
+    </p>
+    <div class="rp-end-card__meta">
+      <span>v1.0</span>
+      <span>·</span>
+      <span>Cập nhật 13/05/2026</span>
     </div>
   </div>
 
-  <div class="fade-in info-box info-box--centered block-mt-40">
-    <p>
-      <strong>Có câu hỏi về quy trình?</strong><br>
-      <span class="muted-sm">
-        Liên hệ Solution Team Lead hoặc tham khảo tài liệu đầy đủ tại
-        <a href="index.html">Role &amp; Responsibilities</a>
-      </span>
-    </p>
+  <div class="ch-footer">
+    <div class="ch-footer__brand"><span>request process · v1.0.0</span></div>
+    <div class="ch-footer__meta">
+      Quy trình tiếp nhận Request · Cập nhật 13/05/2026
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <p><strong>Technical Solution Team</strong> — Delivery Center</p>
-  <p>Quy trình tiếp nhận Request · Version 1.0 · Cập nhật: 13/05/2026</p>
-  <p><a href="index.html">← Về trang chính</a></p>
-</footer>
+</main>
 
 <script src="js/common.js"></script>
+<script src="js/section-nav.js"></script>
 <script src="js/template-copy.js"></script>
 </body>
 </html>

@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Technical Solution Team — Roles & Responsibilities</title>
+  <title>Technical Solution Team — Charter v1.0</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/charter.css" />
+  <link rel="stylesheet" href="css/roles.css" />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
 </head>
-<body>
+<body class="charter-page roles-page">
 
 <!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#">
+  <a class="nav-brand" href="index.html">
     <div class="nav-logo"><img src="assets/the-mandalorian.png" alt="The Mandalorian" /></div>
     <div class="nav-brand-text">
       <span class="nav-brand-top">Technical Solution</span>
@@ -19,523 +21,1102 @@
     </div>
   </a>
   <ul class="nav-links nav-main">
-    <li><a href="index.html" class="active">Roles & Responsibilities</a></li>
+    <li><a href="index.html" class="active">Roles &amp; Responsibilities</a></li>
     <li><a href="request-process.html">Request Process</a></li>
-    <li><a href="requests-log.html">📋 Request Log</a></li>
+    <li><a href="requests-log.html">Request Log</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
 
-<!-- SUB NAV -->
-<div class="subnav">
-  <div class="subnav-container">
-    <a href="#mission" class="subnav-link">Sứ mệnh</a>
-    <a href="#overview" class="subnav-link">Tổng quan</a>
-    <a href="#responsibilities" class="subnav-link">Trách nhiệm</a>
-    <a href="#principles" class="subnav-link">Nguyên tắc</a>
-    <a href="#roles" class="subnav-link">Vai trò</a>
-    <a href="#roadmap" class="subnav-link">Lộ trình</a>
+<!-- FLOATING RIGHT RAIL -->
+<nav class="ch-rail" data-section-nav aria-label="Section navigation">
+  <div class="ch-rail__inner">
+    <div class="ch-rail__track"></div>
+    <div class="ch-rail__highlight"></div>
+    <button class="ch-rail__item is-active" data-section="mission">
+      <span><span class="ch-rail__item-no">01</span><span class="ch-rail__item-label">Mission</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="overview">
+      <span><span class="ch-rail__item-no">02</span><span class="ch-rail__item-label">Overview</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="responsibilities">
+      <span><span class="ch-rail__item-no">03</span><span class="ch-rail__item-label">Responsibilities</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="principles">
+      <span><span class="ch-rail__item-no">04</span><span class="ch-rail__item-label">Principles</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="roles">
+      <span><span class="ch-rail__item-no">05</span><span class="ch-rail__item-label">Roles</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="collaboration">
+      <span><span class="ch-rail__item-no">06</span><span class="ch-rail__item-label">Collaboration</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
+    <button class="ch-rail__item" data-section="roadmap">
+      <span><span class="ch-rail__item-no">07</span><span class="ch-rail__item-label">Roadmap</span></span>
+      <span class="ch-rail__dot"></span>
+    </button>
   </div>
-</div>
+</nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-orb orb1"></div>
-  <div class="hero-orb orb2"></div>
-  <div class="hero-orb orb3"></div>
+<main class="ch-main">
 
-  <div class="hero-badge">Delivery Center · Version 1.0 · 08/04/2026</div>
+<!-- HERO / MISSION (id="mission" to anchor section 01) -->
+<section id="mission" class="ch-hero">
+  <div class="ch-hero__mesh"></div>
 
-  <p class="hero-eyebrow">Roles &amp; Responsibilities</p>
+  <div class="ch-chip">
+    <span class="ch-chip__dot is-live"></span>
+    <span>solution-team / charter</span>
+    <!-- <span class="ch-chip__sep">·</span>
+    <span class="ch-chip__code">v1.0.0</span> -->
+  </div>
 
-  <h1>
-    <span class="line1">Technical</span>
-    <span class="line2">Solution Team</span>
+  <p class="ch-hero__eyebrow">Roles &amp; Responsibilities</p>
+
+  <h1 class="ch-hero__title">
+    Technical <span class="ch-hero__title-grad">Solution Team</span>
   </h1>
 
-  <p class="hero-sub">Đội ngũ fullstack/senior cross-functional — hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ và nâng cao năng lực toàn diện cho Delivery Center.</p>
+  <p class="ch-hero__sub">
+    Đội ngũ fullstack / senior cross-functional — hỗ trợ kỹ thuật chuyên sâu,
+    dẫn dắt đổi mới công nghệ và nâng cao năng lực toàn diện cho Delivery Center.
+  </p>
 
-  <div class="hero-meta">
-    <div class="hero-meta-item">
-      <span class="hero-meta-icon">🎯</span>
-      <div class="hero-meta-text">
-        <span class="val">6</span>
-        <span class="label">Trách nhiệm cốt lõi</span>
-      </div>
+  <div class="ch-hero__stats">
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">6</span>
+      <span class="ch-hero__stat-label">vai trò cốt lõi</span>
     </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-icon">🗺️</span>
-      <div class="hero-meta-text">
-        <span class="val">3</span>
-        <span class="label">Giai đoạn phát triển</span>
-      </div>
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">3</span>
+      <span class="ch-hero__stat-label">giai đoạn mở rộng</span>
+    </div>
+    <div class="ch-hero__stat">
+      <span class="ch-hero__stat-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v3m0 12v3M5.64 5.64l2.12 2.12m8.49 8.49 2.12 2.12M3 12h3m12 0h3M5.64 18.36l2.12-2.12m8.49-8.49 2.12-2.12"/>
+        </svg>
+      </span>
+      <span class="ch-hero__stat-val">80/20</span>
+      <span class="ch-hero__stat-label">tỉ lệ vận hành</span>
     </div>
   </div>
 
-  <a href="#mission" class="hero-cta">Khám phá ngay ↓</a>
-
-  <div class="hero-scroll-hint">
-    <div class="scroll-line"></div>
-    <span>scroll</span>
+  <div class="ch-hero__actions">
+    <a href="#overview" class="ch-btn ch-btn--primary">
+      Khám phá charter
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    </a>
+    <a href="#roadmap" class="ch-btn ch-btn--ghost">Xem lộ trình</a>
   </div>
-</div>
 
-<!-- MISSION -->
-<section id="mission">
-  <div class="fade-in">
-    <p class="section-label">Sứ mệnh</p>
-    <div class="mission-wrap">
-      <img src="assets/this-is-the-way.png" alt="This is the way" class="mission-image" />
-      <p class="mission-text">
-        Nâng cao năng lực tổng thể của Delivery Center thông qua hỗ trợ kỹ thuật chuyên sâu, dẫn dắt đổi mới công nghệ, và đảm bảo chất lượng đầu ra ở mức cao nhất cho khách hàng.
+  <!-- <div class="ch-hero__kbd">
+    press <kbd class="ch-kbd">G</kbd> then <kbd class="ch-kbd">1–7</kbd> to jump
+  </div> -->
+</section>
+
+<!-- MISSION CALLOUT (kept, restyled for charter theme) -->
+<section class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">01</span>
+      <span class="ch-chip__sep">·</span>
+      <span>MISSION</span>
+    </div>
+    <h2>Sứ mệnh</h2>
+    <p>Định hướng chung của Solution Team — kim chỉ nam cho mọi hoạt động trong Delivery Center.</p>
+  </div>
+
+  <div class="ch-mission fade-in">
+    <img src="assets/this-is-the-way.png" alt="This is the way" class="ch-mission__img" />
+    <p class="ch-mission__text">
+      Nâng cao năng lực tổng thể của Delivery Center thông qua hỗ trợ kỹ thuật chuyên sâu,
+      dẫn dắt đổi mới công nghệ, và đảm bảo chất lượng đầu ra ở mức cao nhất cho khách hàng.
+    </p>
+  </div>
+</section>
+
+<!-- OVERVIEW (bento) -->
+<section id="overview" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">02</span>
+      <span class="ch-chip__sep">·</span>
+      <span>OVERVIEW</span>
+    </div>
+    <h2>Operating Model</h2>
+    <p>Cách Solution Team vận hành — qua 6 Core Responsibilities, structured operations,
+       cross-functional collaboration, và roadmap rõ ràng. Mọi output đều đo lường được.</p>
+  </div>
+
+  <div class="ro-overview">
+
+    <!-- HERO TILE: Scope & Accountability -->
+    <article class="ro-bento ro-bento--hero fade-in" style="--h: 290">
+      <div class="ro-bento__bg"></div>
+      <div class="ro-bento__mesh"></div>
+      <div class="ro-bento__stripe"></div>
+      <div class="ro-bento__head">
+        <div class="ch-card__icon" style="--h: 290">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <span class="ch-pill" style="--h: 290">
+          <span style="width:6px;height:6px;border-radius:50%;background:oklch(0.78 0.18 290);"></span>
+          core · foundation
+        </span>
+      </div>
+      <div class="ro-bento__body">
+        <div class="ro-bento__metric">
+          <span class="ro-bento__metric-value">6</span>
+          <span class="ro-bento__metric-unit">
+            <span>core</span>
+            <span>responsibilities</span>
+          </span>
+        </div>
+        <h3 class="ro-bento__title">Scope &amp; Accountability</h3>
+        <p class="ro-bento__desc">
+          Từ delivery đến R&amp;D, proposal đến mentoring — 6 trách nhiệm cốt lõi định nghĩa hoạt động
+          và giá trị Solution Team mang lại. Mỗi responsibility đo lường được, có scope rõ ràng.
+        </p>
+        <div class="ro-bento__icon-grid">
+          <div style="animation-delay:.30s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div style="animation-delay:.36s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div style="animation-delay:.42s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div style="animation-delay:.48s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/></svg></div>
+          <div style="animation-delay:.54s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+          <div style="animation-delay:.60s"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STAT 1: 4h SLA -->
+    <article class="ro-bento ro-bento--stat ro-bento--hover fade-in" style="--h: 200">
+      <div class="ro-bento__stripe ro-bento__stripe--simple"></div>
+      <div class="ro-bento__bg ro-bento__bg--soft"></div>
+      <div class="ro-bento__head">
+        <div class="ch-card__icon ch-card__icon--sm" style="--h: 200">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 4 4 20 20 20"/><polyline points="4 16 10 10 14 14 20 6"/></svg>
+        </div>
+        <div class="ch-vis-bars" style="--h: 200">
+          <span style="height:10px;animation-delay:.20s"></span>
+          <span style="height:18px;animation-delay:.25s"></span>
+          <span style="height:14px;animation-delay:.30s"></span>
+          <span style="height:22px;animation-delay:.35s"></span>
+          <span style="height:12px;animation-delay:.40s"></span>
+          <span style="height:26px;animation-delay:.45s"></span>
+        </div>
+      </div>
+      <div>
+        <div class="ro-bento__metric">
+          <span class="ro-bento__metric-value">4h</span>
+          <span class="ro-bento__metric-unit">first response · SLA</span>
+        </div>
+        <h3 class="ro-bento__title">Structured Operations</h3>
+        <p class="ro-bento__desc">Mọi request qua kênh chính thức, ưu tiên minh bạch.</p>
+      </div>
+    </article>
+
+    <!-- STAT 2: Cross-functional -->
+    <article class="ro-bento ro-bento--stat ro-bento--hover fade-in" style="--h: 160">
+      <div class="ro-bento__stripe ro-bento__stripe--simple"></div>
+      <div class="ro-bento__bg ro-bento__bg--soft"></div>
+      <div class="ro-bento__head">
+        <div class="ch-card__icon ch-card__icon--sm" style="--h: 160">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="ch-vis-dots" style="--h: 160">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div>
+        <div class="ro-bento__metric">
+          <span class="ro-bento__metric-value">3+</span>
+          <span class="ro-bento__metric-unit">bộ phận phối hợp</span>
+        </div>
+        <h3 class="ro-bento__title">Cross-functional Bridge</h3>
+        <p class="ro-bento__desc">Kết nối PM, BD, HR và các team kỹ thuật khác.</p>
+      </div>
+    </article>
+
+    <!-- STAT 3 (horizontal): Continuous expansion -->
+    <article class="ro-bento ro-bento--horiz ro-bento--hover fade-in" style="--h: 30">
+      <div class="ro-bento__stripe ro-bento__stripe--simple"></div>
+      <div class="ro-bento__bg ro-bento__bg--soft"></div>
+      <div class="ro-bento__head" style="margin-bottom:0;align-items:flex-start;flex-direction:column;gap:16px">
+        <div class="ch-card__icon ch-card__icon--sm" style="--h: 30">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="ro-bento__metric">
+          <span class="ro-bento__metric-value">1 / 3</span>
+          <span class="ro-bento__metric-unit">phase hiện tại · roadmap</span>
+        </div>
+        <h3 class="ro-bento__title">Continuous Expansion</h3>
+        <p class="ro-bento__desc">
+          Lộ trình 3 giai đoạn — từ technical core đến cross-functional leadership.
+          Hiện đang ở giai đoạn 1, tập trung Core Responsibilities.
+        </p>
+      </div>
+      <div class="ch-vis-phases" style="--h: 30">
+        <div class="is-active"><span></span><span>phase 1</span></div>
+        <div><span></span><span>phase 2</span></div>
+        <div><span></span><span>phase 3</span></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- RESPONSIBILITIES -->
+<section id="responsibilities" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">03</span>
+      <span class="ch-chip__sep">·</span>
+      <span>CORE_RESPONSIBILITIES</span>
+    </div>
+    <h2>Core Responsibilities</h2>
+    <p>6 trách nhiệm cốt lõi định nghĩa hoạt động và giá trị Solution Team mang lại.
+       Click vào từng card để xem chi tiết.</p>
+  </div>
+
+  <div class="ro-resp-grid">
+    <button class="ro-resp ro-resp--primary fade-in" data-resp="R-01" style="--h: 264">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__mesh"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-01</span>
+          <span class="ro-resp__primary">★ primary</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Đảm bảo cam kết dự án</h3>
+      <p class="ro-resp__short">Thành viên Solution Team khi được assign vào dự án phải hoàn thành đầy đủ công việc theo cam kết với PM.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 264">#delivery</span>
+          <span class="ch-tag" style="--h: 264">#commitment</span>
+          <span class="ch-tag" style="--h: 264">#core</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <button class="ro-resp fade-in" data-resp="R-02" style="--h: 320">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-02</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Hỗ trợ kỹ thuật theo yêu cầu</h3>
+      <p class="ro-resp__short">Cung cấp hỗ trợ kỹ thuật chuyên sâu cho các dự án và đồng nghiệp trong DC khi có request.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 320">#on-demand</span>
+          <span class="ch-tag" style="--h: 320">#consulting</span>
+          <span class="ch-tag" style="--h: 320">#review</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <button class="ro-resp fade-in" data-resp="R-03" style="--h: 200">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-03</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Hỗ trợ chủ động trong Delivery Center</h3>
+      <p class="ro-resp__short">Không chỉ đợi request, mà chủ động phát hiện và hỗ trợ — theo dõi tình hình dự án, đề xuất cải tiến, hỗ trợ junior, tham gia firefighting khi cần.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 200">#proactive</span>
+          <span class="ch-tag" style="--h: 200">#firefighting</span>
+          <span class="ch-tag" style="--h: 200">#mentor</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <button class="ro-resp ro-resp--primary fade-in" data-resp="R-04" style="--h: 160">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__mesh"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1.5"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-04</span>
+          <span class="ro-resp__primary">★ primary</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Proposal &amp; Presale</h3>
+      <p class="ro-resp__short">Là lực lượng chính trong công tác làm proposal và hỗ trợ presale cho các cơ hội kinh doanh mới.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 160">#presale</span>
+          <span class="ch-tag" style="--h: 160">#proposal</span>
+          <span class="ch-tag" style="--h: 160">#estimation</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <button class="ro-resp fade-in" data-resp="R-05" style="--h: 30">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-05</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Nghiên cứu &amp; Đổi mới (R&amp;D)</h3>
+      <p class="ro-resp__short">Đi đầu trong việc nghiên cứu, thử nghiệm và triển khai công nghệ mới cho toàn DC.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 30">#r-and-d</span>
+          <span class="ch-tag" style="--h: 30">#innovation</span>
+          <span class="ch-tag" style="--h: 30">#tech-radar</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <button class="ro-resp fade-in" data-resp="R-06" style="--h: 290">
+      <div class="ro-resp__stripe"></div>
+      <div class="ro-resp__glow"></div>
+      <div class="ro-resp__head">
+        <div class="ro-resp__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+        </div>
+        <div class="ro-resp__meta">
+          <span class="ro-resp__code">R-06</span>
+        </div>
+      </div>
+      <h3 class="ro-resp__title">Chia sẻ kiến thức (Knowledge Sharing)</h3>
+      <p class="ro-resp__short">Tổ chức và dẫn dắt các hoạt động chia sẻ kiến thức ở cấp độ DC và công ty — tech talk, blog, knowledge base, mentoring.</p>
+      <div class="ro-resp__foot">
+        <div class="ro-resp__tags">
+          <span class="ch-tag" style="--h: 290">#knowledge</span>
+          <span class="ch-tag" style="--h: 290">#standards</span>
+          <span class="ch-tag" style="--h: 290">#tech-talk</span>
+        </div>
+        <span class="ro-resp__more">
+          <span class="ro-resp__more-count">xem thêm</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </button>
+  </div>
+</section>
+
+<!-- OPERATING PRINCIPLES -->
+<section id="principles" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">04</span>
+      <span class="ch-chip__sep">·</span>
+      <span>PRINCIPLES</span>
+    </div>
+    <h2>Operating Principles</h2>
+    <p>Nguyên tắc hoạt động định hình cách Solution team phân bổ thời gian, ưu tiên công việc,
+       và thiết lập ranh giới trách nhiệm.</p>
+  </div>
+
+  <div class="ro-prin">
+    <div class="ro-prin-row">
+
+      <!-- 80/20 donut -->
+      <div class="ro-prin-card fade-in">
+        <div class="ro-prin-card__stripe"></div>
+        <h3>Phân bổ thời gian đề xuất</h3>
+        <div class="ro-donut-wrap">
+          <div class="ro-donut">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="techGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="oklch(0.75 0.2 264)"/>
+                  <stop offset="100%" stop-color="oklch(0.7 0.22 320)"/>
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="oklch(0.4 0.02 290)" stroke-width="14"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="url(#techGrad)" stroke-width="14"
+                      stroke-dasharray="180.96 226.2" stroke-linecap="butt"/>
+            </svg>
+            <div class="ro-donut__label">
+              <div class="ro-donut__label-val">80/20</div>
+              <div class="ro-donut__label-unit">ratio</div>
+            </div>
+          </div>
+          <div class="ro-donut-legend">
+            <div class="ro-donut-legend__row">
+              <div class="label row-tech"><span></span>80% Công việc dự án</div>
+              <p>Project delivery — ưu tiên số 1, không được ảnh hưởng</p>
+            </div>
+            <div class="ro-donut-legend__row">
+              <div class="label row-process"><span></span>20% Các việc khác</div>
+              <p>Presale, Hỗ trợ kỹ thuật, R&amp;D, Knowledge Sharing &amp; Mentoring</p>
+            </div>
+          </div>
+        </div>
+        <div class="ro-prin-callout">
+          <b>Lưu ý:</b> 20% thời gian cho các hoạt động khác bao gồm: Presale/Proposal,
+          Hỗ trợ kỹ thuật on-demand, R&amp;D/Innovation, và Knowledge Sharing/Mentoring.
+        </div>
+      </div>
+
+      <!-- Priority list -->
+      <div class="ro-prin-card fade-in">
+        <div class="ro-prin-card__stripe ro-prin-card__stripe--warm"></div>
+        <h3>Thứ tự ưu tiên công việc</h3>
+        <div class="ro-prio-list">
+          <div class="ro-prio" style="--h: 20">
+            <div class="ro-prio-row">
+              <div class="ro-prio__icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="ro-prio__body">
+                <div class="ro-prio__head">
+                  <span class="ro-prio__level">01</span>
+                  <span class="ro-prio__title">Dự án đang assign</span>
+                </div>
+                <p class="ro-prio__desc">Ưu tiên cao nhất, không được ảnh hưởng.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ro-prio" style="--h: 30">
+            <div class="ro-prio-row">
+              <div class="ro-prio__icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="ro-prio__body">
+                <div class="ro-prio__head">
+                  <span class="ro-prio__level">02</span>
+                  <span class="ro-prio__title">Presale / Proposal</span>
+                </div>
+                <p class="ro-prio__desc">Ưu tiên cao, có deadline rõ ràng.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ro-prio" style="--h: 264">
+            <div class="ro-prio-row">
+              <div class="ro-prio__icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <div class="ro-prio__body">
+                <div class="ro-prio__head">
+                  <span class="ro-prio__level">03</span>
+                  <span class="ro-prio__title">Request hỗ trợ khẩn cấp</span>
+                </div>
+                <p class="ro-prio__desc">Production issue, blocker nghiêm trọng.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ro-prio" style="--h: 290">
+            <div class="ro-prio-row">
+              <div class="ro-prio__icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="ro-prio__body">
+                <div class="ro-prio__head">
+                  <span class="ro-prio__level">04</span>
+                  <span class="ro-prio__title">Request hỗ trợ thông thường</span>
+                </div>
+                <p class="ro-prio__desc">Theo queue, first-come-first-served hoặc theo mức độ impact.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ro-prio" style="--h: 160">
+            <div class="ro-prio-row">
+              <div class="ro-prio__icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/></svg>
+              </div>
+              <div class="ro-prio__body">
+                <div class="ro-prio__head">
+                  <span class="ro-prio__level">05</span>
+                  <span class="ro-prio__title">R&amp;D và Knowledge Sharing</span>
+                </div>
+                <p class="ro-prio__desc">Thực hiện khi không bị block bởi các mục trên.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Non-Conflict Principles -->
+    <div class="ro-prin-card fade-in">
+      <div class="ro-prin-card__stripe"></div>
+      <div class="ro-nc-head">
+        <div class="ro-nc-head__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h3>Nguyên tắc không xung đột (Non-conflict Principles)</h3>
+          <p>Để tránh conflict với các bộ phận khác trong công ty.</p>
+        </div>
+      </div>
+
+      <div class="ro-nc-grid">
+        <article class="ro-nc-pri" style="--h: 264">
+          <div class="ro-nc-pri__bar"></div>
+          <div class="ro-nc-pri__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a2 2 0 0 1 2 2v2H5v-2a2 2 0 0 1 2-2"/><path d="M9 12V6l-2 2"/><circle cx="12" cy="12" r="10"/><path d="m15 9-3 3-3-3"/></svg>
+          </div>
+          <h4 class="ro-nc-pri__title">Không thay thế, chỉ bổ sung</h4>
+          <p class="ro-nc-pri__desc">Solution Team hỗ trợ để nâng cao năng lực, không thay thế vai trò của bất kỳ team nào.</p>
+        </article>
+
+        <article class="ro-nc-pri" style="--h: 320">
+          <div class="ro-nc-pri__bar"></div>
+          <div class="ro-nc-pri__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+          </div>
+          <h4 class="ro-nc-pri__title">Tôn trọng ownership</h4>
+          <p class="ro-nc-pri__desc">Mọi quyết định cuối cùng về dự án thuộc về PM và Team Lead dự án.</p>
+        </article>
+
+        <article class="ro-nc-pri" style="--h: 200">
+          <div class="ro-nc-pri__bar"></div>
+          <div class="ro-nc-pri__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h4 class="ro-nc-pri__title">Quy trình request rõ ràng</h4>
+          <p class="ro-nc-pri__desc">Hỗ trợ chỉ được kích hoạt qua quy trình chính thức, trừ trường hợp khẩn cấp.</p>
+        </article>
+
+        <article class="ro-nc-pri" style="--h: 30">
+          <div class="ro-nc-pri__bar"></div>
+          <div class="ro-nc-pri__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h4 class="ro-nc-pri__title">Transparent communication</h4>
+          <p class="ro-nc-pri__desc">Mọi hoạt động hỗ trợ đều được ghi nhận và thông báo cho các bên liên quan.</p>
+        </article>
+
+        <article class="ro-nc-pri" style="--h: 160">
+          <div class="ro-nc-pri__bar"></div>
+          <div class="ro-nc-pri__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h4 class="ro-nc-pri__title">Không đánh giá</h4>
+          <p class="ro-nc-pri__desc">Solution Team không có quyền đánh giá năng lực hay hiệu suất của team khác. Vai trò là hỗ trợ và nâng đỡ.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES (Lead / Member) -->
+<section id="roles" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">05</span>
+      <span class="ch-chip__sep">·</span>
+      <span>ROLES</span>
+    </div>
+    <h2>Role-based Responsibilities</h2>
+    <p>Trách nhiệm cụ thể của từng vai trò trong Solution Team — phân định rõ ràng giữa định hướng chiến lược và thực thi kỹ thuật.</p>
+  </div>
+
+  <div class="ro-roles-grid">
+    <div class="ro-role fade-in" style="--h: 264; --h2: 320">
+      <div class="ro-role__stripe"></div>
+      <div class="ro-role__glow"></div>
+      <div class="ro-role__head">
+        <div class="ro-role__head-l">
+          <div class="ro-role__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+          </div>
+          <div>
+            <div class="ro-role__badge">TEAM LEAD</div>
+            <h3 class="ro-role__title">Solution Team Lead</h3>
+          </div>
+        </div>
+        <div class="ro-role__count">
+          <div class="ro-role__count-label">items</div>
+          <div class="ro-role__count-val">07</div>
+        </div>
+      </div>
+      <p class="ro-role__sub">Strategic direction &amp; team enablement</p>
+      <ol class="ro-role__list">
+        <li><span>01</span><span>Định hướng chiến lược và lộ trình phát triển của team.</span></li>
+        <li><span>02</span><span>Phân công và điều phối công việc trong team.</span></li>
+        <li><span>03</span><span>Là đầu mối tiếp nhận và đánh giá request hỗ trợ.</span></li>
+        <li><span>04</span><span>Phối hợp với PM, Team Lead các dự án và DC Lead.</span></li>
+        <li><span>05</span><span>Đảm bảo chất lượng output của team (proposal, R&amp;D, hỗ trợ kỹ thuật).</span></li>
+        <li><span>06</span><span>Báo cáo định kỳ cho DC Lead về hoạt động và kết quả của team.</span></li>
+        <li><span>07</span><span>Đề xuất kế hoạch tuyển dụng và phát triển thành viên.</span></li>
+      </ol>
+    </div>
+
+    <div class="ro-role fade-in" style="--h: 320; --h2: 30">
+      <div class="ro-role__stripe"></div>
+      <div class="ro-role__glow"></div>
+      <div class="ro-role__head">
+        <div class="ro-role__head-l">
+          <div class="ro-role__icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="ro-role__badge">MEMBER</div>
+            <h3 class="ro-role__title">Solution Engineer</h3>
+          </div>
+        </div>
+        <div class="ro-role__count">
+          <div class="ro-role__count-label">items</div>
+          <div class="ro-role__count-val">06</div>
+        </div>
+      </div>
+      <p class="ro-role__sub">Technical execution &amp; continuous learning</p>
+      <ol class="ro-role__list">
+        <li><span>01</span><span>Hoàn thành công việc dự án được assign với chất lượng cao.</span></li>
+        <li><span>02</span><span>Hỗ trợ kỹ thuật cho đồng nghiệp theo phân công từ Team Lead.</span></li>
+        <li><span>03</span><span>Tham gia làm proposal và presale khi được yêu cầu.</span></li>
+        <li><span>04</span><span>Nghiên cứu và chia sẻ kiến thức theo kế hoạch của team.</span></li>
+        <li><span>05</span><span>Chủ động nâng cao năng lực bản thân, đi đầu trong việc học hỏi cái mới.</span></li>
+        <li><span>06</span><span>Ghi nhận và chia sẻ lessons learned từ các dự án và hỗ trợ.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- COLLABORATION -->
+<section id="collaboration" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">06</span>
+      <span class="ch-chip__sep">·</span>
+      <span>COLLABORATION</span>
+    </div>
+    <h2>Collaboration Framework</h2>
+    <p>Quy trình phối hợp chính thức với các bộ phận trong tổ chức — đảm bảo thông tin minh bạch,
+       trách nhiệm rõ ràng và SLA có thể đo lường.</p>
+  </div>
+
+  <div class="ro-collab-grid">
+    <article class="ro-collab fade-in" style="--h: 264">
+      <div class="ro-collab__stripe"></div>
+      <div class="ro-collab__head">
+        <div class="ro-collab__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 12 12 22 7 12 2 2 7"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <div class="ro-collab__meta">
+          <span class="ch-pill" style="--h: 264">PROJECT</span>
+          <span class="ro-collab__sla">SLA · 4h</span>
+        </div>
+      </div>
+      <h3 class="ro-collab__title">Với PM / Team Lead dự án</h3>
+      <ol class="ro-collab__steps">
+        <li>
+          <span class="ro-collab__step-no">1</span>
+          <span class="ro-collab__step-text">PM/Team Lead gửi request hỗ trợ qua kênh chính thức (email, Slack channel, hoặc tool quản lý task).</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">2</span>
+          <span class="ro-collab__step-text">Solution Team Lead đánh giá và phản hồi trong vòng 4 giờ làm việc.</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">3</span>
+          <span class="ro-collab__step-text">Sau khi hoàn thành hỗ trợ, bàn giao kết quả và tài liệu (nếu có) cho team dự án.</span>
+        </li>
+      </ol>
+    </article>
+
+    <article class="ro-collab fade-in" style="--h: 320">
+      <div class="ro-collab__stripe"></div>
+      <div class="ro-collab__head">
+        <div class="ro-collab__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="ro-collab__meta">
+          <span class="ch-pill" style="--h: 320">PRESALE</span>
+          <span class="ro-collab__sla">Theo deadline</span>
+        </div>
+      </div>
+      <h3 class="ro-collab__title">Với BD / Sales (Presale)</h3>
+      <ol class="ro-collab__steps">
+        <li>
+          <span class="ro-collab__step-no">1</span>
+          <span class="ro-collab__step-text">BD/Sales thông báo cơ hội presale với đầy đủ thông tin cơ bản (RFP, timeline, budget range).</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">2</span>
+          <span class="ro-collab__step-text">Solution Team phân công người chịu trách nhiệm chính cho proposal.</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">3</span>
+          <span class="ro-collab__step-text">Phối hợp hoàn thành proposal theo deadline của BD/Sales.</span>
+        </li>
+      </ol>
+    </article>
+
+    <article class="ro-collab fade-in" style="--h: 30">
+      <div class="ro-collab__stripe"></div>
+      <div class="ro-collab__head">
+        <div class="ro-collab__icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="ro-collab__meta">
+          <span class="ch-pill" style="--h: 30">PEOPLE</span>
+          <span class="ro-collab__sla">On-demand</span>
+        </div>
+      </div>
+      <h3 class="ro-collab__title">Với HR / Training</h3>
+      <ol class="ro-collab__steps">
+        <li>
+          <span class="ro-collab__step-no">1</span>
+          <span class="ro-collab__step-text">Phối hợp tổ chức các chương trình đào tạo, workshop.</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">2</span>
+          <span class="ro-collab__step-text">Đề xuất lộ trình phát triển kỹ năng cho nhân sự trong DC.</span>
+        </li>
+        <li>
+          <span class="ro-collab__step-no">3</span>
+          <span class="ro-collab__step-text">Tham gia đánh giá kỹ thuật khi tuyển dụng (nếu được yêu cầu).</span>
+        </li>
+      </ol>
+    </article>
+  </div>
+
+  <div class="ro-collab-callout fade-in">
+    <div class="ro-collab-callout__icon">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    </div>
+    <div>
+      <div class="ro-collab-callout__kicker">Communication Principle</div>
+      <p class="ro-collab-callout__text">
+        Mọi request đi qua kênh chính thức để đảm bảo tracking và SLA.
+        Communication trực tiếp được khuyến khích cho discussion, nhưng commitment phải được ghi nhận trên hệ thống.
       </p>
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- OVERVIEW -->
-<section id="overview">
-  <div class="fade-in">
-    <p class="section-label">Tổng quan</p>
-    <h2 class="section-title">Tổng quan về Team</h2>
-    <div class="overview-intro">
-      <strong>Technical Solution Team</strong> là đội ngũ gồm các thành viên fullstack/senior có năng lực kỹ thuật mạnh, hoạt động như một lực lượng hỗ trợ liên dự án (cross-project) và liên phòng ban (cross-functional) trong Delivery Center.
-    </div>
-    <div class="overview-meta-row" style="grid-template-columns:1fr">
-      <div class="meta-card mc-report">
-        <div class="meta-card-label">Report line</div>
-        <div class="reportline-list">
-          <div class="reportline-item">
-            <div class="reportline-when">Khi tham gia dự án cụ thể</div>
-            <div class="reportline-to">
-              <span class="reportline-arrow">Report to</span>
-              <span class="reportline-badge badge-pm">PM dự án</span>
-            </div>
-            <div class="reportline-about">về tiến độ và deliverables</div>
-          </div>
-          <div class="reportline-item">
-            <div class="reportline-when">Về mặt tổ chức và định hướng</div>
-            <div class="reportline-to">
-              <span class="reportline-arrow">Report to</span>
-              <span class="reportline-badge badge-lead">Solution Team Lead</span>
-              <span style="font-size:12px;color:var(--muted)">&amp;</span>
-              <span class="reportline-badge badge-dc">DC Lead</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- RESPONSIBILITIES -->
-<section id="responsibilities">
-  <div class="fade-in">
-    <p class="section-label">Trách nhiệm chính</p>
-    <h2 class="section-title">Core Responsibilities</h2>
-    <p class="section-desc">6 trách nhiệm cốt lõi định nghĩa hoạt động và giá trị mà Solution Team mang lại.</p>
-  </div>
-
-  <div class="resp-grid">
-    <!-- 3.1 -->
-    <div class="resp-card card-blue fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">🎯</div>
-        <div class="resp-title">Đảm bảo cam kết dự án</div>
-      </div>
-      <div class="resp-desc">Khi được assign vào dự án, thành viên Solution Team có trách nhiệm <strong>hoàn thành đầy đủ công việc</strong> được giao như một thành viên chính thức của dự án. Cụ thể:</div>
-      <ul class="resp-list">
-        <li>Tuân thủ timeline, sprint plan và quy trình của dự án.</li>
-        <li>Đảm bảo chất lượng deliverables theo tiêu chuẩn của dự án và của team Solution.</li>
-        <li>Tham gia đầy đủ các buổi meeting của dự án (standup, sprint review, retrospective...).</li>
-        <li>Phối hợp chặt chẽ với PM và các thành viên khác trong dự án.</li>
-        <li>Chủ động escalate khi có risk hoặc blocker ảnh hưởng đến tiến độ.</li>
-      </ul>
-      <div class="note" style="margin-top:14px">
-        <span class="note-icon">⚠️</span>
-        <span><strong>Nguyên tắc:</strong> Công việc dự án được ưu tiên số 1. Các hoạt động khác của Solution Team không được ảnh hưởng đến cam kết dự án.</span>
-      </div>
-    </div>
-
-    <!-- 3.2 -->
-    <div class="resp-card card-violet fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">⚡</div>
-        <div class="resp-title">Hỗ trợ kỹ thuật theo yêu cầu (On-demand Technical Support)</div>
-      </div>
-      <div class="resp-desc">Cung cấp hỗ trợ kỹ thuật chuyên sâu cho các dự án và đồng nghiệp trong DC khi có request. Bao gồm:</div>
-      <ul class="resp-list">
-        <li>Hỗ trợ giải quyết vấn đề kỹ thuật phức tạp (troubleshooting, debugging, architecture review).</li>
-        <li>Tư vấn lựa chọn tech stack, giải pháp kỹ thuật cho dự án.</li>
-        <li>Code review chuyên sâu khi được request.</li>
-        <li>Hỗ trợ performance optimization, security review.</li>
-      </ul>
-      <div class="note" style="margin-top:14px">
-        <span class="note-icon">💡</span>
-        <span><strong>Ranh giới:</strong> Solution Team <strong>hỗ trợ và tư vấn</strong>, không thay thế trách nhiệm của team dự án. Sau khi hỗ trợ, team dự án chịu trách nhiệm duy trì và phát triển tiếp.</span>
-      </div>
-    </div>
-
-    <!-- 3.3 -->
-    <div class="resp-card card-cyan fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">💎</div>
-        <div class="resp-title">Proposal &amp; Presale</div>
-      </div>
-      <div class="resp-desc">Là <strong>lực lượng chính</strong> trong công tác làm proposal và hỗ trợ presale. Bao gồm:</div>
-      <ul class="resp-list">
-        <li>Phân tích yêu cầu kỹ thuật từ RFP/RFI của khách hàng.</li>
-        <li>Đề xuất solution architecture và tech stack phù hợp.</li>
-        <li>Ước lượng effort (estimation) cho phần kỹ thuật.</li>
-        <li>Viết phần technical proposal, bao gồm diagrams và tài liệu kỹ thuật.</li>
-        <li>Tham gia các buổi technical demo hoặc Q&amp;A với khách hàng tiềm năng khi cần.</li>
-        <li>Phối hợp với BD/Sales team để đảm bảo tính khả thi của proposal.</li>
-      </ul>
-    </div>
-
-    <!-- 3.4 -->
-    <div class="resp-card card-green fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">🛡️</div>
-        <div class="resp-title">Hỗ trợ chủ động trong Delivery Center</div>
-      </div>
-      <div class="resp-desc">Không chỉ đợi request, mà <strong>chủ động</strong> phát hiện và hỗ trợ khi cần:</div>
-      <ul class="resp-list">
-        <li>Theo dõi tình hình các dự án trong DC để phát hiện sớm rủi ro kỹ thuật.</li>
-        <li>Chủ động đề xuất cải tiến khi phát hiện vấn đề (code quality, performance, security...).</li>
-        <li>Hỗ trợ đồng nghiệp mới hoặc junior khi gặp khó khăn kỹ thuật.</li>
-        <li>Tham gia "firefighting" khi dự án gặp sự cố cần giải quyết gấp.</li>
-      </ul>
-      <div class="note" style="margin-top:14px">
-        <span class="note-icon">🤝</span>
-        <span><strong>Lưu ý:</strong> Hỗ trợ chủ động phải được thực hiện một cách <strong>khéo léo và tôn trọng</strong>. Không can thiệp vào quy trình làm việc của team khác mà không có sự đồng ý. Khi phát hiện vấn đề, thông báo qua PM/Team Lead dự án trước.</span>
-      </div>
-    </div>
-
-    <!-- 3.5 -->
-    <div class="resp-card card-amber fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">🚀</div>
-        <div class="resp-title">Nghiên cứu &amp; Đổi mới (R&amp;D / Innovation)</div>
-      </div>
-      <div class="resp-desc">Đi đầu trong việc nghiên cứu, thử nghiệm và triển khai công nghệ mới:</div>
-      <ul class="resp-list">
-        <li>Nghiên cứu các công nghệ, framework, tool mới phù hợp với định hướng của công ty.</li>
-        <li>Xây dựng PoC (Proof of Concept) để đánh giá tính khả thi.</li>
-        <li>Tạo boilerplate, template, và reusable components cho toàn DC.</li>
-        <li>Cập nhật và duy trì tech radar của công ty.</li>
-        <li>Đề xuất lộ trình áp dụng công nghệ mới vào các dự án.</li>
-        <li>Tham gia phân tích sau sự cố (post-mortem) khi dự án gặp incident, rút ra bài học và chuyển hóa thành checklist, guideline hoặc process để phòng ngừa cho toàn DC.</li>
-      </ul>
-      <div class="note" style="margin-top:14px">
-        <span class="note-icon">📊</span>
-        <span><strong>Output kỳ vọng:</strong> Mỗi quý có ít nhất 1-2 chủ đề R&amp;D được nghiên cứu và báo cáo kết quả.</span>
-      </div>
-    </div>
-
-    <!-- 3.6 -->
-    <div class="resp-card card-indigo fade-in">
-      <div class="resp-header">
-        <div class="resp-icon">🧠</div>
-        <div class="resp-title">Chia sẻ kiến thức (Knowledge Sharing)</div>
-      </div>
-      <div class="resp-desc">Tổ chức và dẫn dắt các hoạt động chia sẻ kiến thức ở <strong>cấp độ DC và công ty</strong>:</div>
-      <ul class="resp-list">
-        <li>Tổ chức các buổi Tech Talk / Workshop định kỳ.</li>
-        <li>Viết technical blog / documentation nội bộ.</li>
-        <li>Xây dựng và duy trì knowledge base (best practices, coding standards, architecture patterns).</li>
-        <li>Ban hành và định kỳ cập nhật bộ tiêu chuẩn kỹ thuật chung của DC: coding convention, architecture guidelines, branching strategy, security baseline — để các dự án có "luật chung" thống nhất để tuân theo.</li>
-        <li>Mentor cho các thành viên tiềm năng trong DC.</li>
-        <li>Phối hợp với HR/Training để tổ chức chương trình đào tạo nội bộ.</li>
-      </ul>
-      <div class="note" style="margin-top:14px">
-        <span class="note-icon">💡</span>
-        <span><strong>Phân biệt với Functional Team:</strong> Functional team sharing tập trung vào kiến thức chuyên môn của team đó. Solution Team sharing tập trung vào kiến thức <strong>cross-cutting</strong>, kiến thức mới, và best practices áp dụng chung cho toàn DC/công ty.</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- PRINCIPLES -->
-<section id="principles">
-  <div class="fade-in">
-    <p class="section-label">Nguyên tắc hoạt động</p>
-    <h2 class="section-title">Operating Principles</h2>
-    <p class="section-desc">Các nguyên tắc định hướng cách Solution Team vận hành và phối hợp với toàn bộ tổ chức.</p>
-  </div>
-
-  <!-- Time allocation -->
-  <div class="fade-in" style="margin-bottom:60px">
-    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Phân bổ thời gian đề xuất</h3>
-    <div class="alloc-grid">
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Công việc dự án</span>
-          <span>80%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="80" style="--bar-color:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-label">
-          <span>Các việc khác (Presale, Hỗ trợ kỹ thuật, R&D, Knowledge Sharing)</span>
-          <span>20%</span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" data-width="20" style="--bar-color:linear-gradient(90deg,#8b5cf6,#ec4899)"></div></div>
-      </div>
-    </div>
-    <div class="note" style="margin-top:16px">
-      <span class="note-icon">💡</span>
-      <span>20% thời gian cho các hoạt động khác bao gồm: Presale/Proposal, Hỗ trợ kỹ thuật on-demand, R&D/Innovation, và Knowledge Sharing/Mentoring</span>
-    </div>
-  </div>
-
-  <!-- Priority -->
-  <div class="fade-in" style="margin-bottom:60px">
-    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:20px;">Thứ tự ưu tiên công việc</h3>
-    <ul class="priority-list">
-      <li class="priority-item">
-        <div class="pnum p1">1</div>
-        <div class="ptext">
-          <strong>Dự án đang assign</strong>
-          <span>Ưu tiên cao nhất, không được ảnh hưởng.</span>
-        </div>
-      </li>
-      <li class="priority-item">
-        <div class="pnum p2">2</div>
-        <div class="ptext">
-          <strong>Presale / Proposal</strong>
-          <span>Ưu tiên cao, có deadline rõ ràng.</span>
-        </div>
-      </li>
-      <li class="priority-item">
-        <div class="pnum p3">3</div>
-        <div class="ptext">
-          <strong>Request hỗ trợ khẩn cấp</strong>
-          <span>Production issue, blocker nghiêm trọng.</span>
-        </div>
-      </li>
-      <li class="priority-item">
-        <div class="pnum p4">4</div>
-        <div class="ptext">
-          <strong>Request hỗ trợ thông thường</strong>
-          <span>Theo queue, first-come-first-served hoặc theo mức độ impact.</span>
-        </div>
-      </li>
-      <li class="priority-item">
-        <div class="pnum p5">5</div>
-        <div class="ptext">
-          <strong>R&amp;D và Knowledge Sharing</strong>
-          <span>Thực hiện khi không bị block bởi các mục trên.</span>
-        </div>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Non-conflict principles -->
-  <div class="fade-in">
-    <h3 style="font-size:18px;font-weight:700;color:var(--heading);margin-bottom:8px;">Nguyên tắc không xung đột (Non-conflict Principles)</h3>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Để tránh conflict với các bộ phận khác trong công ty:</p>
-    <div class="principles-grid">
-      <div class="principle-card pc-blue">
-        <div class="pc-icon-wrap">🤝</div>
-        <div class="pc-body">
-          <div class="principle-title">Không thay thế, chỉ bổ sung</div>
-          <div class="principle-desc">Solution Team hỗ trợ để nâng cao năng lực, không thay thế vai trò của bất kỳ team nào.</div>
-        </div>
-      </div>
-      <div class="principle-card pc-violet">
-        <div class="pc-icon-wrap">👑</div>
-        <div class="pc-body">
-          <div class="principle-title">Tôn trọng ownership</div>
-          <div class="principle-desc">Mọi quyết định cuối cùng về dự án thuộc về PM và Team Lead dự án.</div>
-        </div>
-      </div>
-      <div class="principle-card pc-cyan">
-        <div class="pc-icon-wrap">✅</div>
-        <div class="pc-body">
-          <div class="principle-title">Quy trình request rõ ràng</div>
-          <div class="principle-desc">Hỗ trợ chỉ được kích hoạt qua quy trình chính thức, trừ trường hợp khẩn cấp.</div>
-        </div>
-      </div>
-      <div class="principle-card pc-amber">
-        <div class="pc-icon-wrap">💬</div>
-        <div class="pc-body">
-          <div class="principle-title">Transparent communication</div>
-          <div class="principle-desc">Mọi hoạt động hỗ trợ đều được ghi nhận và thông báo cho các bên liên quan.</div>
-        </div>
-      </div>
-      <div class="principle-card pc-green">
-        <div class="pc-icon-wrap">💚</div>
-        <div class="pc-body">
-          <div class="principle-title">Không đánh giá</div>
-          <div class="principle-desc">Solution Team không có quyền đánh giá năng lực hay hiệu suất của team khác. Vai trò là hỗ trợ và nâng đỡ.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ROLES -->
-<section id="roles">
-  <div class="fade-in">
-    <p class="section-label">Vai trò</p>
-    <h2 class="section-title">Role-based Responsibilities</h2>
-    <p class="section-desc">Trách nhiệm cụ thể của từng vai trò trong Solution Team.</p>
-  </div>
-
-  <div class="roles-grid fade-in">
-    <!-- Lead -->
-    <div class="role-card" style="--role-glow:rgba(245,158,11,.08)">
-      <span class="role-badge badge-lead">Team Lead</span>
-      <div class="role-title">Solution Team Lead</div>
-      <ul class="role-list">
-        <li>Định hướng chiến lược và lộ trình phát triển của team.</li>
-        <li>Phân công và điều phối công việc trong team.</li>
-        <li>Là đầu mối tiếp nhận và đánh giá request hỗ trợ.</li>
-        <li>Phối hợp với PM, Team Lead các dự án và DC Lead.</li>
-        <li>Đảm bảo chất lượng output của team (proposal, R&amp;D, hỗ trợ kỹ thuật).</li>
-        <li>Báo cáo định kỳ cho DC Lead về hoạt động và kết quả của team.</li>
-        <li>Đề xuất kế hoạch tuyển dụng và phát triển thành viên.</li>
-      </ul>
-    </div>
-
-    <!-- Member -->
-    <div class="role-card" style="--role-glow:rgba(59,130,246,.08)">
-      <span class="role-badge badge-member">Member</span>
-      <div class="role-title">Solution Engineer (Thành viên)</div>
-      <ul class="role-list">
-        <li>Hoàn thành công việc dự án được assign với chất lượng cao.</li>
-        <li>Hỗ trợ kỹ thuật cho đồng nghiệp theo phân công từ Team Lead.</li>
-        <li>Tham gia làm proposal và presale khi được yêu cầu.</li>
-        <li>Nghiên cứu và chia sẻ kiến thức theo kế hoạch của team.</li>
-        <li>Chủ động nâng cao năng lực bản thân, đi đầu trong việc học hỏi cái mới.</li>
-        <li>Ghi nhận và chia sẻ lessons learned từ các dự án và hỗ trợ.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- COLLABORATION -->
-<section>
-  <div class="fade-in">
-    <p class="section-label">Phối hợp</p>
-    <h2 class="section-title">Collaboration Framework</h2>
-    <p class="section-desc">Quy trình phối hợp chính thức với các bộ phận trong tổ chức.</p>
-  </div>
-
-  <div class="collab-grid fade-in">
-    <div class="collab-card">
-      <div class="collab-icon">👔</div>
-      <div class="collab-title">Với PM / Team Lead dự án</div>
-      <ul class="collab-steps">
-        <li><span class="step-num">1</span><span>PM/Team Lead gửi request hỗ trợ qua kênh chính thức (email, Slack channel, hoặc tool quản lý task).</span></li>
-        <li><span class="step-num">2</span><span>Solution Team Lead đánh giá và phản hồi trong vòng <strong style="color:var(--accent1)">4 giờ làm việc</strong>.</span></li>
-        <li><span class="step-num">3</span><span>Sau khi hoàn thành hỗ trợ, bàn giao kết quả và tài liệu (nếu có) cho team dự án.</span></li>
-      </ul>
-    </div>
-
-    <div class="collab-card">
-      <div class="collab-icon">💼</div>
-      <div class="collab-title">Với BD / Sales (Presale)</div>
-      <ul class="collab-steps">
-        <li><span class="step-num">1</span><span>BD/Sales thông báo cơ hội presale với đầy đủ thông tin cơ bản (RFP, timeline, budget range).</span></li>
-        <li><span class="step-num">2</span><span>Solution Team phân công người chịu trách nhiệm chính cho proposal.</span></li>
-        <li><span class="step-num">3</span><span>Phối hợp hoàn thành proposal theo deadline của BD/Sales.</span></li>
-      </ul>
-    </div>
-
-    <div class="collab-card">
-      <div class="collab-icon">🎓</div>
-      <div class="collab-title">Với HR / Training</div>
-      <ul class="collab-steps">
-        <li><span class="step-num">1</span><span>Phối hợp tổ chức các chương trình đào tạo, workshop.</span></li>
-        <li><span class="step-num">2</span><span>Đề xuất lộ trình phát triển kỹ năng cho nhân sự trong DC.</span></li>
-        <li><span class="step-num">3</span><span>Tham gia đánh giá kỹ thuật khi tuyển dụng (nếu được yêu cầu).</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
 <!-- ROADMAP -->
-<section id="roadmap">
-  <div class="fade-in">
-    <p class="section-label">Lộ trình</p>
-    <h2 class="section-title">Expansion Roadmap</h2>
-    <p class="section-desc">Lộ trình phát triển 3 giai đoạn — từ technical excellence đến cross-functional leadership.</p>
+<section id="roadmap" class="ch-section">
+  <div class="ch-section-header fade-in">
+    <div class="ch-chip">
+      <span class="ch-chip__dot"></span>
+      <span class="ch-chip__code">07</span>
+      <span class="ch-chip__sep">·</span>
+      <span>ROADMAP</span>
+    </div>
+    <h2>Expansion Roadmap</h2>
+    <p>Lộ trình phát triển 3 giai đoạn — từ technical excellence đến cross-functional leadership.</p>
   </div>
 
-  <div class="roadmap fade-in">
-    <div class="rmap-item">
-      <div class="rmap-dot dot1">⚙️</div>
-      <div class="rmap-content">
-        <div class="rmap-phase">Giai đoạn 1 — Hiện tại</div>
-        <div class="rmap-title">Technical</div>
-        <p style="font-size:14px;color:var(--muted)">Tập trung vào Technical — hỗ trợ kỹ thuật, proposal, presale, R&amp;D.</p>
-        <div class="rmap-tags">
-          <span class="rmap-tag">Technical Support</span>
-          <span class="rmap-tag">Proposal</span>
-          <span class="rmap-tag">Presale</span>
-          <span class="rmap-tag">R&amp;D</span>
-        </div>
-      </div>
-    </div>
+  <div class="ro-roadmap">
+    <div class="ro-roadmap__rail"></div>
+    <div class="ro-roadmap__list">
 
-    <div class="rmap-item">
-      <div class="rmap-dot dot2">📐</div>
-      <div class="rmap-content">
-        <div class="rmap-phase">Giai đoạn 2 — Ngắn hạn</div>
-        <div class="rmap-title">PM &amp; Process</div>
-        <p style="font-size:14px;color:var(--muted)">Khi mở rộng sang mảng PM, team sẽ bổ sung thêm trách nhiệm:</p>
-        <ul class="resp-list" style="margin-top:8px">
-          <li>Xây dựng và chuẩn hóa quy trình quản lý dự án cho DC.</li>
-          <li>Tạo template cho project plan, risk management, status report.</li>
-          <li>Hỗ trợ PM trong việc estimation, planning và risk assessment.</li>
-          <li>Đào tạo và mentor cho PM mới.</li>
-        </ul>
-        <div class="rmap-tags" style="margin-top:12px">
-          <span class="rmap-tag">Project Management</span>
-          <span class="rmap-tag">Process Standardization</span>
-          <span class="rmap-tag">Risk Management</span>
-          <span class="rmap-tag">PM Mentoring</span>
+      <div class="ro-phase is-active fade-in" style="--h: 264; --h2: 320">
+        <div class="ro-phase__dot-wrap">
+          <div class="ro-phase__dot">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+        </div>
+        <div class="ro-phase__card">
+          <div class="ro-phase__card-stripe"></div>
+          <div class="ro-phase__top">
+            <span class="ro-phase__label">GIAI ĐOẠN 1</span>
+            <span class="ro-phase__sep">·</span>
+            <span class="ro-phase__status">HIỆN TẠI</span>
+            <div class="ro-phase__progress">
+              <div class="ro-phase__bar"><span class="ro-phase__bar-fill" style="--p: 100%"></span></div>
+              <span class="ro-phase__pct">100%</span>
+            </div>
+          </div>
+          <h3 class="ro-phase__title">Technical</h3>
+          <p class="ro-phase__desc">Tập trung vào Technical — hỗ trợ kỹ thuật, proposal, presale, R&amp;D. Củng cố nền tảng và xây dựng uy tín kỹ thuật trong tổ chức.</p>
+          <div class="ro-phase__tags">
+            <span class="ro-phase__tag">Technical Support</span>
+            <span class="ro-phase__tag">Proposal</span>
+            <span class="ro-phase__tag">Presale</span>
+            <span class="ro-phase__tag">R&amp;D</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="rmap-item">
-      <div class="rmap-dot dot3">🌐</div>
-      <div class="rmap-content">
-        <div class="rmap-phase">Giai đoạn 3 — Dài hạn</div>
-        <div class="rmap-title">Cross-functional</div>
-        <p style="font-size:14px;color:var(--muted)">Mở rộng cover các mảng khác: QA process, BA methodology, Design system, DevOps practices, v.v. Chi tiết sẽ được bổ sung khi đến giai đoạn triển khai.</p>
-        <div class="rmap-tags">
-          <span class="rmap-tag">QA Process</span>
-          <span class="rmap-tag">BA Methodology</span>
-          <span class="rmap-tag">Design System</span>
-          <span class="rmap-tag">DevOps Practices</span>
+      <div class="ro-phase fade-in" style="--h: 320; --h2: 30">
+        <div class="ro-phase__dot-wrap">
+          <div class="ro-phase__dot">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+        </div>
+        <div class="ro-phase__card">
+          <div class="ro-phase__card-stripe"></div>
+          <div class="ro-phase__top">
+            <span class="ro-phase__label">GIAI ĐOẠN 2</span>
+            <span class="ro-phase__sep">·</span>
+            <span class="ro-phase__status">NGẮN HẠN</span>
+            <div class="ro-phase__progress">
+              <div class="ro-phase__bar"><span class="ro-phase__bar-fill" style="--p: 25%"></span></div>
+              <span class="ro-phase__pct">25%</span>
+            </div>
+          </div>
+          <h3 class="ro-phase__title">PM &amp; Process</h3>
+          <p class="ro-phase__desc">Khi mở rộng sang mảng PM, team sẽ bổ sung thêm trách nhiệm về quy trình quản lý dự án, template hóa và mentoring cho PM mới.</p>
+          <ul class="ro-phase__bullets">
+            <li>Xây dựng và chuẩn hóa quy trình quản lý dự án cho DC.</li>
+            <li>Tạo template cho project plan, risk management, status report.</li>
+            <li>Hỗ trợ PM trong việc estimation, planning và risk assessment.</li>
+            <li>Đào tạo và mentor cho PM mới.</li>
+          </ul>
+          <div class="ro-phase__tags">
+            <span class="ro-phase__tag">Project Management</span>
+            <span class="ro-phase__tag">Process Standardization</span>
+            <span class="ro-phase__tag">Risk Management</span>
+            <span class="ro-phase__tag">PM Mentoring</span>
+          </div>
         </div>
       </div>
+
+      <div class="ro-phase fade-in" style="--h: 30; --h2: 150">
+        <div class="ro-phase__dot-wrap">
+          <div class="ro-phase__dot">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+        </div>
+        <div class="ro-phase__card">
+          <div class="ro-phase__card-stripe"></div>
+          <div class="ro-phase__top">
+            <span class="ro-phase__label">GIAI ĐOẠN 3</span>
+            <span class="ro-phase__sep">·</span>
+            <span class="ro-phase__status">DÀI HẠN</span>
+            <div class="ro-phase__progress">
+              <div class="ro-phase__bar"><span class="ro-phase__bar-fill" style="--p: 0%"></span></div>
+              <span class="ro-phase__pct">0%</span>
+            </div>
+          </div>
+          <h3 class="ro-phase__title">Cross-functional</h3>
+          <p class="ro-phase__desc">Mở rộng cover các mảng khác: QA process, BA methodology, Design system, DevOps practices. Chi tiết sẽ được bổ sung khi đến giai đoạn triển khai.</p>
+          <div class="ro-phase__tags">
+            <span class="ro-phase__tag">QA Process</span>
+            <span class="ro-phase__tag">BA Methodology</span>
+            <span class="ro-phase__tag">Design System</span>
+            <span class="ro-phase__tag">DevOps Practices</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ch-footer">
+    <div class="ch-footer__brand"><span>end of charter · v1.0.0</span></div>
+    <div class="ch-footer__meta">
+      Ban hành 08/04/2026 · Tài liệu sẽ được review và cập nhật định kỳ mỗi quý hoặc khi có thay đổi lớn về cơ cấu tổ chức.
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <p><strong>Technical Solution Team</strong> — Delivery Center</p>
-  <p style="margin-top:8px">Version 1.0 · Ban hành: 08/04/2026 · Tài liệu sẽ được review và cập nhật định kỳ mỗi quý hoặc khi có thay đổi lớn về cơ cấu tổ chức.</p>
-</footer>
+</main>
+
+<!-- RESPONSIBILITY MODAL -->
+<dialog class="ch-modal" id="respModal">
+  <div class="ch-modal__stripe"></div>
+  <div class="ch-modal__head">
+    <div class="ch-modal__head-icon" data-modal-icon></div>
+    <div class="ch-modal__head-body">
+      <div class="ch-modal__head-meta">
+        <span data-modal-code></span>
+        <span class="ch-pill" data-modal-primary hidden>primary</span>
+      </div>
+      <h3 data-modal-title></h3>
+    </div>
+    <button class="ch-modal__close" type="button" data-modal-close aria-label="Đóng">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="ch-modal__body">
+    <p class="ch-modal__lead" data-modal-lead></p>
+    <div>
+      <div class="ch-modal__section-title">Trách nhiệm cụ thể</div>
+      <ul class="ch-modal__bullets" data-modal-bullets></ul>
+    </div>
+    <div class="ch-modal__warn" data-modal-warn hidden>
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div data-modal-warn-text></div>
+    </div>
+    <div class="ch-modal__tags" data-modal-tags></div>
+  </div>
+</dialog>
+
+<!-- RESPONSIBILITY DATA -->
+<script id="respData" type="application/json">
+{
+  "R-01": {
+    "code": "R-01",
+    "title": "Đảm bảo cam kết dự án",
+    "short": "Khi được assign vào dự án, thành viên Solution Team có trách nhiệm hoàn thành đầy đủ công việc được giao như một thành viên chính thức của dự án.",
+    "icon": "shield-check",
+    "weight": "primary",
+    "hue": "264",
+    "bullets": [
+      "Tuân thủ timeline, sprint plan và quy trình của dự án.",
+      "Đảm bảo chất lượng deliverables theo tiêu chuẩn của dự án và của team Solution.",
+      "Tham gia đầy đủ các buổi meeting của dự án (standup, sprint review, retrospective...).",
+      "Phối hợp chặt chẽ với PM và các thành viên khác trong dự án.",
+      "Chủ động escalate khi có risk hoặc blocker ảnh hưởng đến tiến độ."
+    ],
+    "warning": "Công việc dự án được ưu tiên số 1. Các hoạt động khác của Solution Team không được ảnh hưởng đến cam kết dự án.",
+    "tags": ["delivery", "commitment", "core"]
+  },
+  "R-02": {
+    "code": "R-02",
+    "title": "Hỗ trợ kỹ thuật theo yêu cầu",
+    "short": "Cung cấp hỗ trợ kỹ thuật chuyên sâu cho các dự án và đồng nghiệp trong DC khi có request.",
+    "icon": "zap",
+    "weight": "secondary",
+    "hue": "320",
+    "bullets": [
+      "Hỗ trợ giải quyết vấn đề kỹ thuật phức tạp (troubleshooting, debugging, architecture review).",
+      "Tư vấn lựa chọn tech stack, giải pháp kỹ thuật cho dự án.",
+      "Code review chuyên sâu khi được request.",
+      "Hỗ trợ performance optimization, security review."
+    ],
+    "warning": "Solution Team hỗ trợ và tư vấn, không thay thế trách nhiệm của team dự án. Sau khi hỗ trợ, team dự án chịu trách nhiệm duy trì và phát triển tiếp.",
+    "tags": ["on-demand", "consulting", "review"]
+  },
+  "R-03": {
+    "code": "R-03",
+    "title": "Hỗ trợ chủ động trong Delivery Center",
+    "short": "Không chỉ đợi request, mà chủ động phát hiện và hỗ trợ khi cần — theo dõi tình hình dự án trong DC để phát hiện sớm rủi ro kỹ thuật.",
+    "icon": "shield-check",
+    "weight": "primary",
+    "hue": "160",
+    "bullets": [
+      "Theo dõi tình hình các dự án trong DC để phát hiện sớm rủi ro kỹ thuật.",
+      "Chủ động đề xuất cải tiến khi phát hiện vấn đề (code quality, performance, security...).",
+      "Hỗ trợ đồng nghiệp mới hoặc junior khi gặp khó khăn kỹ thuật.",
+      "Tham gia \"firefighting\" khi dự án gặp sự cố cần giải quyết gấp."
+    ],
+    "warning": "Hỗ trợ chủ động phải được thực hiện một cách khéo léo và tôn trọng. Không can thiệp vào quy trình làm việc của team khác mà không có sự đồng ý. Khi phát hiện vấn đề, thông báo qua PM/Team Lead dự án trước.",
+    "tags": ["proactive", "firefighting", "mentor"]
+  },
+  "R-04": {
+    "code": "R-04",
+    "title": "Proposal & Presale",
+    "short": "Là lực lượng chính trong công tác làm proposal và hỗ trợ presale cho các cơ hội kinh doanh mới.",
+    "icon": "file-text",
+    "weight": "secondary",
+    "hue": "200",
+    "bullets": [
+      "Phân tích yêu cầu kỹ thuật từ RFP/RFI của khách hàng.",
+      "Đề xuất solution architecture và tech stack phù hợp.",
+      "Ước lượng effort (estimation) cho phần kỹ thuật.",
+      "Viết phần technical proposal, bao gồm diagrams và tài liệu kỹ thuật.",
+      "Tham gia các buổi technical demo hoặc Q&A với khách hàng tiềm năng khi cần.",
+      "Phối hợp với BD/Sales team để đảm bảo tính khả thi của proposal."
+    ],
+    "tags": ["presale", "proposal", "estimation"]
+  },
+  "R-05": {
+    "code": "R-05",
+    "title": "Nghiên cứu & Đổi mới (R&D / Innovation)",
+    "short": "Đi đầu trong việc nghiên cứu, thử nghiệm và triển khai công nghệ mới cho toàn DC.",
+    "icon": "microscope",
+    "weight": "secondary",
+    "hue": "30",
+    "bullets": [
+      "Nghiên cứu các công nghệ, framework, tool mới phù hợp với định hướng của công ty.",
+      "Xây dựng PoC (Proof of Concept) để đánh giá tính khả thi.",
+      "Tạo boilerplate, template, và reusable components cho toàn DC.",
+      "Cập nhật và duy trì tech radar của công ty.",
+      "Đề xuất lộ trình áp dụng công nghệ mới vào các dự án.",
+      "Tham gia phân tích sau sự cố (post-mortem) khi dự án gặp incident, rút ra bài học và chuyển hóa thành checklist, guideline hoặc process để phòng ngừa cho toàn DC."
+    ],
+    "warning": "Output kỳ vọng: Mỗi quý có ít nhất 1-2 chủ đề R&D được nghiên cứu và báo cáo kết quả.",
+    "tags": ["r-and-d", "innovation", "tech-radar"]
+  },
+  "R-06": {
+    "code": "R-06",
+    "title": "Chia sẻ kiến thức (Knowledge Sharing)",
+    "short": "Tổ chức và dẫn dắt các hoạt động chia sẻ kiến thức ở cấp độ DC và công ty — tech talk, blog, knowledge base, mentoring.",
+    "icon": "graduation-cap",
+    "weight": "secondary",
+    "hue": "290",
+    "bullets": [
+      "Tổ chức các buổi Tech Talk / Workshop định kỳ.",
+      "Viết technical blog / documentation nội bộ.",
+      "Xây dựng và duy trì knowledge base (best practices, coding standards, architecture patterns).",
+      "Ban hành và định kỳ cập nhật bộ tiêu chuẩn kỹ thuật chung của DC: coding convention, architecture guidelines, branching strategy, security baseline — để các dự án có \"luật chung\" thống nhất để tuân theo.",
+      "Mentor cho các thành viên tiềm năng trong DC.",
+      "Phối hợp với HR/Training để tổ chức chương trình đào tạo nội bộ."
+    ],
+    "warning": "Phân biệt với Functional Team: Functional team sharing tập trung vào kiến thức chuyên môn của team đó. Solution Team sharing tập trung vào kiến thức cross-cutting, kiến thức mới, và best practices áp dụng chung cho toàn DC/công ty.",
+    "tags": ["knowledge", "standards", "tech-talk"]
+  }
+}
+</script>
 
 <script src="js/common.js"></script>
+<script src="js/section-nav.js"></script>
+<script src="js/roles.js"></script>
 </body>
 </html>

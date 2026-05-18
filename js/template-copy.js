@@ -1,20 +1,24 @@
 /**
  * Template copy/select widget used on request-process.html.
- * Wires up two buttons by data-action attributes — no inline onclick needed.
+ * Wires up two buttons by data-action attributes.
+ *
+ * If the button has a child `[data-btn-label]`, only that label is flashed
+ * (preserves leading SVG icon). Otherwise the whole button text is flashed.
  */
 (function () {
   'use strict';
 
   const RESET_MS = 1500;
 
-  function flash(btn, text, bg) {
-    const original     = btn.textContent;
-    const originalBg   = btn.style.background;
-    btn.textContent    = text;
-    btn.style.background = bg;
+  function flash(btn, text, color) {
+    const label = btn.querySelector('[data-btn-label]') || btn;
+    const original = label.textContent;
+    const originalColor = btn.style.color;
+    label.textContent = text;
+    if (color) btn.style.color = color;
     setTimeout(() => {
-      btn.textContent      = original;
-      btn.style.background = originalBg;
+      label.textContent = original;
+      btn.style.color = originalColor;
     }, RESET_MS);
   }
 
@@ -28,7 +32,7 @@
     selection.removeAllRanges();
     selection.addRange(range);
 
-    flash(btn, '✓ Selected!', '#10b981');
+    flash(btn, 'Selected!');
   }
 
   async function copyTemplate(btn) {
@@ -42,9 +46,9 @@
       } else {
         fallbackCopy(text);
       }
-      flash(btn, '✓ Đã copy!', '#10b981');
+      flash(btn, 'Đã copy');
     } catch (err) {
-      flash(btn, '❌ Lỗi', '#ef4444');
+      flash(btn, 'Lỗi');
     }
   }
 

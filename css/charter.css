@@ -1,0 +1,1030 @@
+/* ============================================================
+   Charter theme — shared by Roles (index.html) and
+   Request Process (request-process.html).
+
+   Ported from the React/Tailwind design in
+   `Redesign request log page/src/app/components/{roles,request-process}`.
+   Loaded AFTER css/style.css. Pages must add `body.charter-page`.
+   ============================================================ */
+
+/* ── Local tokens ────────────────────────────────────────────── */
+.charter-page {
+  --ch-bg:           var(--bg);
+  --ch-card:         var(--surface);
+  --ch-card-2:       var(--surface2);
+  --ch-fg:           var(--heading);
+  --ch-fg-soft:      var(--text);
+  --ch-muted:        var(--muted);
+  --ch-border:       rgba(148, 163, 184, 0.18);
+  --ch-border-soft:  rgba(148, 163, 184, 0.10);
+  --ch-accent:       rgba(148, 163, 184, 0.16);
+
+  --ch-r-sm:  8px;
+  --ch-r-md:  12px;
+  --ch-r-lg:  16px;
+  --ch-r-xl:  20px;
+  --ch-r-2xl: 24px;
+
+  /* Brand gradient stops (used in titles, CTAs, rails) */
+  --ch-grad-1: oklch(0.75 0.2 264);
+  --ch-grad-2: oklch(0.7 0.22 320);
+  --ch-grad-3: oklch(0.78 0.18 30);
+}
+
+[data-theme="light"] .charter-page {
+  --ch-border:      rgba(15, 23, 42, 0.12);
+  --ch-border-soft: rgba(15, 23, 42, 0.07);
+  --ch-accent:      rgba(15, 23, 42, 0.05);
+}
+
+/* ── Page reset / layout ─────────────────────────────────────── */
+body.charter-page {
+  background: var(--ch-bg);
+  color: var(--ch-fg-soft);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'tnum' 1, 'cv11' 1;
+  line-height: 1.6;
+}
+
+body.charter-page .divider { display: none; }
+
+/* Re-assert [hidden]: charter CSS uses explicit flex/grid `display`
+   declarations that override the UA default for [hidden]. */
+body.charter-page [hidden] { display: none !important; }
+
+/* Each section wraps content in a centered column with breathing
+   room top + bottom for vertical rhythm between sections. */
+.ch-section {
+  position: relative;
+  padding: 112px 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  border-top: 1px solid var(--ch-border-soft);
+}
+.ch-section:first-of-type { border-top: none; padding-top: 96px; }
+@media (max-width: 900px) { .ch-section { padding: 72px 24px; } }
+@media (max-width: 700px) { .ch-section { padding: 56px 20px; } }
+
+/* Main content offset for the floating right rail.
+   At narrow widescreens (1100–1439) we reserve only the right side
+   for the rail. At wider widescreens (≥1440) we mirror the reservation
+   on the left so content stays optically centered in the viewport. */
+@media (min-width: 1100px) {
+  body.charter-page main.ch-main { padding-right: 240px; }
+}
+@media (min-width: 1440px) {
+  body.charter-page main.ch-main { padding-left: 240px; }
+}
+
+/* ── Section header (chip + title + desc) ────────────────────── */
+.ch-section-header { display: flex; flex-direction: column; gap: 12px; }
+.ch-section-header.is-center { text-align: center; align-items: center; }
+
+.ch-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid var(--ch-border);
+  border-radius: 999px;
+  background: linear-gradient(120deg,
+    oklch(0.75 0.2 264 / 0.08),
+    oklch(0.7 0.22 320 / 0.08));
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ch-muted);
+  backdrop-filter: blur(8px);
+  width: max-content;
+}
+.ch-chip__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: linear-gradient(120deg, var(--ch-grad-1), var(--ch-grad-2));
+  box-shadow: 0 0 8px oklch(0.7 0.22 290 / 0.6);
+}
+.ch-chip__dot.is-live {
+  background: #10b981;
+  animation: chPulse 1.6s ease-in-out infinite;
+}
+@keyframes chPulse { 50% { opacity: .35; } }
+.ch-chip__code {
+  background-clip: text; -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(120deg,
+    oklch(0.85 0.12 264),
+    oklch(0.85 0.12 320));
+}
+.ch-chip__sep { color: rgba(148,163,184,.4); }
+
+.ch-section-header h2 {
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ch-fg);
+  line-height: 1.15;
+  margin: 4px 0 0;
+}
+.ch-section-header p {
+  color: var(--ch-muted);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 640px;
+  margin: 0;
+}
+.ch-section-header.is-center p { margin-left: auto; margin-right: auto; }
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.ch-hero {
+  position: relative;
+  padding: 96px 24px 88px;
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 28px;
+}
+.ch-hero::before,
+.ch-hero::after {
+  content: ''; position: absolute; pointer-events: none;
+  border-radius: 50%; filter: blur(80px);
+  animation: chOrb 12s ease-in-out infinite alternate;
+}
+.ch-hero::before {
+  top: -140px; left: -140px; width: 520px; height: 520px;
+  background: radial-gradient(circle, oklch(0.6 0.22 264) 0%, transparent 70%);
+  opacity: .55;
+}
+.ch-hero::after {
+  top: 60px; right: -80px; width: 480px; height: 480px;
+  background: radial-gradient(circle, oklch(0.65 0.2 320) 0%, transparent 70%);
+  opacity: .45;
+  animation-duration: 14s;
+}
+@keyframes chOrb {
+  0% { transform: scale(1); opacity: var(--ch-orb-min, .4); }
+  100% { transform: scale(1.15); opacity: var(--ch-orb-max, .7); }
+}
+.ch-hero__mesh {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.03;
+  color: var(--ch-fg);
+}
+
+.ch-hero > * { position: relative; z-index: 1; }
+
+.ch-hero__eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--ch-muted);
+  font-weight: 500;
+}
+
+.ch-hero__title {
+  font-size: clamp(40px, 7vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  max-width: 920px;
+  margin: 0;
+}
+.ch-hero__title-grad {
+  background-clip: text; -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(120deg,
+    oklch(0.75 0.2 264) 0%,
+    oklch(0.7 0.22 320) 60%,
+    oklch(0.78 0.18 30) 100%);
+}
+
+.ch-hero__sub {
+  color: var(--ch-muted);
+  font-size: clamp(15px, 1.8vw, 17px);
+  line-height: 1.65;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.ch-hero__stats {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin-top: 4px;
+}
+.ch-hero__stat {
+  display: inline-flex; align-items: center; gap: 12px;
+  height: 44px; padding: 0 16px 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--ch-border);
+  background: oklch(0.25 0.04 280 / 0.18);
+  backdrop-filter: blur(8px);
+}
+[data-theme="light"] .ch-hero__stat { background: rgba(255,255,255,.6); }
+.ch-hero__stat-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center;
+  background: var(--ch-accent);
+  color: var(--ch-fg);
+}
+.ch-hero__stat-icon svg { width: 14px; height: 14px; }
+.ch-hero__stat-val { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--ch-fg); }
+.ch-hero__stat-label { font-size: 12px; color: var(--ch-muted); }
+
+.ch-hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
+.ch-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 20px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .18s, color .18s, transform .15s, border-color .18s;
+  font-family: inherit;
+}
+.ch-btn--primary {
+  color: var(--ch-bg);
+  background-image: linear-gradient(120deg, oklch(0.75 0.2 264), oklch(0.7 0.22 320));
+  box-shadow: 0 8px 24px oklch(0.7 0.22 290 / 0.25);
+}
+.ch-btn--primary:hover { transform: translateY(-1px); box-shadow: 0 14px 32px oklch(0.7 0.22 290 / 0.4); }
+.ch-btn--ghost {
+  color: var(--ch-muted);
+  border-color: var(--ch-border);
+  background: transparent;
+}
+.ch-btn--ghost:hover { color: var(--ch-fg); background: var(--ch-accent); }
+.ch-btn svg { width: 14px; height: 14px; transition: transform .2s; }
+.ch-btn--primary:hover svg { transform: translateY(2px); }
+
+.ch-hero__kbd {
+  margin-top: 12px;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  color: var(--ch-muted);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ch-kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--ch-border);
+  border-radius: 4px;
+  background: var(--ch-card);
+  color: var(--ch-fg);
+  font-family: inherit;
+  font-size: 11px;
+}
+
+/* ── Floating side rail (md+) ────────────────────────────────── */
+/* Reset properties that the global `nav { … }` rule in style.css
+   would otherwise cascade into this <nav class="ch-rail">. */
+.ch-rail {
+  position: fixed;
+  right: 24px;
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  border: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  display: none;
+  --rail-row-h: 40px;
+  --rail-pad: 12px;
+}
+.ch-rail::after { content: none; display: none; }
+@media (min-width: 1100px) { .ch-rail { display: block; } }
+
+.ch-rail__inner {
+  position: relative;
+  display: flex; flex-direction: column;
+  /* Explicit width: without it, child `width:100%` references the viewport
+     (the fixed-positioned ancestor's containing block) and the panel
+     blows out to full screen width. */
+  width: 200px;
+  padding: var(--rail-pad) 16px;
+  border-radius: 18px;
+  /* border: 1px solid rgba(148, 163, 184, 0.08);
+  background:
+    linear-gradient(180deg,
+      oklch(0.22 0.03 280 / 0.55),
+      oklch(0.18 0.02 280 / 0.4));
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 28px rgba(0, 0, 0, 0.18); */
+}
+/* [data-theme="light"] .ch-rail__inner {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(15, 23, 42, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 8px 28px rgba(15, 23, 42, 0.06);
+} */
+
+/* Vertical line behind dots. The dot center sits at
+   `padding-right (16) + dot-half-width (6)` = 22px from the inner's right
+   edge — the track must match that for the line to pass through every dot. */
+.ch-rail__track {
+  position: absolute;
+  right: 22px;
+  top: calc(var(--rail-pad) + var(--rail-row-h) / 2);
+  bottom: calc(var(--rail-pad) + var(--rail-row-h) / 2);
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(148, 163, 184, 0.25) 12%,
+    rgba(148, 163, 184, 0.25) 88%,
+    transparent);
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ch-rail__track::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 0;
+  height: var(--rail-progress, 0%);
+  background: linear-gradient(to bottom,
+    oklch(0.78 0.18 264),
+    oklch(0.75 0.2 320),
+    oklch(0.78 0.18 30));
+  transition: height .5s ease-out;
+}
+
+/* sliding active highlight */
+.ch-rail__highlight {
+  position: absolute;
+  left: 6px; right: 36px;
+  height: calc(var(--rail-row-h) - 4px);
+  top: calc(var(--rail-pad) + 2px + var(--rail-active, 0) * var(--rail-row-h));
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: top .5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+[data-theme="light"] .ch-rail__highlight {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.04);
+}
+
+.ch-rail__item {
+  position: relative;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  height: var(--rail-row-h);
+  padding: 0 0 0 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ch-muted);
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  transition: color .25s;
+}
+.ch-rail__item-no {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(148,163,184,.5);
+  font-variant-numeric: tabular-nums;
+  margin-right: 8px;
+}
+.ch-rail__item-label {
+  font-size: 14px;
+  white-space: nowrap;
+}
+.ch-rail__item:hover { color: var(--ch-fg); }
+.ch-rail__item.is-active { color: var(--ch-fg); }
+.ch-rail__item.is-active .ch-rail__item-no { color: rgba(248,250,252,.6); }
+
+.ch-rail__dot {
+  position: relative;
+  width: 12px; height: 12px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.ch-rail__dot::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(148,163,184,.3);
+  transition: all .4s;
+}
+.ch-rail__item:hover .ch-rail__dot::after { background: rgba(148,163,184,.8); }
+.ch-rail__item.is-past .ch-rail__dot::after { width: 8px; height: 8px; background: rgba(248,250,252,.6); }
+.ch-rail__item.is-active .ch-rail__dot::after {
+  width: 10px; height: 10px;
+  background: linear-gradient(135deg,
+    oklch(0.78 0.18 264),
+    oklch(0.75 0.2 320),
+    oklch(0.78 0.18 30));
+}
+.ch-rail__item.is-active .ch-rail__dot::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,
+    oklch(0.78 0.18 264),
+    oklch(0.75 0.2 320),
+    oklch(0.78 0.18 30));
+  border-radius: 50%;
+  filter: blur(6px);
+  opacity: .7;
+}
+
+/* ── Hue helper (any element can set --h via inline style) ───── */
+[data-hue] { --h: attr(data-hue); }
+
+/* ── Generic surface card (with optional top accent stripe) ──── */
+.ch-card {
+  position: relative;
+  background: var(--ch-card);
+  border: 1px solid var(--ch-border);
+  border-radius: var(--ch-r-xl);
+  overflow: hidden;
+  transition: transform .2s, border-color .25s;
+}
+.ch-card--hover:hover { transform: translateY(-2px); border-color: rgba(248,250,252,.25); }
+.ch-card__stripe {
+  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background-image: linear-gradient(90deg,
+    transparent,
+    oklch(0.75 0.2 var(--h, 264)),
+    transparent);
+}
+.ch-card__stripe--solid {
+  background-image: linear-gradient(135deg,
+    oklch(0.75 0.2 var(--h, 264)),
+    oklch(0.7 0.22 calc(var(--h, 264) + 40)));
+}
+.ch-card__glow {
+  position: absolute; top: -96px; right: -96px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, oklch(0.7 0.22 var(--h, 264) / 0.2) 0%, transparent 70%);
+  filter: blur(60px); pointer-events: none; opacity: .6;
+  transition: opacity .5s;
+}
+.ch-card--hover:hover .ch-card__glow { opacity: 1; }
+
+.ch-card__icon {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: var(--ch-r-md);
+  border: 1px solid oklch(0.7 0.22 var(--h, 264) / 0.35);
+  background: linear-gradient(135deg,
+    oklch(0.7 0.22 var(--h, 264) / 0.25),
+    oklch(0.7 0.22 var(--h, 264) / 0.08));
+  color: oklch(0.92 0.13 var(--h, 264));
+  flex-shrink: 0;
+}
+.ch-card__icon--sm { width: 36px; height: 36px; border-radius: 10px; }
+.ch-card__icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+.ch-card__icon--sm svg { width: 14px; height: 14px; }
+
+.ch-code-chip {
+  display: inline-block;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: oklch(0.88 0.12 var(--h, 264));
+  background: oklch(0.7 0.22 var(--h, 264) / 0.12);
+}
+
+.ch-tag {
+  display: inline-flex; align-items: center;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: oklch(0.82 0.1 var(--h, 264));
+  background: oklch(0.7 0.22 var(--h, 264) / 0.05);
+  border: 1px solid oklch(0.7 0.22 var(--h, 264) / 0.25);
+}
+
+.ch-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: oklch(0.85 0.12 var(--h, 264));
+  background: oklch(0.7 0.22 var(--h, 264) / 0.08);
+  border: 1px solid oklch(0.7 0.22 var(--h, 264) / 0.3);
+}
+
+/* ── Mission callout (charter-themed) ────────────────────────── */
+.ch-mission {
+  position: relative;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 48px;
+  border-radius: var(--ch-r-2xl);
+  border: 1px solid var(--ch-border);
+  background: linear-gradient(135deg,
+    oklch(0.7 0.22 264 / 0.08),
+    oklch(0.7 0.22 320 / 0.05));
+  overflow: hidden;
+  margin-top: 28px;
+}
+.ch-mission::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 0% 0%, oklch(0.6 0.22 264 / 0.18), transparent 60%),
+              radial-gradient(circle at 100% 100%, oklch(0.65 0.2 320 / 0.14), transparent 55%);
+  pointer-events: none;
+}
+.ch-mission > * { position: relative; }
+.ch-mission__img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  filter: drop-shadow(0 0 32px oklch(0.7 0.22 290 / 0.45));
+}
+.ch-mission__text {
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.55;
+  color: var(--ch-fg);
+  font-weight: 500;
+}
+@media (max-width: 700px) {
+  .ch-mission { grid-template-columns: 1fr; padding: 32px 24px; gap: 24px; text-align: center; }
+  .ch-mission__img { max-width: 160px; margin: 0 auto; }
+}
+
+/* ── Charter footer ──────────────────────────────────────────── */
+.ch-footer {
+  margin-top: 80px;
+  padding: 40px 24px;
+  border-top: 1px solid var(--ch-border-soft);
+  text-align: center;
+}
+.ch-footer__brand {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--ch-muted);
+  display: inline-flex; align-items: center; gap: 12px;
+}
+.ch-footer__brand::before,
+.ch-footer__brand::after {
+  content: ''; width: 40px; height: 1px;
+}
+.ch-footer__brand::before { background: linear-gradient(90deg, transparent, oklch(0.7 0.22 290 / 0.5)); }
+.ch-footer__brand::after  { background: linear-gradient(90deg, oklch(0.7 0.22 290 / 0.5), transparent); }
+.ch-footer__brand span {
+  background-clip: text; -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(120deg,
+    oklch(0.85 0.12 264),
+    oklch(0.85 0.12 320));
+}
+.ch-footer__meta {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ch-muted);
+}
+
+/* ── Subtle fade-in (reuses .fade-in pattern but tuned) ──────── */
+body.charter-page .fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+body.charter-page .fade-in.visible { opacity: 1; transform: none; }
+
+/* ── Modal (used by Roles responsibilities) ──────────────────── */
+.ch-modal {
+  /* `* { margin: 0 }` from the reset removes the UA `margin: auto`
+     that centers <dialog>. Restore it explicitly. */
+  margin: auto;
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  border: 1px solid var(--ch-border);
+  border-radius: var(--ch-r-xl);
+  background: var(--ch-card);
+  color: var(--ch-fg-soft);
+  overflow: hidden;
+}
+.ch-modal::backdrop {
+  background: rgba(0, 0, 0, .6);
+  backdrop-filter: blur(4px);
+}
+.ch-modal__stripe {
+  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background-image: linear-gradient(90deg,
+    oklch(0.75 0.2 264),
+    oklch(0.7 0.22 320),
+    oklch(0.78 0.18 30));
+}
+.ch-modal__head {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 24px;
+  border-bottom: 1px solid var(--ch-border-soft);
+}
+.ch-modal__head-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--ch-r-md);
+  display: grid; place-items: center;
+  border: 1px solid var(--ch-border);
+  background: var(--ch-accent);
+  flex-shrink: 0;
+  color: var(--ch-fg);
+}
+.ch-modal__head-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+.ch-modal__head-body { flex: 1; min-width: 0; }
+.ch-modal__head-meta {
+  display: flex; align-items: center; gap: 8px;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  color: var(--ch-muted);
+  letter-spacing: 0.05em;
+}
+.ch-modal__head-meta .ch-pill { padding: 1px 8px; }
+.ch-modal__head h3 {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ch-fg);
+  line-height: 1.3;
+}
+.ch-modal__close {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  border: 0; background: transparent;
+  display: grid; place-items: center;
+  color: var(--ch-muted);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.ch-modal__close:hover { background: var(--ch-accent); color: var(--ch-fg); }
+.ch-modal__close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.ch-modal__body {
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 20px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+}
+.ch-modal__lead {
+  color: var(--ch-muted);
+  line-height: 1.65;
+  font-size: 14px;
+  margin: 0;
+}
+.ch-modal__section-title {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ch-muted);
+  margin: 0 0 8px;
+}
+.ch-modal__bullets {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.ch-modal__bullets li { display: flex; gap: 12px; font-size: 14px; }
+.ch-modal__bullets li > span:first-child {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  color: var(--ch-muted);
+  font-variant-numeric: tabular-nums;
+  width: 20px; flex-shrink: 0;
+  padding-top: 3px;
+}
+.ch-modal__bullets li > span:last-child { color: rgba(248,250,252,.9); line-height: 1.6; }
+[data-theme="light"] .ch-modal__bullets li > span:last-child { color: rgba(15,23,42,.9); }
+.ch-modal__warn {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px;
+  border-radius: var(--ch-r-md);
+  border: 1px solid rgba(245, 158, 11, .3);
+  background: rgba(245, 158, 11, .06);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ch-modal__warn svg { width: 16px; height: 16px; color: #f59e0b; flex-shrink: 0; margin-top: 2px; stroke: currentColor; fill: none; stroke-width: 2; }
+.ch-modal__warn b { color: #f59e0b; font-weight: 600; }
+.ch-modal__tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.ch-modal__tag {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--ch-border);
+  color: var(--ch-muted);
+}
+
+/* ── Animated bar/dot/phase mini visuals (used by Overview) ──── */
+.ch-vis-bars { display: inline-flex; align-items: flex-end; gap: 4px; height: 32px; }
+.ch-vis-bars span {
+  width: 6px; border-radius: 2px;
+  background: linear-gradient(180deg,
+    oklch(0.85 0.15 var(--h, 264)),
+    oklch(0.6 0.18 var(--h, 264) / 0.4));
+  transform-origin: bottom;
+  animation: chBarGrow .6s ease-out backwards;
+}
+@keyframes chBarGrow { from { transform: scaleY(0); } }
+.ch-vis-dots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.ch-vis-dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: oklch(0.55 0.1 var(--h, 264) / 0.5);
+}
+.ch-vis-dots span:nth-child(3n+1) { background: oklch(0.85 0.15 var(--h, 264)); }
+.ch-vis-phases {
+  display: flex; align-items: center; gap: 8px; min-width: 220px;
+}
+.ch-vis-phases > div { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.ch-vis-phases > div > span:first-child {
+  height: 8px; border-radius: 999px;
+  background: oklch(0.5 0.05 var(--h, 264) / 0.3);
+}
+.ch-vis-phases > div.is-active > span:first-child {
+  background: linear-gradient(90deg,
+    oklch(0.78 0.18 var(--h, 264)),
+    oklch(0.7 0.2 var(--h, 264)));
+}
+.ch-vis-phases > div > span:last-child {
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ch-muted);
+}
+.ch-vis-phases > div.is-active > span:last-child { color: oklch(0.88 0.12 var(--h, 264)); }
+
+/* ── Reset existing nav for charter pages ────────────────────── */
+body.charter-page .subnav { display: none !important; }
+body.charter-page footer { display: none; }
+
+/* Hide global hero (we use .ch-hero) — backwards-safety */
+body.charter-page .hero { display: none; }
+
+/* Section anchor offset under fixed nav */
+body.charter-page .ch-section[id],
+body.charter-page .ch-hero[id] { scroll-margin-top: 84px; }
+
+/* Reduce hero top padding because there is no subnav anymore */
+body.charter-page main.ch-main { padding-top: 64px; }
+@media (max-width: 1100px) { body.charter-page main.ch-main { padding-top: 64px; } }
+
+/* ============================================================
+   LIGHT THEME OVERRIDES
+   The default color system is tuned for dark backgrounds: muted
+   text and OKLCH-with-low-alpha accents disappear on the light
+   `#f0f4ff` page. The rules below boost contrast where it matters
+   without changing the dark theme.
+   ============================================================ */
+
+/* 1. Token bumps: darker muted text, stronger borders */
+[data-theme="light"] .charter-page {
+  --ch-muted:        #475569;  /* slate-600 instead of slate-500 → WCAG AA on #f0f4ff */
+  --ch-border:       rgba(15, 23, 42, 0.16);
+  --ch-border-soft:  rgba(15, 23, 42, 0.10);
+  --ch-accent:       rgba(15, 23, 42, 0.06);
+}
+
+/* 2. Hero stat tiles: clearer surface, dark icon color */
+[data-theme="light"] body.charter-page .ch-hero__stat {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(15, 23, 42, 0.10);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+[data-theme="light"] body.charter-page .ch-hero__stat-icon {
+  background: rgba(15, 23, 42, 0.08);
+  color: #1e293b;
+}
+
+/* 3. CTA ghost button: visible on white */
+[data-theme="light"] body.charter-page .ch-btn--ghost {
+  color: #334155;
+  border-color: rgba(15, 23, 42, 0.18);
+}
+[data-theme="light"] body.charter-page .ch-btn--ghost:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+}
+[data-theme="light"] body.charter-page .ch-kbd {
+  border-color: rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  color: #334155;
+}
+
+/* 4. Chip: darker label so "MISSION / OVERVIEW / …" is readable */
+[data-theme="light"] body.charter-page .ch-chip {
+  color: #475569;
+  background: linear-gradient(120deg,
+    oklch(0.6 0.2 264 / 0.08),
+    oklch(0.55 0.2 320 / 0.08));
+  border-color: rgba(15, 23, 42, 0.12);
+}
+[data-theme="light"] body.charter-page .ch-chip__sep { color: rgba(15, 23, 42, 0.3); }
+[data-theme="light"] body.charter-page .ch-chip__code {
+  background-image: linear-gradient(120deg,
+    oklch(0.5 0.22 264),
+    oklch(0.5 0.24 320));
+}
+
+/* 5. Universal icon container: dark color + visible tinted bg.
+   Drives every circular/rounded-square icon affordance: ch-card__icon
+   (Overview tiles), ro-resp__icon (Responsibilities), ro-bento__icon-grid
+   (hero icon grid), ro-role__icon, ro-collab__icon, ro-prio__icon,
+   ro-nc-pri__icon, ro-nc-mini-icon, ro-nc-head__icon, rp-* icons
+   (criteria/principle/free/info/list/step/pipeline-step/prio-item),
+   ch-card__icon used in Continuous Expansion + Overview tiles. */
+[data-theme="light"] body.charter-page .ch-card__icon,
+[data-theme="light"] body.charter-page .ro-bento__icon-grid > div,
+[data-theme="light"] body.charter-page .ro-resp__icon,
+[data-theme="light"] body.charter-page .ro-role__icon,
+[data-theme="light"] body.charter-page .ro-collab__icon,
+[data-theme="light"] body.charter-page .ro-collab-callout__icon,
+[data-theme="light"] body.charter-page .ro-prio__icon,
+[data-theme="light"] body.charter-page .ro-nc-pri__icon,
+[data-theme="light"] body.charter-page .ro-nc-head__icon,
+[data-theme="light"] body.charter-page .ro-phase__dot,
+[data-theme="light"] body.charter-page .rp-criteria-head__icon,
+[data-theme="light"] body.charter-page .rp-principle__icon,
+[data-theme="light"] body.charter-page .rp-free__icon,
+[data-theme="light"] body.charter-page .rp-info-card__icon,
+[data-theme="light"] body.charter-page .rp-list-card__icon,
+[data-theme="light"] body.charter-page .rp-step__icon,
+[data-theme="light"] body.charter-page .rp-prio-item__icon,
+[data-theme="light"] body.charter-page .rp-pipeline__step-icon,
+[data-theme="light"] body.charter-page .rp-template__head-icon,
+[data-theme="light"] body.charter-page .rp-part__num {
+  background: oklch(0.65 0.2 var(--h, 264) / 0.14);
+  border-color: oklch(0.55 0.2 var(--h, 264) / 0.38);
+  color: oklch(0.45 0.22 var(--h, 264));
+}
+
+/* 6. Numeric / code badges (R-01, primary pill, level pill, etc): readable on white */
+[data-theme="light"] body.charter-page .ro-resp__code,
+[data-theme="light"] body.charter-page .ro-resp__primary,
+[data-theme="light"] body.charter-page .ch-code-chip,
+[data-theme="light"] body.charter-page .ch-tag,
+[data-theme="light"] body.charter-page .ch-pill,
+[data-theme="light"] body.charter-page .ro-prio__level,
+[data-theme="light"] body.charter-page .ro-role__badge,
+[data-theme="light"] body.charter-page .ro-phase__label,
+[data-theme="light"] body.charter-page .ro-resp__more,
+[data-theme="light"] body.charter-page .ro-nc-kicker--accent {
+  color: oklch(0.42 0.2 var(--h, 264));
+  background-color: oklch(0.6 0.2 var(--h, 264) / 0.1);
+  border-color: oklch(0.55 0.2 var(--h, 264) / 0.35);
+}
+
+/* 7. Section title brand-gradient text colors with text-clip — lower lightness so they read on white */
+[data-theme="light"] body.charter-page .ro-bento__metric-value {
+  background-image: linear-gradient(120deg,
+    oklch(0.55 0.25 var(--h, 264)),
+    oklch(0.5 0.27 calc(var(--h, 264) + 30)));
+}
+[data-theme="light"] body.charter-page .ro-role__count-val,
+[data-theme="light"] body.charter-page .ro-phase.is-active .ro-phase__title {
+  background-image: linear-gradient(135deg,
+    oklch(0.5 0.22 var(--h, 264)),
+    oklch(0.5 0.22 var(--h2, 320)));
+}
+[data-theme="light"] body.charter-page .ro-donut__label-val {
+  background-image: linear-gradient(120deg, oklch(0.5 0.22 264), oklch(0.48 0.24 320));
+}
+[data-theme="light"] body.charter-page .ro-collab-callout__kicker,
+[data-theme="light"] body.charter-page .ch-footer__brand span {
+  background-image: linear-gradient(120deg, oklch(0.5 0.22 264), oklch(0.5 0.22 320));
+}
+
+/* 8. Hue-coloured headings (Phù hợp, Không phù hợp, Tracking fields, Miễn phí, etc.) — darker */
+[data-theme="light"] body.charter-page .ro-prio__title,
+[data-theme="light"] body.charter-page .rp-prio-item__name,
+[data-theme="light"] body.charter-page .rp-step__name,
+[data-theme="light"] body.charter-page .rp-criteria-head h3,
+[data-theme="light"] body.charter-page .rp-list-card__head h3,
+[data-theme="light"] body.charter-page .rp-free__title,
+[data-theme="light"] body.charter-page .ro-bento__metric-unit {
+  color: oklch(0.4 0.18 var(--h, 264));
+}
+[data-theme="light"] body.charter-page .rp-pipeline__step-label {
+  color: oklch(0.4 0.2 var(--h, 264));
+}
+[data-theme="light"] body.charter-page .rp-pipeline__step {
+  background: oklch(0.65 0.2 var(--h, 264) / 0.08);
+  border-color: oklch(0.5 0.2 var(--h, 264) / 0.4);
+}
+
+/* 9. Donut chart: visible track on white */
+[data-theme="light"] body.charter-page .ro-donut svg circle:first-of-type {
+  stroke: rgba(15, 23, 42, 0.08);
+}
+
+/* 10. Vis bars / phase bars / progress bars */
+[data-theme="light"] body.charter-page .ch-vis-phases > div > span:first-child {
+  background: oklch(0.6 0.05 var(--h, 264) / 0.25);
+}
+[data-theme="light"] body.charter-page .ch-vis-dots span {
+  background: oklch(0.55 0.1 var(--h, 264) / 0.35);
+}
+[data-theme="light"] body.charter-page .ch-vis-dots span:nth-child(3n+1) {
+  background: oklch(0.55 0.18 var(--h, 264));
+}
+
+/* 11. Hero/page mesh dot pattern: reduce on light to avoid noise */
+[data-theme="light"] body.charter-page .ch-hero__mesh,
+[data-theme="light"] body.charter-page .ro-bento__mesh,
+[data-theme="light"] body.charter-page .ro-resp__mesh {
+  opacity: 0.025;
+  color: #0f172a;
+}
+
+/* 12. Card surfaces: subtle warm tint so they separate from page bg */
+[data-theme="light"] body.charter-page .ro-bento,
+[data-theme="light"] body.charter-page .ro-resp,
+[data-theme="light"] body.charter-page .ro-prin-card,
+[data-theme="light"] body.charter-page .ro-role,
+[data-theme="light"] body.charter-page .ro-collab,
+[data-theme="light"] body.charter-page .ro-phase__card,
+[data-theme="light"] body.charter-page .rp-criteria-card,
+[data-theme="light"] body.charter-page .rp-principle,
+[data-theme="light"] body.charter-page .rp-free,
+[data-theme="light"] body.charter-page .rp-prio-item,
+[data-theme="light"] body.charter-page .rp-info-card,
+[data-theme="light"] body.charter-page .rp-list-card,
+[data-theme="light"] body.charter-page .rp-step,
+[data-theme="light"] body.charter-page .rp-pipeline,
+[data-theme="light"] body.charter-page .rp-template,
+[data-theme="light"] body.charter-page .rp-part,
+[data-theme="light"] body.charter-page .rp-end-card,
+[data-theme="light"] body.charter-page .ch-modal {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.10);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.02);
+}
+[data-theme="light"] body.charter-page .ro-nc-pri,
+[data-theme="light"] body.charter-page .ro-nc-item {
+  background: rgba(15, 23, 42, 0.02);
+  border-color: rgba(15, 23, 42, 0.10);
+}
+
+/* 13. Rail panel: more solid surface so it's visible against the page */
+/* [data-theme="light"] body.charter-page .ch-rail__inner {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(15, 23, 42, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 28px rgba(15, 23, 42, 0.10);
+} */
+[data-theme="light"] body.charter-page .ch-rail__track {
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(15, 23, 42, 0.18) 12%,
+    rgba(15, 23, 42, 0.18) 88%,
+    transparent);
+}
+[data-theme="light"] body.charter-page .ch-rail__item { color: #64748b; }
+[data-theme="light"] body.charter-page .ch-rail__item.is-active,
+[data-theme="light"] body.charter-page .ch-rail__item:hover { color: #0f172a; }
+[data-theme="light"] body.charter-page .ch-rail__item-no { color: rgba(15, 23, 42, 0.45); }
+[data-theme="light"] body.charter-page .ch-rail__item.is-active .ch-rail__item-no {
+  color: rgba(15, 23, 42, 0.7);
+}
+[data-theme="light"] body.charter-page .ch-rail__dot::after {
+  background: rgba(15, 23, 42, 0.3);
+}
+[data-theme="light"] body.charter-page .ch-rail__item.is-past .ch-rail__dot::after {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+/* 14. Modal contents: brighter bullets text on light */
+[data-theme="light"] body.charter-page .ch-modal__bullets li > span:last-child {
+  color: #1e293b;
+}
+[data-theme="light"] body.charter-page .ch-modal__warn b { color: #b45309; }
+[data-theme="light"] body.charter-page .ch-modal__warn { border-color: rgba(180, 83, 9, 0.3); background: rgba(254, 243, 199, 0.5); }
+
+/* 15. Role list, phase bullets, modal lead: darker for readability */
+[data-theme="light"] body.charter-page .ro-role__list li > span:last-child { color: #1e293b; }
+[data-theme="light"] body.charter-page .ro-phase__bullets li { color: #475569; }
+[data-theme="light"] body.charter-page .ch-modal__lead { color: #475569; }
+[data-theme="light"] body.charter-page .rp-template__code { color: #334155; }
+[data-theme="light"] body.charter-page .rp-template__head-meta { color: rgba(15, 23, 42, 0.5); }
+[data-theme="light"] body.charter-page .ro-collab__sla { color: rgba(15, 23, 42, 0.7); }
+
+/* 16. Hero ::before/::after orbs: less saturated on light, otherwise they wash pink */
+[data-theme="light"] body.charter-page .ch-hero::before { opacity: 0.25; }
+[data-theme="light"] body.charter-page .ch-hero::after  { opacity: 0.2; }
