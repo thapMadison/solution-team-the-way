@@ -208,7 +208,11 @@ body.requests-page .rl-filter-bar {
   gap: 12px;
   position: sticky;
   top: var(--rl-nav-h);
-  z-index: 8;
+  /* Must beat .rl-rows-head (z:9) and .rl-board-section__head (z:8) — both
+     siblings of the bar. The Filter popover lives inside this stacking
+     context, so its inner z:20 only matters relative to bar's own children;
+     the *whole bar* needs to outrank the heads to surface the panel. */
+  z-index: 12;
   background: var(--rl-bg);
   padding: 12px 0 14px;
   /* Pull up to remove the .rl-main column gap between sticky strips so

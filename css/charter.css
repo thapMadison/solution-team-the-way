@@ -638,10 +638,14 @@ body.charter-page .fade-in.visible { opacity: 1; transform: none; }
   width: 48px; height: 48px;
   border-radius: var(--ch-r-md);
   display: grid; place-items: center;
-  border: 1px solid var(--ch-border);
-  background: var(--ch-accent);
+  /* Hue-tinted to mirror the responsibility card's icon (--h is set on the
+     modal element when JS opens it). Falls back to a neutral accent. */
+  border: 1px solid oklch(0.7 0.22 var(--h, 264) / 0.35);
+  background: linear-gradient(135deg,
+    oklch(0.7 0.22 var(--h, 264) / 0.22),
+    oklch(0.7 0.22 var(--h, 264) / 0.08));
+  color: oklch(0.9 0.13 var(--h, 264));
   flex-shrink: 0;
-  color: var(--ch-fg);
 }
 .ch-modal__head-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; }
 .ch-modal__head-body { flex: 1; min-width: 0; }
@@ -868,7 +872,8 @@ body.charter-page main.ch-main { padding-top: 64px; }
 [data-theme="light"] body.charter-page .rp-prio-item__icon,
 [data-theme="light"] body.charter-page .rp-pipeline__step-icon,
 [data-theme="light"] body.charter-page .rp-template__head-icon,
-[data-theme="light"] body.charter-page .rp-part__num {
+[data-theme="light"] body.charter-page .rp-part__num,
+[data-theme="light"] body.charter-page .ch-modal__head-icon {
   background: oklch(0.65 0.2 var(--h, 264) / 0.14);
   border-color: oklch(0.55 0.2 var(--h, 264) / 0.38);
   color: oklch(0.45 0.22 var(--h, 264));
