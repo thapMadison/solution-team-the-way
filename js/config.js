@@ -13,32 +13,22 @@
   };
 
   const PRIORITY = {
-    low:      { icon: '🔵', label: 'Low' },
-    medium:   { icon: '🟡', label: 'Medium' },
+    low:      { icon: '⚪', label: 'Low' },
+    medium:   { icon: '🔵', label: 'Medium' },
     high:     { icon: '🟠', label: 'High' },
     critical: { icon: '🔴', label: 'Critical' }
   };
 
   const TYPE = {
     'technical-support': { icon: '🔧', label: 'Technical Support' },
-    proposal:            { icon: '📋', label: 'Proposal' },
+    proposal:            { icon: '📋', label: 'Proposal / Presale' },
     'code-review':       { icon: '🔍', label: 'Code Review' },
-    architecture:        { icon: '🏗️', label: 'Architecture' },
-    rd:                  { icon: '🧪', label: 'R&D' },
-    training:            { icon: '📚', label: 'Training' },
+    architecture:        { icon: '🏗️', label: 'Architecture Consultation' },
+    infrastructure:      { icon: '🖥️', label: 'DevOps & Infrastructure' },
+    rd:                  { icon: '🧪', label: 'R&D Request' },
+    training:            { icon: '📚', label: 'Training / Knowledge Sharing' },
     other:               { icon: '📦', label: 'Other' }
   };
-
-  // Must match AllocationData.MEMBERS for auto-allocation to work
-  const TEAM_MEMBERS = [
-    'Unassigned',
-    'Nguyễn An',
-    'Trần Bảo',
-    'Lê Chi',
-    'Phạm Dũng',
-    'Hoàng Em',
-    'Đỗ Phúc'
-  ];
 
   const PAGINATION = {
     defaultPageSize: 25,
@@ -53,5 +43,25 @@
     project:     { max: 100 }
   };
 
-  global.AppConfig = { STATUS, PRIORITY, TYPE, TEAM_MEMBERS, PAGINATION, VALIDATION };
+  const PROJECTS = [
+    'Toppen Website & App Maintainance',
+    'IPC Web App Maintainance',
+    'IPC Soulmates',
+    'RPD Maintainance',
+    'GL App',
+    'MediaMice',
+    'Gamuda Defect Management Maintenance',
+    'PEMANDU Website and Hosting Maintenance Retainer',
+    'Gamuda GDOS Plus',
+    'Gamuda GDOS Maintenance',
+    'RSG Dedicated Resource',
+    'VetIT',
+    'Fave Sea',
+    'iuGO (RSG) Phase 1',
+    'Gamuda Land Viet Nam (GLVN) Phase 2',
+    'Toppen enhancement (Mobile APP)',
+    'GDOS'
+  ];
+
+  global.AppConfig = { STATUS, PRIORITY, TYPE, PAGINATION, VALIDATION, PROJECTS };
 })(window);

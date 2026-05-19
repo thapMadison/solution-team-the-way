@@ -9,7 +9,7 @@
  * User data stored in Firebase Realtime Database at `users/{uid}`:
  *   { email, displayName, role, memberId?, createdAt }
  *
- * The memberId links to AllocationData.MEMBERS for solution team members.
+ * The memberId is used for Resource Allocation integration.
  */
 (function (global) {
   'use strict';
@@ -135,19 +135,109 @@
   // ── Auth actions ──────────────────────────────────────────────
 
   // Azure AD Tenant ID - get from Azure Portal → Azure AD → Overview
-  const AZURE_TENANT_ID = 'YOUR_TENANT_ID_HERE';
+  const AZURE_TENANT_ID = 'fa190090-4fc1-416a-bd41-a480b5dad5b7';
+
+  // Check if running on localhost (for mock login)
+  const IS_LOCALHOST = ['localhost', '127.0.0.1', ''].includes(location.hostname) || location.protocol === 'file:';
+
+  // Mock users for local testing
+  const MOCK_USERS = {
+    'solution-team': {
+      uid: 'mock-solution-team-uid',
+      email: 'thap.nguyen@madison.dev',
+      displayName: 'Thap Nguyen (Mock)',
+      role: 'solution-team',
+      memberId: 'm1'
+    },
+    'user': {
+      uid: 'mock-user-uid',
+      email: 'test.user@madison.dev',
+      displayName: 'Test User (Mock)',
+      role: 'user',
+      memberId: null
+    }
+  };
 
   async function signInWithMicrosoft() {
+    // On localhost, show mock login selector
+    if (IS_LOCALHOST) {
+      return showMockLoginSelector();
+    }
+
     const provider = new firebase.auth.OAuthProvider('microsoft.com');
     provider.setCustomParameters({
       prompt: 'select_account',
-      tenant: 'fa190090-4fc1-416a-bd41-a480b5dad5b7'
+      tenant: AZURE_TENANT_ID
     });
     const result = await firebase.auth().signInWithPopup(provider);
     return result.user;
   }
 
+  async function showMockLoginSelector() {
+    const role = prompt('🧪 MOCK LOGIN (localhost only)\n\nChọn role để test:\n1 = solution-team\n2 = user\n\nNhập 1 hoặc 2:');
+
+    if (role === '1' || role?.toLowerCase() === 'solution-team') {
+      return mockLogin('solution-team');
+    } else if (role === '2' || role?.toLowerCase() === 'user') {
+      return mockLogin('user');
+    } else {
+      throw new Error('Cancelled');
+    }
+  }
+
+  async function mockLogin(roleKey) {
+    const mockUser = MOCK_USERS[roleKey];
+
+    // Use Firebase Anonymous Auth to get real auth token for database access
+    let firebaseUser;
+    try {
+      const result = await firebase.auth().signInAnonymously();
+      firebaseUser = result.user;
+    } catch (e) {
+      console.warn('[auth] Anonymous auth failed, using pure mock:', e);
+      firebaseUser = { uid: mockUser.uid, email: mockUser.email, displayName: mockUser.displayName };
+    }
+
+    // Create/update profile with mock role
+    const profile = {
+      email: mockUser.email,
+      displayName: mockUser.displayName,
+      role: mockUser.role,
+      memberId: mockUser.memberId,
+      isMock: true,
+      createdAt: new Date().toISOString()
+    };
+
+    // Save to Firebase (so other features work)
+    try {
+      await firebaseDb.ref(`${USERS_PATH}/${firebaseUser.uid}`).set(profile);
+    } catch (e) {
+      console.warn('[auth] Failed to save mock profile:', e);
+    }
+
+    state.user = firebaseUser;
+    state.profile = profile;
+
+    // Save cache with mock flag
+    const cache = {
+      uid: firebaseUser.uid,
+      email: mockUser.email,
+      displayName: mockUser.displayName,
+      role: mockUser.role,
+      memberId: mockUser.memberId,
+      isMock: true,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+
+    state.ready = true;
+    notifyListeners();
+
+    return firebaseUser;
+  }
+
   async function signOut() {
+    localStorage.removeItem(CACHE_KEY);
     await firebase.auth().signOut();
   }
 
@@ -156,6 +246,9 @@
   function bootstrap() {
     // Load cache immediately (before Firebase)
     state.cachedState = loadCache();
+
+    // On localhost with mock session, let Firebase anonymous auth restore the session
+    // The onAuthStateChanged will handle it with the isMock flag in cache
 
     if (!global.firebase || !firebase.auth) {
       console.warn('[auth] Firebase Auth SDK not loaded');
@@ -169,8 +262,23 @@
       if (user) {
         state.profile = await fetchProfile(user.uid);
         if (!state.profile) {
-          // First login - create profile from Microsoft account info
-          state.profile = await createUserProfile(user.uid, user.email, user.displayName);
+          // Check if this is a mock session being restored
+          if (IS_LOCALHOST && state.cachedState?.isMock && user.isAnonymous) {
+            state.profile = {
+              email: state.cachedState.email,
+              displayName: state.cachedState.displayName,
+              role: state.cachedState.role,
+              memberId: state.cachedState.memberId,
+              isMock: true
+            };
+            // Save to Firebase
+            try {
+              await firebaseDb.ref(`${USERS_PATH}/${user.uid}`).set(state.profile);
+            } catch (e) { /* ignore */ }
+          } else {
+            // First login - create profile from Microsoft account info
+            state.profile = await createUserProfile(user.uid, user.email, user.displayName);
+          }
         }
       } else {
         state.profile = null;

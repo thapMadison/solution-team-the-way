@@ -16,14 +16,14 @@
   'use strict';
 
   const { escapeHtml, formatDate, formatDateTime, statusInfo, priorityInfo, typeInfo, isValidEmail, showNotification } = Utils;
-  const { TEAM_MEMBERS, PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE } = AppConfig;
+  const { PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE, PROJECTS } = AppConfig;
 
   // ────────────────────────────────────────────────────────────
   // 1. State
   // ────────────────────────────────────────────────────────────
 
-  const STATUS_KEYS = ['pending', 'in-progress', 'completed', 'cancelled'];
-  const PRIORITY_KEYS = ['low', 'medium', 'high', 'critical'];
+  const STATUS_KEYS = Object.keys(STATUS);
+  const PRIORITY_KEYS = Object.keys(PRIORITY);
 
   const CHUNK_SIZE = 30; // how many rows to add per infinite-scroll tick
 
@@ -37,7 +37,8 @@
     priority:     'all',
     query:        '',
     unsubscribe:  null,
-    rowsObserver: null
+    rowsObserver: null,
+    teamMembers:  ['Unassigned']   // Dynamic list from Firebase
   };
 
   const dom = {};
@@ -145,6 +146,7 @@
     clock: '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>',
     chat:  '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.4 7.3L4 21l1.7-5.6A8 8 0 1 1 21 12z" stroke-linejoin="round"/></svg>',
     chev:  '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    folder:'<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
     plus:  '<svg viewBox="0 0 24 24" class="rl-icon-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>',
     x:     '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>',
     trash: '<svg viewBox="0 0 24 24" class="rl-icon-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m1 0v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6"/></svg>',
@@ -369,6 +371,7 @@
           <span class="rl-row__title">${escapeHtml(req.title)}</span>
           <span class="rl-row__meta">
             <span class="rl-row__meta-item">${escapeHtml(typeLabel)}</span>
+            ${req.project ? `<span class="rl-row__meta-item rl-row__project">${ICONS.folder}${escapeHtml(req.project)}</span>` : ''}
             <span class="rl-row__meta-item">${ICONS.clock}${escapeHtml(formatDate(req.timestamp))}</span>
             ${comments > 0 ? `<span class="rl-row__meta-item">${ICONS.chat}${comments}</span>` : ''}
           </span>
@@ -569,6 +572,9 @@
             await tryCreateAllocationForRequest(reqData, reqData.assignee, reqData.deadline, reqData.estimatedTime);
           }
 
+          // Sync allocation status
+          await FirebaseAPI.syncAllocationStatusForRequest(shortId(reqData), targetStatus);
+
           showNotification('success', `Moved to ${statusInfo(targetStatus).label}`);
         } catch (err) {
           showNotification('error', `Move failed: ${err.message}`);
@@ -589,14 +595,18 @@
     state.query    = dom.searchInput.value.toLowerCase().trim();
     state.type     = dom.filterType.value;
     state.priority = dom.filterPriority.value;
+    state.project  = dom.filterProject?.value || 'all';
+    state.assignee = dom.filterAssignee?.value || 'all';
     // status comes from the rail (state.status); legacy <select> kept hidden
 
     state.filtered = state.all.filter((req) => {
       if (state.status   !== 'all' && req.status   !== state.status)   return false;
       if (state.type     !== 'all' && req.type     !== state.type)     return false;
       if (state.priority !== 'all' && req.priority !== state.priority) return false;
+      if (state.project  !== 'all' && req.project  !== state.project)  return false;
+      if (state.assignee !== 'all' && req.assignee !== state.assignee) return false;
       if (state.query) {
-        const hay = `${req.title || ''} ${req.requester || ''} ${shortId(req)}`.toLowerCase();
+        const hay = `${req.title || ''} ${req.requester || ''} ${shortId(req)} ${req.project || ''}`.toLowerCase();
         if (!hay.includes(state.query)) return false;
       }
       return true;
@@ -612,6 +622,8 @@
     const chips = [];
     if (state.type !== 'all')     chips.push({ key: 'type',     value: typeInfo(state.type).label });
     if (state.priority !== 'all') chips.push({ key: 'priority', value: priorityInfo(state.priority).label });
+    if (state.project !== 'all')  chips.push({ key: 'project',  value: state.project });
+    if (state.assignee !== 'all') chips.push({ key: 'assignee', value: state.assignee });
 
     if (chips.length === 0) {
       dom.activeFilterChips.hidden = true;
@@ -734,13 +746,44 @@
 
   function openNewRequestModal() {
     dom.newRequestModal.style.display = 'flex';
-    setTimeout(() => document.getElementById('requester').focus(), 100);
+
+    const requesterEl = document.getElementById('requester');
+    const emailEl = document.getElementById('requesterEmail');
+
+    // Autofill from logged-in user profile
+    if (window.AuthService && AuthService.isLoggedIn()) {
+      const profile = AuthService.getProfile();
+      if (profile) {
+        requesterEl.value = profile.displayName || '';
+        emailEl.value = profile.email || '';
+
+        // Disable fields for normal users, enable for solution-team
+        const isNormalUser = profile.role === 'user';
+        requesterEl.disabled = isNormalUser;
+        emailEl.disabled = isNormalUser;
+        requesterEl.classList.toggle('is-disabled', isNormalUser);
+        emailEl.classList.toggle('is-disabled', isNormalUser);
+      }
+    }
+
+    setTimeout(() => {
+      const firstEditable = requesterEl.disabled ? document.getElementById('requestType') : requesterEl;
+      firstEditable.focus();
+    }, 100);
   }
 
   function closeNewRequestModal() {
     dom.newRequestModal.style.display = 'none';
     dom.requestForm.reset();
     document.querySelector('.char-count').textContent = `0/${VALIDATION.description.max}`;
+
+    // Reset disabled state
+    const requesterEl = document.getElementById('requester');
+    const emailEl = document.getElementById('requesterEmail');
+    requesterEl.disabled = false;
+    emailEl.disabled = false;
+    requesterEl.classList.remove('is-disabled');
+    emailEl.classList.remove('is-disabled');
   }
 
   // ────────────────────────────────────────────────────────────
@@ -954,6 +997,16 @@
               }
             </div>
 
+            ${data.project ? `
+            <div class="rl-field">
+              <label>Project</label>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rl-border);border-radius:var(--rl-radius-sm);background:var(--rl-card);font-size:13px;">
+                ${ICONS.folder}
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(data.project)}">${escapeHtml(data.project)}</span>
+              </div>
+            </div>
+            ` : ''}
+
             <div class="rl-field">
               <label>Requester</label>
               <div class="rl-field__user">
@@ -973,7 +1026,7 @@
                      <span style="font-size:13px;">${MASKED_ASSIGNEE_NAME}</span>
                    </div>`
                 : `<select id="assigneeSelect">
-                     ${TEAM_MEMBERS.map((m) => `
+                     ${state.teamMembers.map((m) => `
                        <option value="${escapeHtml(m)}" ${m === data.assignee ? 'selected' : ''}>${escapeHtml(m)}</option>
                      `).join('')}
                    </select>`
@@ -1208,7 +1261,7 @@
   function getMentionableUsers() {
     // Combine team members with requester info if available
     const users = [];
-    TEAM_MEMBERS.forEach(name => {
+    state.teamMembers.forEach(name => {
       if (name !== 'Unassigned') {
         users.push({ name, email: null });
       }
@@ -1518,13 +1571,20 @@
    * - ProjectName = request title
    */
   async function tryCreateAllocationForRequest(reqData, assignee, deadline, estimatedTime) {
-    if (!window.AllocationData || !window.FirebaseAPI) return;
+    if (!window.FirebaseAPI) return;
 
-    const MEMBERS = AllocationData.MEMBERS;
-    if (!MEMBERS || !MEMBERS.length) return;
+    // Get solution-team members from Firebase
+    let members;
+    try {
+      members = await FirebaseAPI.getSolutionTeamMembersFull();
+    } catch (e) {
+      console.warn('[requests-app] Could not fetch members:', e);
+      return;
+    }
+    if (!members || !members.length) return;
 
     // Find memberId from assignee name
-    const member = MEMBERS.find((m) => m.name === assignee);
+    const member = members.find((m) => m.name === assignee);
     if (!member) {
       console.warn('[requests-app] Could not find member for assignee:', assignee);
       return;
@@ -1547,7 +1607,8 @@
       projectName: `Request: ${reqData.title || shortId(reqData)}`,
       percent:     percent,
       start:       today,
-      end:         endDate
+      end:         endDate,
+      status:      'active'
     };
 
     try {
@@ -1660,6 +1721,12 @@
         await tryCreateAllocationForRequest(oldData, newAssignee, newDeadline, newEstimatedTime);
       }
 
+      // Sync allocation status when request status changes
+      if (newStatus !== oldData.status) {
+        const requestKey = shortId(oldData);
+        await FirebaseAPI.syncAllocationStatusForRequest(requestKey, newStatus);
+      }
+
       showNotification('success', 'Request updated');
       closeRequestModal();
     } catch (err) {
@@ -1696,6 +1763,9 @@
     dom.filterStatus      = document.getElementById('filterStatus');
     dom.filterType        = document.getElementById('filterType');
     dom.filterPriority    = document.getElementById('filterPriority');
+    dom.filterProject     = document.getElementById('filterProject');
+    dom.filterAssignee    = document.getElementById('filterAssignee');
+    dom.filterAssigneeField = document.getElementById('filterAssigneeField');
     dom.btnToggleFilters  = document.getElementById('btnToggleFilters');
     dom.filterPanel       = document.getElementById('filterPanel');
     dom.statusChips       = document.getElementById('statusChips');
@@ -1733,6 +1803,8 @@
 
     dom.filterType.addEventListener('change', applyFilters);
     dom.filterPriority.addEventListener('change', applyFilters);
+    dom.filterProject?.addEventListener('change', applyFilters);
+    dom.filterAssignee?.addEventListener('change', applyFilters);
     dom.searchInput.addEventListener('input', applyFilters);
 
     // Filter popover
@@ -1758,6 +1830,8 @@
       const key = btn.dataset.clear;
       if (key === 'type')     { dom.filterType.value = 'all'; }
       if (key === 'priority') { dom.filterPriority.value = 'all'; }
+      if (key === 'project')  { dom.filterProject.value = 'all'; }
+      if (key === 'assignee') { dom.filterAssignee.value = 'all'; }
       applyFilters();
     });
 
@@ -1899,8 +1973,101 @@
     });
   }
 
+  function populateProjectDropdown() {
+    const sel = document.getElementById('project');
+    if (!sel || !PROJECTS) return;
+    PROJECTS.forEach((p) => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      sel.appendChild(opt);
+    });
+  }
+
+  function populateTypeDropdown() {
+    if (!TYPE) return;
+    const options = Object.entries(TYPE).map(([key, { icon, label }]) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = `${icon} ${label}`;
+      return opt;
+    });
+
+    // Populate create form dropdown
+    const createSel = document.getElementById('requestType');
+    if (createSel) {
+      options.forEach(opt => createSel.appendChild(opt.cloneNode(true)));
+    }
+
+    // Populate filter dropdown
+    const filterSel = document.getElementById('filterType');
+    if (filterSel) {
+      options.forEach(opt => filterSel.appendChild(opt.cloneNode(true)));
+    }
+  }
+
+  function populatePriorityDropdown() {
+    if (!PRIORITY) return;
+    const options = Object.entries(PRIORITY).map(([key, { icon, label }]) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = `${icon} ${label}`;
+      return opt;
+    });
+
+    // Populate create form dropdown
+    const createSel = document.getElementById('priority');
+    if (createSel) {
+      options.forEach(opt => createSel.appendChild(opt.cloneNode(true)));
+    }
+
+    // Populate filter dropdown
+    const filterSel = document.getElementById('filterPriority');
+    if (filterSel) {
+      options.forEach(opt => filterSel.appendChild(opt.cloneNode(true)));
+    }
+  }
+
+  function populateProjectFilter() {
+    if (!PROJECTS || !dom.filterProject) return;
+    PROJECTS.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      dom.filterProject.appendChild(opt);
+    });
+  }
+
+  function populateAssigneeFilter() {
+    if (!dom.filterAssignee || !dom.filterAssigneeField) return;
+    // Only show for solution-team
+    if (!canFullEdit()) return;
+    dom.filterAssigneeField.hidden = false;
+
+    state.teamMembers.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      dom.filterAssignee.appendChild(opt);
+    });
+  }
+
+  async function fetchTeamMembers() {
+    try {
+      const members = await FirebaseAPI.getSolutionTeamMembers();
+      state.teamMembers = ['Unassigned', ...members];
+    } catch (e) {
+      console.warn('[requests] Failed to fetch team members:', e);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     cacheDom();
+    populateTypeDropdown();
+    populatePriorityDropdown();
+    populateProjectDropdown();
+    populateProjectFilter();
+    fetchTeamMembers().then(() => populateAssigneeFilter());
     bindEvents();
     subscribeToRequests();
   });

@@ -129,23 +129,28 @@
             <label>Type</label>
             <select id="filterType">
               <option value="all">All types</option>
-              <option value="technical-support">🔧 Tech Support</option>
-              <option value="proposal">📋 Proposal</option>
-              <option value="code-review">🔍 Code Review</option>
-              <option value="architecture">🏗️ Architecture</option>
-              <option value="rd">🧪 R&amp;D</option>
-              <option value="training">📚 Training</option>
-              <option value="other">📦 Other</option>
+              <!-- Populated from AppConfig.TYPE -->
             </select>
           </div>
           <div class="rl-filter-field">
             <label>Priority</label>
             <select id="filterPriority">
               <option value="all">All priority</option>
-              <option value="critical">🔴 Critical</option>
-              <option value="high">🟠 High</option>
-              <option value="medium">🟡 Medium</option>
-              <option value="low">🔵 Low</option>
+              <!-- Populated from AppConfig.PRIORITY -->
+            </select>
+          </div>
+          <div class="rl-filter-field">
+            <label>Project</label>
+            <select id="filterProject">
+              <option value="all">All projects</option>
+              <!-- Populated from AppConfig.PROJECTS -->
+            </select>
+          </div>
+          <div class="rl-filter-field" id="filterAssigneeField" hidden>
+            <label>Assignee</label>
+            <select id="filterAssignee">
+              <option value="all">All assignees</option>
+              <!-- Populated from Firebase team members -->
             </select>
           </div>
         </div>
@@ -272,13 +277,7 @@
           <label for="requestType">Type *</label>
           <select id="requestType" required>
             <option value="">-- Select type --</option>
-            <option value="technical-support">🔧 Technical Support</option>
-            <option value="proposal">📋 Proposal / Presale</option>
-            <option value="code-review">🔍 Code Review</option>
-            <option value="architecture">🏗️ Architecture Consultation</option>
-            <option value="rd">🧪 R&amp;D Request</option>
-            <option value="training">📚 Training / Knowledge Sharing</option>
-            <option value="other">📦 Other</option>
+            <!-- Populated from AppConfig.TYPE -->
           </select>
         </div>
 
@@ -286,10 +285,7 @@
           <label for="priority">Priority *</label>
           <select id="priority" required>
             <option value="">-- Select priority --</option>
-            <option value="low">🟢 Low</option>
-            <option value="medium">🟡 Medium</option>
-            <option value="high">🟠 High</option>
-            <option value="critical">🔴 Critical</option>
+            <!-- Populated from AppConfig.PRIORITY -->
           </select>
         </div>
       </div>
@@ -313,7 +309,9 @@
 
         <div class="form-group">
           <label for="project">Related project</label>
-          <input type="text" id="project" maxlength="100" placeholder="Project name (if any)">
+          <select id="project">
+            <option value="">-- Select project --</option>
+          </select>
         </div>
       </div>
 

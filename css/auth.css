@@ -624,3 +624,35 @@
     padding: 20px;
   }
 }
+
+/* ── Mobile menu auth ───────────────────────────────────────────── */
+
+.nav-mobile-menu__auth {
+  flex: 1;
+}
+.nav-mobile-menu__auth .auth-btn--login {
+  width: 100%;
+  justify-content: center;
+}
+.nav-mobile-menu__auth .auth-user {
+  width: 100%;
+}
+.nav-mobile-menu__auth .auth-user__btn {
+  width: 100%;
+  justify-content: flex-start;
+}
+.nav-mobile-menu__auth .auth-user__name {
+  display: block;
+  max-width: none;
+}
+.nav-mobile-menu__auth .auth-dropdown {
+  position: static;
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+.nav-mobile-menu__auth .auth-user.is-dropdown-open .auth-dropdown {
+  display: block;
+}

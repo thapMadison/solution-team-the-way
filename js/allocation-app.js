@@ -18,20 +18,24 @@
  * State lives in a single `state` object; renders are full re-renders of each
  * sub-region (header / body / minimap) so we don't pay diffing cost in plain JS.
  *
- * Persistence: Firebase Realtime Database under the `allocations` node. On
- * first run we seed it from `AllocationData.SEED_ASSIGNMENTS` so a fresh
- * database doesn't show an empty timeline.
+ * Persistence: Firebase Realtime Database under the `allocations` node.
  */
 (function (global) {
   'use strict';
 
   const D = global.AllocationData;
   const {
-    TODAY, MEMBERS, PROJECTS, SEED_ASSIGNMENTS, MONTH_NAMES_SHORT,
+    TODAY, MONTH_NAMES_SHORT,
     DAY_W_BY_RANGE,
     parseDate, toISO, daysBetween, addDays, buildMonths,
     getDataRange, getCurrentAllocation, getTimeRangeDays, getTimeRangeLabel
   } = D;
+
+  // Projects from config.js (converted to allocation format)
+  const PROJECTS = (global.AppConfig?.PROJECTS || []).map((name, idx) => {
+    const hues = ['264', '200', '320', '20', '120', '340', '30', '60', '40', '50', '70', '160'];
+    return { key: name, name, hue: hues[idx % hues.length] };
+  });
 
   const ROW_H_COMPACT = 56;
   const PROJECT_TOP_COMPACT  = 6;
@@ -39,8 +43,8 @@
   const SEG_H_COMPACT = 20;
 
   const state = {
-    assignments: SEED_ASSIGNMENTS.map((a) => ({ ...a })),
-    seeded: false,
+    assignments: [],
+    members: [],                     // Dynamic from Firebase
     filter: 'all',                 // 'all' | 'project' | 'solution' | 'over'
     timeRange: '1Y',               // '6M' | '1Y' | '2Y' | 'ALL'
     hoveredBlock: null,            // assignment.id
@@ -145,19 +149,6 @@
   function subscribeFirebase() {
     if (!global.FirebaseAPI) return;
     state.unsubscribe = FirebaseAPI.onAllocationsChange(async (records) => {
-      if (records.length === 0 && !state.seeded) {
-        state.seeded = true;
-        try {
-          await FirebaseAPI.seedAllocations(SEED_ASSIGNMENTS);
-          return; // next callback will pull seeded values
-        } catch (err) {
-          console.warn('[allocation] seed failed — falling back to local mock data', err);
-          // Render the in-memory SEED_ASSIGNMENTS so the UI is still usable
-          // when Firebase rules block writes (path not configured yet).
-          renderTimeline();
-          return;
-        }
-      }
       state.assignments = records.map((r) => ({
         id: r.firebaseId,
         firebaseId: r.firebaseId,
@@ -176,11 +167,29 @@
 
   // ── Drawer open/close ─────────────────────────────────────────
 
-  function openDrawer() {
+  async function fetchMembers() {
+    if (!global.FirebaseAPI) return;
+    try {
+      const members = await FirebaseAPI.getSolutionTeamMembersFull();
+      if (members.length > 0) {
+        state.members = members;
+      }
+    } catch (e) {
+      console.warn('[allocation] Failed to fetch members:', e);
+    }
+  }
+
+  async function openDrawer() {
     state.isOpen = true;
     dom.drawer.hidden = false;
     requestAnimationFrame(() => dom.drawer.classList.add('is-open'));
     document.body.style.overflow = 'hidden';
+
+    // Fetch members if not yet loaded
+    if (state.members.length === 0) {
+      await fetchMembers();
+    }
+
     // Re-render so timeline picks up current viewport sizing.
     renderTimeline();
     // Auto-scroll today into view after the panel has mounted.
@@ -346,7 +355,7 @@
     }).join('');
 
     // Member sidebar ──────────────────────────────────────────
-    dom.memberCol.innerHTML = MEMBERS.map((m) => {
+    dom.memberCol.innerHTML = state.members.map((m) => {
       const alloc = getCurrentAllocation(m.id, TODAY, state.assignments);
       let pctCls = 'alloc-pct';
       if (alloc.total > 100)      pctCls += ' is-over';
@@ -369,7 +378,7 @@
     }).join('');
 
     // Body grid ───────────────────────────────────────────────
-    const bodyHeight = MEMBERS.length * ROW_H_COMPACT;
+    const bodyHeight = state.members.length * ROW_H_COMPACT;
     dom.bodyInner.style.width = total + 'px';
     dom.bodyInner.style.height = bodyHeight + 'px';
 
@@ -391,7 +400,7 @@
     }
 
     // Rows + blocks.
-    bg += MEMBERS.map((m, rowIdx) => {
+    bg += state.members.map((m, rowIdx) => {
       const allocNow = getCurrentAllocation(m.id, TODAY, state.assignments);
       const isOver = allocNow.total > 100;
       const dim    = state.filter === 'over' && !isOver;
@@ -521,16 +530,28 @@
           e.stopPropagation();
           const tool = toolBtn.dataset.tool;
           if (tool === 'edit') {
-            state.editingBlock = a; state.creatingAt = null; openEditor();
+            if (a.kind === 'solution') {
+              state.detailModal = a; openDetail();
+            } else {
+              state.editingBlock = a; state.creatingAt = null; openEditor();
+            }
           } else if (tool === 'detail') {
             state.detailModal = a; openDetail();
           } else if (tool === 'delete') {
+            if (a.kind === 'solution') {
+              notify('Không thể xóa allocation loại Solution Team', 'error');
+              return;
+            }
             if (confirm('Xác nhận xóa allocation này?')) deleteAllocation(a);
           }
           return;
         }
-        // Default: open inline editor.
-        state.editingBlock = a; state.creatingAt = null; openEditor();
+        // Default: open inline editor for project, detail for solution
+        if (a.kind === 'solution') {
+          state.detailModal = a; openDetail();
+        } else {
+          state.editingBlock = a; state.creatingAt = null; openEditor();
+        }
       });
     });
   }
@@ -591,7 +612,7 @@
 
   function openEditor() {
     const src = state.editingBlock;
-    const memberId   = (src && src.memberId)   || (state.creatingAt && state.creatingAt.memberId) || MEMBERS[0].id;
+    const memberId   = (src && src.memberId)   || (state.creatingAt && state.creatingAt.memberId) || state.members[0].id;
     const kind       = (src && src.kind)       || 'project';
     const projectKey = (src && src.projectKey) || PROJECTS[0].key;
     const projectName= (src && src.projectName)|| PROJECTS[0].name;
@@ -608,16 +629,15 @@
         <form class="alloc-editor__form" id="allocEditorForm">
           <div class="alloc-field">
             <label>Member</label>
-            <select name="memberId">${MEMBERS.map((m) => `<option value="${m.id}" ${m.id === memberId ? 'selected' : ''}>${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join('')}</select>
+            <select name="memberId">${state.members.map((m) => `<option value="${m.id}" ${m.id === memberId ? 'selected' : ''}>${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join('')}</select>
           </div>
 
           <div class="alloc-field">
             <label>Type</label>
             <div class="alloc-kind">
-              <button type="button" class="alloc-kind__opt is-project ${kind === 'project'  ? 'is-active' : ''}" data-kind="project">Project</button>
-              <button type="button" class="alloc-kind__opt is-solution ${kind === 'solution' ? 'is-active' : ''}" data-kind="solution">Solution Team</button>
+              <button type="button" class="alloc-kind__opt is-project is-active" data-kind="project" disabled>Project</button>
             </div>
-            <input type="hidden" name="kind" value="${kind}">
+            <input type="hidden" name="kind" value="project">
           </div>
 
           <div class="alloc-field">
@@ -738,10 +758,15 @@
   function openDetail() {
     const a = state.detailModal;
     if (!a) return;
-    const member = MEMBERS.find((m) => m.id === a.memberId);
+    const member = state.members.find((m) => m.id === a.memberId);
     const memberStyle = member
       ? `background:linear-gradient(135deg, oklch(0.7 0.22 ${member.hue} / 0.25), oklch(0.7 0.22 ${member.hue} / 0.08));border-color:oklch(0.7 0.22 ${member.hue} / 0.35);color:oklch(0.92 0.12 ${member.hue});`
       : '';
+
+    const isSolution = a.kind === 'solution';
+    const requestDisplay = isSolution
+      ? `<div class="alloc-field__readonly">[${escapeHtml(a.projectKey)}] ${escapeHtml(a.projectName?.replace(/^Request:\s*/i, '') || '')}</div>`
+      : `<select name="projectKey">${PROJECTS.map((p) => `<option value="${p.key}" ${p.key === a.projectKey ? 'selected' : ''}>${p.key} - ${escapeHtml(p.name)}</option>`).join('')}</select>`;
 
     dom.detailBody.innerHTML = `
       <header class="alloc-detail__head">
@@ -752,56 +777,60 @@
         </div>
         <button class="modal-close" data-action="alloc-close-detail">×</button>
       </header>
+      ${isSolution ? '<div class="alloc-detail__notice">Allocation loại Solution Team chỉ được tạo tự động khi member bắt đầu xử lý Request và không thể chỉnh sửa.</div>' : ''}
       <form class="alloc-detail__form" id="allocDetailForm">
         <div class="alloc-field-row">
           <div class="alloc-field">
             <label>Member</label>
-            <select name="memberId">${MEMBERS.map((m) => `<option value="${m.id}" ${m.id === a.memberId ? 'selected' : ''}>${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join('')}</select>
+            ${isSolution
+              ? `<div class="alloc-field__readonly">${member ? escapeHtml(member.name + ' - ' + member.role) : ''}</div>`
+              : `<select name="memberId">${state.members.map((m) => `<option value="${m.id}" ${m.id === a.memberId ? 'selected' : ''}>${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join('')}</select>`}
           </div>
           <div class="alloc-field">
             <label>Type</label>
             <div class="alloc-kind">
-              <button type="button" class="alloc-kind__opt is-project ${a.kind === 'project'  ? 'is-active' : ''}" data-kind="project">Project</button>
-              <button type="button" class="alloc-kind__opt is-solution ${a.kind === 'solution' ? 'is-active' : ''}" data-kind="solution">Solution</button>
+              ${isSolution
+                ? '<button type="button" class="alloc-kind__opt is-solution is-active" disabled data-kind="solution">Solution Team</button>'
+                : '<button type="button" class="alloc-kind__opt is-project is-active" disabled data-kind="project">Project</button>'}
             </div>
             <input type="hidden" name="kind" value="${a.kind}">
           </div>
         </div>
 
         <div class="alloc-field">
-          <label>Project</label>
-          <select name="projectKey">${PROJECTS.map((p) => `<option value="${p.key}" ${p.key === a.projectKey ? 'selected' : ''}>${p.key} - ${escapeHtml(p.name)}</option>`).join('')}</select>
+          <label>${isSolution ? 'Request' : 'Project'}</label>
+          ${requestDisplay}
         </div>
 
         <div class="alloc-field">
           <label>Allocation % <span class="alloc-mono" data-role="pctLabel">${a.percent}%</span></label>
-          <input type="range" name="percent" min="10" max="100" step="5" value="${a.percent}">
+          <input type="range" name="percent" min="10" max="100" step="5" value="${a.percent}" ${isSolution ? 'disabled' : ''}>
           <div class="alloc-range-scale"><span>10%</span><span class="alloc-range-scale__sep"></span><span>50%</span><span class="alloc-range-scale__sep"></span><span>100%</span></div>
         </div>
 
         <div class="alloc-field-row">
           <div class="alloc-field">
             <label>Start Date</label>
-            <input type="date" name="start" value="${a.start}">
+            <input type="date" name="start" value="${a.start}" ${isSolution ? 'disabled' : ''}>
           </div>
           <div class="alloc-field">
             <label>End Date</label>
-            <input type="date" name="end" value="${a.end}">
+            <input type="date" name="end" value="${a.end}" ${isSolution ? 'disabled' : ''}>
           </div>
         </div>
 
         <div class="alloc-field">
           <label>Status</label>
           <div class="alloc-status-group">
-            ${['scheduled','active','done'].map((s) => `<button type="button" class="alloc-status-opt ${(a.status || 'active') === s ? 'is-active' : ''}" data-status="${s}">${s}</button>`).join('')}
+            ${['scheduled','active','done'].map((s) => `<button type="button" class="alloc-status-opt ${(a.status || 'active') === s ? 'is-active' : ''}" data-status="${s}" ${isSolution ? 'disabled' : ''}>${s}</button>`).join('')}
           </div>
           <input type="hidden" name="status" value="${a.status || 'active'}">
         </div>
 
         <div class="alloc-detail__actions">
-          <button type="submit" class="alloc-btn alloc-btn--primary">Lưu thay đổi</button>
-          <button type="button" class="alloc-btn alloc-btn--danger" data-action="alloc-detail-delete">Xóa</button>
-          <button type="button" class="alloc-btn" data-action="alloc-close-detail">Hủy</button>
+          ${isSolution ? '' : '<button type="submit" class="alloc-btn alloc-btn--primary">Lưu thay đổi</button>'}
+          ${isSolution ? '' : '<button type="button" class="alloc-btn alloc-btn--danger" data-action="alloc-detail-delete">Xóa</button>'}
+          <button type="button" class="alloc-btn" data-action="alloc-close-detail">${isSolution ? 'Đóng' : 'Hủy'}</button>
         </div>
       </form>
     `;
