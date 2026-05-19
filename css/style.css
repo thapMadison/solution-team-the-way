@@ -68,15 +68,23 @@ nav {
 /* Absolutely center the nav links — independent of brand/auth widths */
 .nav-links.nav-main {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
-/* Hide Request Log by default — shown by JS after auth check confirms login */
+.nav-links.nav-main a {
+  pointer-events: auto;
+}
+/* Hide Request Log by default — shown when html.is-logged-in (set by inline script in <head>) */
 .nav-links a[href="requests-log.html"] {
   display: none;
 }
-.nav-links a[href="requests-log.html"].is-visible {
+html.is-logged-in .nav-links a[href="requests-log.html"] {
   display: inline-block;
 }
 /* Push auth + theme group to the right edge */
