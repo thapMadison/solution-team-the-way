@@ -846,7 +846,7 @@
 
             <div class="rl-section">
               <div class="rl-section__title">Description</div>
-              ${canFullEdit() || (canNormalUserEdit(data))
+              ${!canFullEdit() && canNormalUserEdit(data)
                 ? `<textarea id="descriptionEdit" class="modal-input" rows="4">${escapeHtml(data.description || '')}</textarea>`
                 : `<div class="rl-section__body"><p>${escapeHtml(data.description)}</p></div>`
               }
@@ -854,33 +854,64 @@
 
             <div class="rl-section">
               <div class="rl-section__title">Outcome &amp; feedback</div>
-              <textarea id="outcomeAndFeedback" class="modal-input" placeholder="Describe outcome and feedback from PM/customer…">${escapeHtml(data.outcomeAndFeedback || '')}</textarea>
+              ${canFullEdit()
+                ? `<textarea id="outcomeAndFeedback" class="modal-input" placeholder="Describe outcome and feedback from PM/customer…">${escapeHtml(data.outcomeAndFeedback || '')}</textarea>`
+                : `<div class="rl-section__body"><p>${data.outcomeAndFeedback ? escapeHtml(data.outcomeAndFeedback) : '<span style="color:var(--rl-muted);">Not set</span>'}</p></div>`
+              }
             </div>
 
             <div class="rl-section">
               <div class="rl-section__title">Lessons learned</div>
-              <textarea id="lessonsLearned" class="modal-input" placeholder="Key takeaways…">${escapeHtml(data.lessonsLearned || '')}</textarea>
+              ${canFullEdit()
+                ? `<textarea id="lessonsLearned" class="modal-input" placeholder="Key takeaways…">${escapeHtml(data.lessonsLearned || '')}</textarea>`
+                : `<div class="rl-section__body"><p>${data.lessonsLearned ? escapeHtml(data.lessonsLearned) : '<span style="color:var(--rl-muted);">Not set</span>'}</p></div>`
+              }
             </div>
 
             <div class="rl-section">
-              <div class="rl-section__title">Activity</div>
-              <div class="rl-activity">
-                ${activityItems.map((a, i, arr) => `
-                  <div class="rl-activity__item">
-                    <div class="rl-activity__rail">
-                      <div class="rl-activity__icon" style="color:${a.color || 'inherit'}">${a.icon}</div>
-                      ${i < arr.length - 1 ? '<div class="rl-activity__line"></div>' : ''}
-                    </div>
-                    <div class="rl-activity__body">
-                      <div class="rl-activity__line-text">
-                        <strong>${escapeHtml(a.actor)}</strong>
-                        <em>${escapeHtml(a.text)}</em>
-                        ${a.badge ? `<span class="rl-tag">${escapeHtml(a.badge)}</span>` : ''}
+              <div class="rl-tabs">
+                <button class="rl-tab" data-tab="activity">Activity</button>
+                <button class="rl-tab is-active" data-tab="comments">Comments <span class="rl-tab__count">${(data.comments || []).length}</span></button>
+              </div>
+
+              <div class="rl-tab-content" data-tab-content="activity" hidden>
+                <div class="rl-activity">
+                  ${activityItems.map((a, i, arr) => `
+                    <div class="rl-activity__item">
+                      <div class="rl-activity__rail">
+                        <div class="rl-activity__icon" style="color:${a.color || 'inherit'}">${a.icon}</div>
+                        ${i < arr.length - 1 ? '<div class="rl-activity__line"></div>' : ''}
                       </div>
-                      <div class="rl-activity__meta">${escapeHtml(a.meta)}</div>
+                      <div class="rl-activity__body">
+                        <div class="rl-activity__line-text">
+                          <strong>${escapeHtml(a.actor)}</strong>
+                          <em>${escapeHtml(a.text)}</em>
+                          ${a.badge ? `<span class="rl-tag">${escapeHtml(a.badge)}</span>` : ''}
+                        </div>
+                        <div class="rl-activity__meta">${escapeHtml(a.meta)}</div>
+                      </div>
                     </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="rl-tab-content" data-tab-content="comments">
+                <div class="rl-comments" id="commentsContainer">
+                  ${renderCommentsHtml(data.comments || [])}
+                </div>
+                <div class="rl-comment-form" id="commentForm">
+                  <div class="rl-comment-form__reply-to" id="replyIndicator" hidden>
+                    <span>Replying to <strong id="replyToName"></strong></span>
+                    <button type="button" class="rl-comment-form__cancel-reply" data-action="cancel-reply">${ICONS.x}</button>
                   </div>
-                `).join('')}
+                  <div class="rl-comment-input-wrapper">
+                    <textarea id="commentInput" class="rl-comment-input" placeholder="Add a comment... Use @ to mention" rows="2"></textarea>
+                    <div class="rl-mention-dropdown" id="mentionDropdown" hidden></div>
+                  </div>
+                  <div class="rl-comment-form__actions">
+                    <button type="button" class="rl-btn rl-btn--primary" data-action="submit-comment">Post comment</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -910,10 +941,17 @@
 
             <div class="rl-field">
               <label>Priority</label>
-              <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rl-border);border-radius:var(--rl-radius-sm);background:var(--rl-card);">
-                <span class="rl-row__prio">${priorityBarsHtml}</span>
-                <span style="font-size:13px;color:${cssVarColorForPriority(data.priority)}">${escapeHtml(priority.label)}</span>
-              </div>
+              ${!canFullEdit() && canNormalUserEdit(data)
+                ? `<select id="prioritySelect">
+                     ${Object.entries(PRIORITY).map(([key, info]) => `
+                       <option value="${key}" ${key === data.priority ? 'selected' : ''}>${escapeHtml(info.label)}</option>
+                     `).join('')}
+                   </select>`
+                : `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--rl-border);border-radius:var(--rl-radius-sm);background:var(--rl-card);">
+                     <span class="rl-row__prio">${priorityBarsHtml}</span>
+                     <span style="font-size:13px;color:${cssVarColorForPriority(data.priority)}">${escapeHtml(priority.label)}</span>
+                   </div>`
+              }
             </div>
 
             <div class="rl-field">
@@ -1070,6 +1108,396 @@
     return items;
   }
 
+  // ── Comment system ─────────────────────────────────────────
+
+  let replyToCommentId = null;
+
+  function renderCommentsHtml(comments) {
+    if (!comments || comments.length === 0) {
+      return '<div class="rl-comments__empty">No comments yet. Be the first to comment!</div>';
+    }
+
+    // Separate top-level comments and replies
+    const topLevel = comments.filter(c => !c.parentId);
+    const replies = comments.filter(c => c.parentId);
+
+    // Group replies by parentId
+    const repliesByParent = {};
+    replies.forEach(r => {
+      if (!repliesByParent[r.parentId]) repliesByParent[r.parentId] = [];
+      repliesByParent[r.parentId].push(r);
+    });
+
+    return topLevel.map(comment => renderCommentWithReplies(comment, repliesByParent)).join('');
+  }
+
+  function renderCommentWithReplies(comment, repliesByParent) {
+    const commentReplies = repliesByParent[comment.id] || [];
+    const currentUserEmail = window.AuthService?.getProfile()?.email;
+    const isOwner = currentUserEmail === comment.authorEmail;
+    const canDelete = isOwner || canFullEdit();
+    const editedIndicator = comment.editedAt ? `<span class="rl-comment__edited">(edited)</span>` : '';
+
+    return `
+      <div class="rl-comment" data-comment-id="${escapeHtml(comment.id)}">
+        <div class="rl-comment__main">
+          <div class="rl-comment__avatar">
+            <span class="rl-avatar">${escapeHtml(initials(comment.author))}</span>
+          </div>
+          <div class="rl-comment__content">
+            <div class="rl-comment__header">
+              <strong class="rl-comment__author">${escapeHtml(comment.author)}</strong>
+              <span class="rl-comment__time">${escapeHtml(formatDateTime(comment.createdAt))} ${editedIndicator}</span>
+            </div>
+            <div class="rl-comment__text" data-comment-text="${escapeHtml(comment.id)}">${formatCommentText(comment.text)}</div>
+            <div class="rl-comment__actions" data-comment-actions="${escapeHtml(comment.id)}">
+              <button type="button" class="rl-comment__action" data-action="reply-comment" data-comment-id="${escapeHtml(comment.id)}" data-author="${escapeHtml(comment.author)}">Reply</button>
+              ${isOwner ? `<button type="button" class="rl-comment__action" data-action="edit-comment" data-comment-id="${escapeHtml(comment.id)}">Edit</button>` : ''}
+              ${canDelete ? `<button type="button" class="rl-comment__action rl-comment__action--danger" data-action="delete-comment" data-comment-id="${escapeHtml(comment.id)}">Delete</button>` : ''}
+            </div>
+          </div>
+        </div>
+        ${commentReplies.length > 0 ? `
+          <div class="rl-comment__replies">
+            ${commentReplies.map(reply => renderReply(reply, comment.id)).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function renderReply(reply, parentId) {
+    const currentUserEmail = window.AuthService?.getProfile()?.email;
+    const isOwner = currentUserEmail === reply.authorEmail;
+    const canDelete = isOwner || canFullEdit();
+    const editedIndicator = reply.editedAt ? `<span class="rl-comment__edited">(edited)</span>` : '';
+
+    return `
+      <div class="rl-comment rl-comment--reply" data-comment-id="${escapeHtml(reply.id)}">
+        <div class="rl-comment__main">
+          <div class="rl-comment__avatar">
+            <span class="rl-avatar" style="width:24px;height:24px;font-size:10px;">${escapeHtml(initials(reply.author))}</span>
+          </div>
+          <div class="rl-comment__content">
+            <div class="rl-comment__header">
+              <strong class="rl-comment__author">${escapeHtml(reply.author)}</strong>
+              <span class="rl-comment__time">${escapeHtml(formatDateTime(reply.createdAt))} ${editedIndicator}</span>
+            </div>
+            <div class="rl-comment__text" data-comment-text="${escapeHtml(reply.id)}">${formatCommentText(reply.text)}</div>
+            <div class="rl-comment__actions" data-comment-actions="${escapeHtml(reply.id)}">
+              <button type="button" class="rl-comment__action" data-action="reply-comment" data-comment-id="${escapeHtml(parentId)}" data-author="${escapeHtml(reply.author)}">Reply</button>
+              ${isOwner ? `<button type="button" class="rl-comment__action" data-action="edit-comment" data-comment-id="${escapeHtml(reply.id)}">Edit</button>` : ''}
+              ${canDelete ? `<button type="button" class="rl-comment__action rl-comment__action--danger" data-action="delete-comment" data-comment-id="${escapeHtml(reply.id)}">Delete</button>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function formatCommentText(text) {
+    if (!text) return '';
+    // Escape HTML first, then convert @mentions to styled spans
+    let escaped = escapeHtml(text);
+    // Convert @mentions - match @[Name] format or @Name (supports Unicode)
+    escaped = escaped.replace(/@\[([^\]]+)\]/g, '<span class="rl-mention">@$1</span>');
+    escaped = escaped.replace(/@([\p{L}\p{N}_.]+)/gu, '<span class="rl-mention">@$1</span>');
+    return escaped;
+  }
+
+  function getMentionableUsers() {
+    // Combine team members with requester info if available
+    const users = [];
+    TEAM_MEMBERS.forEach(name => {
+      if (name !== 'Unassigned') {
+        users.push({ name, email: null });
+      }
+    });
+    return users;
+  }
+
+  function showMentionDropdown(query, inputEl) {
+    const dropdown = document.getElementById('mentionDropdown');
+    if (!dropdown) return;
+
+    const users = getMentionableUsers();
+    const filtered = users.filter(u =>
+      u.name.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 5);
+
+    if (filtered.length === 0) {
+      dropdown.hidden = true;
+      return;
+    }
+
+    dropdown.innerHTML = filtered.map((u, i) => `
+      <button type="button" class="rl-mention-item ${i === 0 ? 'is-selected' : ''}" data-mention="${escapeHtml(u.name)}">
+        <span class="rl-avatar" style="width:24px;height:24px;font-size:10px;">${escapeHtml(initials(u.name))}</span>
+        <span>${escapeHtml(u.name)}</span>
+      </button>
+    `).join('');
+
+    dropdown.hidden = false;
+  }
+
+  function hideMentionDropdown() {
+    const dropdown = document.getElementById('mentionDropdown');
+    if (dropdown) dropdown.hidden = true;
+  }
+
+  function insertMention(name) {
+    const input = document.getElementById('commentInput');
+    if (!input) return;
+
+    const text = input.value;
+    const cursorPos = input.selectionStart;
+
+    // Find the @ or @[ before cursor
+    const beforeCursor = text.substring(0, cursorPos);
+    let atIndex = beforeCursor.lastIndexOf('@[');
+    if (atIndex === -1) atIndex = beforeCursor.lastIndexOf('@');
+
+    if (atIndex !== -1) {
+      // Use bracket format for names with spaces
+      const mention = name.includes(' ') ? `@[${name}]` : `@${name}`;
+      const newText = text.substring(0, atIndex) + mention + ' ' + text.substring(cursorPos);
+      input.value = newText;
+      const newPos = atIndex + mention.length + 1;
+      input.setSelectionRange(newPos, newPos);
+      input.focus();
+    }
+
+    hideMentionDropdown();
+  }
+
+  async function submitComment() {
+    const input = document.getElementById('commentInput');
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) {
+      showNotification('error', 'Please enter a comment');
+      return;
+    }
+
+    if (!activeRequestId) return;
+
+    const profile = window.AuthService?.getProfile();
+    const user = window.AuthService?.getUser();
+
+    const comment = {
+      id: 'c-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      author: profile?.displayName || user?.email?.split('@')[0] || 'Anonymous',
+      authorEmail: profile?.email || user?.email || null,
+      text: text,
+      createdAt: new Date().toISOString(),
+      parentId: replyToCommentId || null,
+      mentions: extractMentions(text)
+    };
+
+    try {
+      const reqData = await FirebaseAPI.getRequest(activeRequestId);
+      const comments = Array.isArray(reqData.comments) ? [...reqData.comments, comment] : [comment];
+
+      await FirebaseAPI.updateRequest(activeRequestId, {
+        comments,
+        updatedAt: new Date().toISOString()
+      });
+
+      // Reset form
+      input.value = '';
+      replyToCommentId = null;
+      document.getElementById('replyIndicator').hidden = true;
+
+      // Re-render comments
+      document.getElementById('commentsContainer').innerHTML = renderCommentsHtml(comments);
+
+      // Update comment count in tab
+      const countEl = document.querySelector('.rl-tab[data-tab="comments"] .rl-tab__count');
+      if (countEl) countEl.textContent = comments.length;
+
+      showNotification('success', 'Comment added');
+    } catch (err) {
+      console.error('Error adding comment:', err);
+      showNotification('error', 'Failed to add comment');
+    }
+  }
+
+  async function deleteComment(commentId) {
+    if (!activeRequestId || !commentId) return;
+    if (!confirm('Delete this comment?')) return;
+
+    try {
+      const reqData = await FirebaseAPI.getRequest(activeRequestId);
+      let comments = Array.isArray(reqData.comments) ? reqData.comments : [];
+
+      // Remove the comment and its replies
+      comments = comments.filter(c => c.id !== commentId && c.parentId !== commentId);
+
+      await FirebaseAPI.updateRequest(activeRequestId, {
+        comments,
+        updatedAt: new Date().toISOString()
+      });
+
+      // Re-render comments
+      document.getElementById('commentsContainer').innerHTML = renderCommentsHtml(comments);
+
+      // Update comment count in tab
+      const countEl = document.querySelector('.rl-tab[data-tab="comments"] .rl-tab__count');
+      if (countEl) countEl.textContent = comments.length;
+
+      showNotification('success', 'Comment deleted');
+    } catch (err) {
+      console.error('Error deleting comment:', err);
+      showNotification('error', 'Failed to delete comment');
+    }
+  }
+
+  function extractMentions(text) {
+    const mentions = [];
+    // Match @[Name with spaces] format
+    const bracketRegex = /@\[([^\]]+)\]/g;
+    let match;
+    while ((match = bracketRegex.exec(text)) !== null) {
+      mentions.push(match[1]);
+    }
+    // Match @Name format (Unicode support)
+    const simpleRegex = /@([\p{L}\p{N}_.]+)/gu;
+    while ((match = simpleRegex.exec(text)) !== null) {
+      if (!mentions.includes(match[1])) {
+        mentions.push(match[1]);
+      }
+    }
+    return mentions;
+  }
+
+  function setReplyTo(commentId, authorName) {
+    replyToCommentId = commentId;
+    const indicator = document.getElementById('replyIndicator');
+    const nameEl = document.getElementById('replyToName');
+    const input = document.getElementById('commentInput');
+
+    if (indicator && nameEl) {
+      nameEl.textContent = authorName;
+      indicator.hidden = false;
+    }
+
+    // Auto-mention the author being replied to (use bracket format for names with spaces)
+    if (input) {
+      const mention = authorName.includes(' ') ? `@[${authorName}] ` : `@${authorName} `;
+      if (!input.value.includes(mention.trim())) {
+        input.value = mention + input.value;
+      }
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+  }
+
+  function cancelReply() {
+    replyToCommentId = null;
+    const indicator = document.getElementById('replyIndicator');
+    if (indicator) indicator.hidden = true;
+
+    // Clear the input if it only contains the auto-mention
+    const input = document.getElementById('commentInput');
+    if (input && input.value.match(/^@\[?[^\]]*\]?\s*$/)) {
+      input.value = '';
+    }
+  }
+
+  let editingCommentId = null;
+
+  function startEditComment(commentId) {
+    // Cancel any previous edit
+    if (editingCommentId) cancelEditComment();
+
+    editingCommentId = commentId;
+    const textEl = document.querySelector(`[data-comment-text="${commentId}"]`);
+    const actionsEl = document.querySelector(`[data-comment-actions="${commentId}"]`);
+
+    if (!textEl || !actionsEl) return;
+
+    // Get current comment data
+    FirebaseAPI.getRequest(activeRequestId).then(reqData => {
+      const comments = reqData.comments || [];
+      const comment = comments.find(c => c.id === commentId);
+      if (!comment) return;
+
+      // Replace text with textarea
+      const originalText = comment.text;
+      textEl.innerHTML = `
+        <textarea class="rl-comment-edit-input" data-original="${escapeHtml(originalText)}">${escapeHtml(originalText)}</textarea>
+      `;
+
+      // Replace actions with save/cancel
+      actionsEl.innerHTML = `
+        <button type="button" class="rl-comment__action rl-comment__action--primary" data-action="save-edit-comment" data-comment-id="${escapeHtml(commentId)}">Save</button>
+        <button type="button" class="rl-comment__action" data-action="cancel-edit-comment" data-comment-id="${escapeHtml(commentId)}">Cancel</button>
+      `;
+
+      // Focus the textarea
+      const textarea = textEl.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+      }
+    });
+  }
+
+  function cancelEditComment() {
+    if (!editingCommentId) return;
+
+    // Re-render comments to restore original state
+    FirebaseAPI.getRequest(activeRequestId).then(reqData => {
+      document.getElementById('commentsContainer').innerHTML = renderCommentsHtml(reqData.comments || []);
+    });
+
+    editingCommentId = null;
+  }
+
+  async function saveEditComment(commentId) {
+    const textEl = document.querySelector(`[data-comment-text="${commentId}"]`);
+    const textarea = textEl?.querySelector('textarea');
+
+    if (!textarea) return;
+
+    const newText = textarea.value.trim();
+    if (!newText) {
+      showNotification('error', 'Comment cannot be empty');
+      return;
+    }
+
+    try {
+      const reqData = await FirebaseAPI.getRequest(activeRequestId);
+      const comments = (reqData.comments || []).map(c => {
+        if (c.id === commentId) {
+          return {
+            ...c,
+            text: newText,
+            editedAt: new Date().toISOString(),
+            mentions: extractMentions(newText)
+          };
+        }
+        return c;
+      });
+
+      await FirebaseAPI.updateRequest(activeRequestId, {
+        comments,
+        updatedAt: new Date().toISOString()
+      });
+
+      editingCommentId = null;
+
+      // Re-render comments
+      document.getElementById('commentsContainer').innerHTML = renderCommentsHtml(comments);
+
+      showNotification('success', 'Comment updated');
+    } catch (err) {
+      console.error('Error updating comment:', err);
+      showNotification('error', 'Failed to update comment');
+    }
+  }
+
   function diffField(label, oldValue, newValue, formatter = (v) => v) {
     const a = oldValue == null ? '' : String(oldValue);
     const b = newValue == null ? '' : String(newValue);
@@ -1145,10 +1573,12 @@
       }
 
       // Get field values based on permissions
+      // User: can only edit Description and Priority when status is Pending
+      // Solution-team: cannot edit Description
       const descriptionEl = document.getElementById('descriptionEdit');
       const newDescription = descriptionEl ? descriptionEl.value.trim() : oldData.description;
 
-      let newStatus, newAssignee, newDeadline, newEstimatedTime, newLoggedEffort, newOutcome, newLessons;
+      let newStatus, newAssignee, newDeadline, newEstimatedTime, newLoggedEffort, newOutcome, newLessons, newPriority;
 
       if (isSolutionTeamMember) {
         newStatus        = document.getElementById('statusSelect').value;
@@ -1159,8 +1589,11 @@
         newLoggedEffort  = document.getElementById('loggedEffort').value;
         newOutcome       = document.getElementById('outcomeAndFeedback').value.trim();
         newLessons       = document.getElementById('lessonsLearned').value.trim();
+        newPriority      = oldData.priority; // Solution team cannot change priority via detail modal
       } else {
-        // Normal users can only edit description (and title/type/priority but we don't have UI for those yet)
+        // Normal users can only edit description and priority when pending
+        const priorityEl = document.getElementById('prioritySelect');
+        newPriority      = priorityEl ? priorityEl.value : oldData.priority;
         newStatus        = oldData.status;
         newAssignee      = oldData.assignee;
         newDeadline      = oldData.deadline;
@@ -1186,6 +1619,7 @@
       const candidates = [
         diffField('Description',        oldData.description,        newDescription,   () => 'Updated'),
         diffField('Status',             oldData.status,             newStatus,        (k) => statusInfo(k).label),
+        diffField('Priority',           oldData.priority,           newPriority,      (k) => priorityInfo(k).label),
         diffField('Assignee',           oldData.assignee || 'Unassigned', newAssignee || 'Unassigned'),
         diffField('Deadline',           oldData.deadline,           newDeadline),
         diffField('Estimated Time',     oldData.estimatedTime,      newEstimatedTime, hours),
@@ -1198,6 +1632,7 @@
       const updates = {
         description:        newDescription,
         status:             newStatus,
+        priority:           newPriority,
         assignee:           newAssignee,
         deadline:           newDeadline      || null,
         estimatedTime:      newEstimatedTime || null,
@@ -1352,6 +1787,100 @@
       const action = e.target.closest('[data-action]')?.dataset.action;
       if (action === 'save-request')   saveRequest();
       if (action === 'delete-request') deleteRequest();
+      if (action === 'submit-comment') submitComment();
+      if (action === 'cancel-reply')   cancelReply();
+      if (action === 'reply-comment') {
+        const btn = e.target.closest('[data-action="reply-comment"]');
+        setReplyTo(btn.dataset.commentId, btn.dataset.author);
+      }
+      if (action === 'delete-comment') {
+        const btn = e.target.closest('[data-action="delete-comment"]');
+        deleteComment(btn.dataset.commentId);
+      }
+      if (action === 'edit-comment') {
+        const btn = e.target.closest('[data-action="edit-comment"]');
+        startEditComment(btn.dataset.commentId);
+      }
+      if (action === 'save-edit-comment') {
+        const btn = e.target.closest('[data-action="save-edit-comment"]');
+        saveEditComment(btn.dataset.commentId);
+      }
+      if (action === 'cancel-edit-comment') {
+        cancelEditComment();
+      }
+
+      // Tab switching
+      const tab = e.target.closest('.rl-tab');
+      if (tab) {
+        const tabName = tab.dataset.tab;
+        document.querySelectorAll('.rl-tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === tabName));
+        document.querySelectorAll('.rl-tab-content').forEach(c => c.hidden = c.dataset.tabContent !== tabName);
+      }
+
+      // Mention dropdown selection
+      const mentionItem = e.target.closest('.rl-mention-item');
+      if (mentionItem) {
+        insertMention(mentionItem.dataset.mention);
+      }
+    });
+
+    // Mention input handling (delegated)
+    dom.modalBody.addEventListener('input', (e) => {
+      if (e.target.id === 'commentInput') {
+        const text = e.target.value;
+        const cursorPos = e.target.selectionStart;
+        const beforeCursor = text.substring(0, cursorPos);
+        // Match @query or @[partial query (without closing bracket yet)
+        const atMatch = beforeCursor.match(/@\[?([^\]@]*)$/);
+
+        if (atMatch && !beforeCursor.match(/@\[[^\]]+\]$/)) {
+          showMentionDropdown(atMatch[1], e.target);
+        } else {
+          hideMentionDropdown();
+        }
+      }
+    });
+
+    // Handle keyboard in comment input
+    dom.modalBody.addEventListener('keydown', (e) => {
+      if (e.target.id === 'commentInput') {
+        const dropdown = document.getElementById('mentionDropdown');
+        if (dropdown && !dropdown.hidden) {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const items = dropdown.querySelectorAll('.rl-mention-item');
+            const selected = dropdown.querySelector('.is-selected');
+            const idx = Array.from(items).indexOf(selected);
+            const newIdx = e.key === 'ArrowDown'
+              ? Math.min(idx + 1, items.length - 1)
+              : Math.max(idx - 1, 0);
+            items.forEach((item, i) => item.classList.toggle('is-selected', i === newIdx));
+          } else if (e.key === 'Enter' || e.key === 'Tab') {
+            const selected = dropdown.querySelector('.is-selected');
+            if (selected) {
+              e.preventDefault();
+              insertMention(selected.dataset.mention);
+            }
+          } else if (e.key === 'Escape') {
+            hideMentionDropdown();
+          }
+        } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          submitComment();
+        }
+      }
+
+      // Edit comment textarea keyboard handling
+      if (e.target.classList.contains('rl-comment-edit-input')) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          const commentId = e.target.closest('[data-comment-id]')?.dataset.commentId;
+          if (commentId) saveEditComment(commentId);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelEditComment();
+        }
+      }
     });
 
     // New-request modal
