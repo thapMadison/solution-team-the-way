@@ -1,6 +1,9 @@
 # Node modules (if any)
 node_modules/
 
+# docs
+docs/
+
 # OS files
 .DS_Store
 Thumbs.db
