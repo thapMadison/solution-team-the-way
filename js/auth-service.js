@@ -1,5 +1,5 @@
 /**
- * Authentication service — wraps Firebase Authentication.
+ * Authentication service — wraps Firebase Authentication with Microsoft OAuth.
  *
  * Roles:
  *   - guest:         not logged in → can only view Roles & Request Process pages
@@ -15,13 +15,63 @@
   'use strict';
 
   const USERS_PATH = 'users';
+  const CACHE_KEY = 'auth_cache';
+
+  // Solution team members - email to memberId mapping
+  const SOLUTION_TEAM_EMAILS = {
+    'thap.nguyen@madison.dev': 'm1',
+    'gianh.tran@madison.dev': 'm2',
+    'lam.pham.tung@madison.dev': 'm3',
+    'qua.vo.van@madison.dev': 'm4',
+    'huy.phan@madison.dev': 'm5'
+  };
 
   const state = {
     user: null,           // Firebase Auth user object
     profile: null,        // { email, displayName, role, memberId, ... } from /users/{uid}
     ready: false,         // true after first auth state check
-    listeners: []
+    listeners: [],
+    cachedState: null     // Restored from localStorage on load
   };
+
+  // ── LocalStorage Cache ────────────────────────────────────────
+  function saveCache(user, profile) {
+    if (user && profile) {
+      const cache = {
+        uid: user.uid,
+        email: user.email,
+        displayName: profile.displayName,
+        role: profile.role,
+        memberId: profile.memberId || null,
+        timestamp: Date.now()
+      };
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+      } catch (e) { /* quota exceeded, ignore */ }
+    } else {
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
+
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const cache = JSON.parse(raw);
+      // Cache expires after 7 days
+      if (Date.now() - cache.timestamp > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      }
+      return cache;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getCache() {
+    return state.cachedState;
+  }
 
   function isGuest()        { return !state.user; }
   function isLoggedIn()     { return !!state.user; }
@@ -61,11 +111,20 @@
     await firebaseDb.ref(`${USERS_PATH}/${uid}`).update(data);
   }
 
-  async function createUserProfile(uid, email, displayName, role, memberId) {
+  function determineRole(email) {
+    const lowerEmail = (email || '').toLowerCase();
+    if (SOLUTION_TEAM_EMAILS[lowerEmail]) {
+      return { role: 'solution-team', memberId: SOLUTION_TEAM_EMAILS[lowerEmail] };
+    }
+    return { role: 'user', memberId: null };
+  }
+
+  async function createUserProfile(uid, email, displayName) {
+    const { role, memberId } = determineRole(email);
     const profile = {
       email,
       displayName: displayName || email.split('@')[0],
-      role: role || 'user',
+      role,
       createdAt: new Date().toISOString()
     };
     if (memberId) profile.memberId = memberId;
@@ -75,31 +134,26 @@
 
   // ── Auth actions ──────────────────────────────────────────────
 
-  async function signIn(email, password) {
-    const auth = firebase.auth();
-    const cred = await auth.signInWithEmailAndPassword(email, password);
-    return cred.user;
+  async function signInWithMicrosoft() {
+    const provider = new firebase.auth.OAuthProvider('microsoft.com');
+    provider.setCustomParameters({
+      prompt: 'select_account',
+      tenant: 'common'
+    });
+    const result = await firebase.auth().signInWithPopup(provider);
+    return result.user;
   }
 
   async function signOut() {
     await firebase.auth().signOut();
   }
 
-  async function changePassword(currentPassword, newPassword) {
-    const user = firebase.auth().currentUser;
-    if (!user || !user.email) throw new Error('Not logged in');
-    const cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-    await user.reauthenticateWithCredential(cred);
-    await user.updatePassword(newPassword);
-  }
-
-  async function sendPasswordReset(email) {
-    await firebase.auth().sendPasswordResetEmail(email);
-  }
-
   // ── Bootstrap ─────────────────────────────────────────────────
 
   function bootstrap() {
+    // Load cache immediately (before Firebase)
+    state.cachedState = loadCache();
+
     if (!global.firebase || !firebase.auth) {
       console.warn('[auth] Firebase Auth SDK not loaded');
       state.ready = true;
@@ -112,11 +166,14 @@
       if (user) {
         state.profile = await fetchProfile(user.uid);
         if (!state.profile) {
-          state.profile = await createUserProfile(user.uid, user.email, user.displayName, 'user', null);
+          // First login - create profile from Microsoft account info
+          state.profile = await createUserProfile(user.uid, user.email, user.displayName);
         }
       } else {
         state.profile = null;
       }
+      // Update cache
+      saveCache(state.user, state.profile);
       state.ready = true;
       notifyListeners();
     });
@@ -129,324 +186,6 @@
     setTimeout(bootstrap, 0);
   }
 
-  /**
-   * Seed test users (run once from browser console).
-   * Usage: AuthService.seedTestUsers()
-   */
-  async function seedTestUsers() {
-    const auth = firebase.auth();
-    const testUsers = [
-      // Role: solution-team
-      {
-        email: 'thap.nguyen@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Thap Nguyen',
-        role: 'solution-team',
-        memberId: 'm1'
-      },
-      {
-        email: 'gianh.tran@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Gianh Tran',
-        role: 'solution-team',
-        memberId: 'm2'
-      },
-      {
-        email: 'lam.pham.tung@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Lam Pham',
-        role: 'solution-team',
-        memberId: 'm3'
-      },
-      {
-        email: 'qua.vo.van@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Qua Vo Van',
-        role: 'solution-team',
-        memberId: 'm4'
-      },
-      {
-        email: 'huy.phan@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Huy Phan',
-        role: 'solution-team',
-        memberId: 'm5'
-      },
-
-      // Role: user
-      {
-        email: 'bao.duong.huy@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Bao Duong Huy',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'dieu.bui@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Dieu Bui',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'dung.nguyen@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Dung Nguyen',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'duy.nguyen@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Duy Nguyen',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hanh.ha@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hanh Ha',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hien.duong.thi.thu@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hien Duong',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hieu.pham@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hieu Pham',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hieu.tran.minh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hieu Tran Minh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'huy.do@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Huy Do',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'phuong.phan@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Phuong Phan',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'son.le@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Son Le',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'tin.nguyen.trung@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Tin Nguyen',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'tong.ngo@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Tong Ngo',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'tram.pham@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Tram Pham',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'truong.huynh.le.thanh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Truong Huynh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'viet.le@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Viet Le',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'thien.tran.phan.huy@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Thien Huy',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'huy.doan.quoc@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Huy Doan',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'dieu.tran.thi.huyen@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Dieu Tran Thi Huyen',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'nina@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Nhi Dang',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hoang.nguyen.the@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hoang Nguyen The',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hieu.nguyen.phuoc.minh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hieu Nguyen Phuoc Minh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'ngan.phan.thi.kim@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Ngan Phan',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'yen.nguyen.thi@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Yen Nguyen Thi',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'luyen.ngo@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Luyen Ngo',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'yen.tran.thi.hoang@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Yen Tran',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'tracy.huynh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Tracy Huynh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'thanh.nguyen.van.dat@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Thanh Nguyen Van Dat',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'duc.dang.hoai@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Duc Dang',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'duy.hoang.khanh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Duy Hoang Khanh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'phuong.trinh.dinh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Phuong Trinh Dinh',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'hoang.le.viet@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Hoang Le Viet',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'dat.nguyen.tien@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Dat Nguyen Tien',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'quy@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Quy Thi',
-        role: 'user',
-        memberId: null
-      },
-      {
-        email: 'vinh@madison.dev',
-        password: 'Maddie123^^',
-        displayName: 'Vinh (David)',
-        role: 'user',
-        memberId: null
-      }
-    ];
-
-    const results = [];
-    for (const u of testUsers) {
-      try {
-        // Create user in Firebase Auth
-        const cred = await auth.createUserWithEmailAndPassword(u.email, u.password);
-        // Create profile in Realtime Database
-        await createUserProfile(cred.user.uid, u.email, u.displayName, u.role, u.memberId);
-        results.push({ email: u.email, status: 'created', uid: cred.user.uid });
-        console.log(`✓ Created: ${u.email} (${u.role})`);
-      } catch (err) {
-        if (err.code === 'auth/email-already-in-use') {
-          results.push({ email: u.email, status: 'already exists' });
-          console.log(`• Skipped: ${u.email} (already exists)`);
-        } else {
-          results.push({ email: u.email, status: 'error', error: err.message });
-          console.error(`✗ Failed: ${u.email}`, err.message);
-        }
-      }
-    }
-
-    // Sign out after seeding
-    await auth.signOut();
-    console.log('\nDone!');
-    return results;
-  }
-
   global.AuthService = {
     isGuest,
     isLoggedIn,
@@ -456,15 +195,13 @@
     getProfile,
     getRole,
     getMemberId,
+    getCache,
     onAuthChange,
-    signIn,
+    signInWithMicrosoft,
     signOut,
-    changePassword,
-    sendPasswordReset,
     fetchProfile,
     saveProfile,
     createUserProfile,
-    seedTestUsers,
     USERS_PATH
   };
 })(window);
