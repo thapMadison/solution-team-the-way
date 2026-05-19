@@ -398,10 +398,43 @@
     `;
   }
 
+  function shouldMaskMemberInfo() {
+    return window.AuthService && !AuthService.isSolutionTeam();
+  }
+
+  const MASKED_ASSIGNEE_NAME = 'Solution Team';
+  const MASKED_ASSIGNEE_INITIALS = 'ST';
+
+  /**
+   * Check if normal user can edit a given request.
+   * Normal users can only edit when status is 'pending'.
+   */
+  function canNormalUserEdit(req) {
+    return req && req.status === 'pending';
+  }
+
+  /**
+   * Get list of fields normal users can edit.
+   */
+  function normalUserEditableFields() {
+    return ['title', 'description', 'requestType', 'priority'];
+  }
+
+  /**
+   * Check if user can perform full edit (solution team member).
+   */
+  function canFullEdit() {
+    return window.AuthService && AuthService.isSolutionTeam();
+  }
+
   function assigneeMarkup(name) {
     const isEmpty = !name || name === 'Unassigned';
     if (isEmpty) {
       return `<span class="rl-avatar is-empty">?</span><span class="rl-row__assignee-name is-empty">Unassigned</span>`;
+    }
+    // Mask for normal users
+    if (shouldMaskMemberInfo()) {
+      return `<span class="rl-avatar is-masked">${MASKED_ASSIGNEE_INITIALS}</span><span class="rl-row__assignee-name">${MASKED_ASSIGNEE_NAME}</span>`;
     }
     return `<span class="rl-avatar">${escapeHtml(initials(name))}</span><span class="rl-row__assignee-name">${escapeHtml(name)}</span>`;
   }
@@ -471,7 +504,9 @@
             ${comments > 0 ? `<span class="rl-row__meta-item">${ICONS.chat}${comments}</span>` : ''}
           </div>
           ${req.assignee && req.assignee !== 'Unassigned'
-            ? `<span class="rl-avatar" title="${escapeHtml(req.assignee)}">${escapeHtml(initials(req.assignee))}</span>`
+            ? shouldMaskMemberInfo()
+              ? `<span class="rl-avatar is-masked" title="${MASKED_ASSIGNEE_NAME}">${MASKED_ASSIGNEE_INITIALS}</span>`
+              : `<span class="rl-avatar" title="${escapeHtml(req.assignee)}">${escapeHtml(initials(req.assignee))}</span>`
             : `<span class="rl-avatar is-empty">?</span>`}
         </div>
       </button>
@@ -523,10 +558,17 @@
         e.preventDefault();
         col.classList.remove('is-drop-active');
         try {
+          const reqData = await FirebaseAPI.getRequest(dragPayload.firebaseId);
           await FirebaseAPI.updateRequest(dragPayload.firebaseId, {
             status: targetStatus,
             updatedAt: new Date().toISOString()
           });
+
+          // Auto-create allocation when dragging to in-progress
+          if (canFullEdit() && targetStatus === 'in-progress' && dragPayload.from !== 'in-progress') {
+            await tryCreateAllocationForRequest(reqData, reqData.assignee, reqData.deadline, reqData.estimatedTime);
+          }
+
           showNotification('success', `Moved to ${statusInfo(targetStatus).label}`);
         } catch (err) {
           showNotification('error', `Move failed: ${err.message}`);
@@ -804,7 +846,10 @@
 
             <div class="rl-section">
               <div class="rl-section__title">Description</div>
-              <div class="rl-section__body"><p>${escapeHtml(data.description)}</p></div>
+              ${canFullEdit() || (canNormalUserEdit(data))
+                ? `<textarea id="descriptionEdit" class="modal-input" rows="4">${escapeHtml(data.description || '')}</textarea>`
+                : `<div class="rl-section__body"><p>${escapeHtml(data.description)}</p></div>`
+              }
             </div>
 
             <div class="rl-section">
@@ -844,6 +889,7 @@
         <!-- SIDEBAR -->
         <aside class="rl-detail__sidebar">
           <div class="rl-detail__sidebar-inner">
+            ${canFullEdit() ? `
             <div class="rl-field">
               <label>Status</label>
               <select id="statusSelect">
@@ -852,6 +898,15 @@
                 `).join('')}
               </select>
             </div>
+            ` : `
+            <div class="rl-field">
+              <label>Status</label>
+              <div style="padding:8px 10px;border:1px solid var(--rl-border);border-radius:var(--rl-radius-sm);background:var(--rl-card);font-size:13px;">
+                <span class="rl-dot ${sCls}"></span>
+                <span style="margin-left:6px;">${escapeHtml(status.label)}</span>
+              </div>
+            </div>
+            `}
 
             <div class="rl-field">
               <label>Priority</label>
@@ -872,13 +927,19 @@
               </div>
             </div>
 
-            <div class="rl-field">
+            <div class="rl-field" id="assigneeField">
               <label>Assignee</label>
-              <select id="assigneeSelect">
-                ${TEAM_MEMBERS.map((m) => `
-                  <option value="${escapeHtml(m)}" ${m === data.assignee ? 'selected' : ''}>${escapeHtml(m)}</option>
-                `).join('')}
-              </select>
+              ${shouldMaskMemberInfo()
+                ? `<div class="rl-field__user">
+                     <span class="rl-avatar is-masked">${MASKED_ASSIGNEE_INITIALS}</span>
+                     <span style="font-size:13px;">${MASKED_ASSIGNEE_NAME}</span>
+                   </div>`
+                : `<select id="assigneeSelect">
+                     ${TEAM_MEMBERS.map((m) => `
+                       <option value="${escapeHtml(m)}" ${m === data.assignee ? 'selected' : ''}>${escapeHtml(m)}</option>
+                     `).join('')}
+                   </select>`
+              }
             </div>
 
             <div class="rl-sidebar-divider"></div>
@@ -897,6 +958,7 @@
               </div>
             </div>
 
+            ${canFullEdit() ? `
             <div class="rl-field">
               <label>Due date</label>
               <input type="date" id="deadlineInput" value="${escapeHtml(data.deadline || '')}">
@@ -913,13 +975,41 @@
                   <label>Logged (h)</label>
                   <input type="number" id="loggedEffort"  min="0" step="0.5" value="${escapeHtml(data.loggedEffort  || '')}" placeholder="0">
                 </div>
+            ` : `
+            <div class="rl-field">
+              <label>Due date</label>
+              <div style="padding:8px 10px;border:1px solid var(--rl-border);border-radius:var(--rl-radius-sm);background:var(--rl-card);font-size:13px;">
+                ${data.deadline ? escapeHtml(formatDate(data.deadline)) : '<span style="color:var(--rl-muted);">Not set</span>'}
+              </div>
+            </div>
+            <input type="hidden" id="deadlineInput" value="${escapeHtml(data.deadline || '')}">
+            <input type="hidden" id="estimatedTime" value="${escapeHtml(data.estimatedTime || '')}">
+            <input type="hidden" id="loggedEffort"  value="${escapeHtml(data.loggedEffort  || '')}">
+            <div class="rl-field">
+              <label>Time tracking</label>
+              <div class="rl-time-grid">
+                <div class="rl-time-cell">
+                  <label>Estimate</label>
+                  <div style="font-size:13px;">${data.estimatedTime ? data.estimatedTime + 'h' : '—'}</div>
+                </div>
+                <div class="rl-time-cell">
+                  <label>Logged</label>
+                  <div style="font-size:13px;">${data.loggedEffort ? data.loggedEffort + 'h' : '—'}</div>
+                </div>
+            `}
               </div>
             </div>
           </div>
 
           <div class="rl-detail__actions">
-            <button class="rl-btn rl-btn--primary rl-btn--block" data-action="save-request" type="button">Save changes</button>
-            <button class="rl-btn--danger" data-action="delete-request" type="button">${ICONS.trash}Delete request</button>
+            ${(canFullEdit() || canNormalUserEdit(data))
+              ? `<button class="rl-btn rl-btn--primary rl-btn--block" data-action="save-request" type="button">Save changes</button>`
+              : ''
+            }
+            ${canFullEdit()
+              ? `<button class="rl-btn--danger" data-action="delete-request" type="button">${ICONS.trash}Delete request</button>`
+              : ''
+            }
           </div>
         </aside>
       </div>
@@ -991,32 +1081,110 @@
     };
   }
 
+  /**
+   * Auto-create an allocation when starting a request (status → in-progress).
+   * - Start = today
+   * - End = deadline (due date)
+   * - Percent = estimatedTime / (days * 8) * 100  (8h/day = 100%)
+   * - ProjectKey = request ID
+   * - ProjectName = request title
+   */
+  async function tryCreateAllocationForRequest(reqData, assignee, deadline, estimatedTime) {
+    if (!window.AllocationData || !window.FirebaseAPI) return;
+
+    const MEMBERS = AllocationData.MEMBERS;
+    if (!MEMBERS || !MEMBERS.length) return;
+
+    // Find memberId from assignee name
+    const member = MEMBERS.find((m) => m.name === assignee);
+    if (!member) {
+      console.warn('[requests-app] Could not find member for assignee:', assignee);
+      return;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const endDate = deadline || today;
+
+    // Calculate percent: estimatedTime / (days * 8) * 100
+    const startDt = new Date(today);
+    const endDt   = new Date(endDate);
+    const days    = Math.max(1, Math.ceil((endDt - startDt) / (1000 * 60 * 60 * 24)) + 1);
+    const hours   = parseFloat(estimatedTime) || 8;
+    const percent = Math.min(100, Math.round((hours / (days * 8)) * 100));
+
+    const allocation = {
+      memberId:    member.id,
+      kind:        'solution',
+      projectKey:  shortId(reqData),
+      projectName: `Request: ${reqData.title || shortId(reqData)}`,
+      percent:     percent,
+      start:       today,
+      end:         endDate
+    };
+
+    try {
+      await FirebaseAPI.createAllocation(allocation);
+      console.log('[requests-app] Auto-created allocation for request:', shortId(reqData));
+    } catch (err) {
+      console.error('[requests-app] Failed to auto-create allocation:', err);
+    }
+  }
+
   async function saveRequest() {
     if (!activeRequestId) return;
 
     try {
       const oldData = await FirebaseAPI.getRequest(activeRequestId);
+      const isSolutionTeamMember = canFullEdit();
+      const isNormalUserEditAllowed = !isSolutionTeamMember && canNormalUserEdit(oldData);
 
-      const newStatus        = document.getElementById('statusSelect').value;
-      const newAssignee      = document.getElementById('assigneeSelect').value;
-      const newDeadline      = document.getElementById('deadlineInput').value;
-      const newEstimatedTime = document.getElementById('estimatedTime').value;
-      const newLoggedEffort  = document.getElementById('loggedEffort').value;
-      const newOutcome       = document.getElementById('outcomeAndFeedback').value.trim();
-      const newLessons       = document.getElementById('lessonsLearned').value.trim();
-
-      if (newStatus === 'in-progress') {
-        if (!newDeadline)      { showNotification('error', 'Please set a due date before moving to In Progress'); return; }
-        if (!newEstimatedTime) { showNotification('error', 'Please set the estimated time before moving to In Progress'); return; }
+      // Normal user can only edit when status is pending
+      if (!isSolutionTeamMember && !isNormalUserEditAllowed) {
+        showNotification('error', 'Bạn không có quyền chỉnh sửa request này');
+        return;
       }
 
-      if (newStatus === 'completed' && !newLoggedEffort) {
-        showNotification('error', 'Please log the time spent before marking as completed');
-        return;
+      // Get field values based on permissions
+      const descriptionEl = document.getElementById('descriptionEdit');
+      const newDescription = descriptionEl ? descriptionEl.value.trim() : oldData.description;
+
+      let newStatus, newAssignee, newDeadline, newEstimatedTime, newLoggedEffort, newOutcome, newLessons;
+
+      if (isSolutionTeamMember) {
+        newStatus        = document.getElementById('statusSelect').value;
+        const assigneeEl = document.getElementById('assigneeSelect');
+        newAssignee      = assigneeEl ? assigneeEl.value : oldData.assignee;
+        newDeadline      = document.getElementById('deadlineInput').value;
+        newEstimatedTime = document.getElementById('estimatedTime').value;
+        newLoggedEffort  = document.getElementById('loggedEffort').value;
+        newOutcome       = document.getElementById('outcomeAndFeedback').value.trim();
+        newLessons       = document.getElementById('lessonsLearned').value.trim();
+      } else {
+        // Normal users can only edit description (and title/type/priority but we don't have UI for those yet)
+        newStatus        = oldData.status;
+        newAssignee      = oldData.assignee;
+        newDeadline      = oldData.deadline;
+        newEstimatedTime = oldData.estimatedTime;
+        newLoggedEffort  = oldData.loggedEffort;
+        newOutcome       = oldData.outcomeAndFeedback;
+        newLessons       = oldData.lessonsLearned;
+      }
+
+      if (isSolutionTeamMember) {
+        if (newStatus === 'in-progress') {
+          if (!newDeadline)      { showNotification('error', 'Please set a due date before moving to In Progress'); return; }
+          if (!newEstimatedTime) { showNotification('error', 'Please set the estimated time before moving to In Progress'); return; }
+        }
+
+        if (newStatus === 'completed' && !newLoggedEffort) {
+          showNotification('error', 'Please log the time spent before marking as completed');
+          return;
+        }
       }
 
       const hours = (v) => `${v}h`;
       const candidates = [
+        diffField('Description',        oldData.description,        newDescription,   () => 'Updated'),
         diffField('Status',             oldData.status,             newStatus,        (k) => statusInfo(k).label),
         diffField('Assignee',           oldData.assignee || 'Unassigned', newAssignee || 'Unassigned'),
         diffField('Deadline',           oldData.deadline,           newDeadline),
@@ -1028,6 +1196,7 @@
       const changes = candidates.filter(Boolean);
 
       const updates = {
+        description:        newDescription,
         status:             newStatus,
         assignee:           newAssignee,
         deadline:           newDeadline      || null,
@@ -1038,14 +1207,24 @@
         updatedAt:          new Date().toISOString()
       };
 
+      const userName = window.AuthService && AuthService.getProfile()
+        ? AuthService.getProfile().displayName || AuthService.getUser()?.email
+        : 'Unknown';
+
       if (changes.length > 0) {
         updates.history = [
           ...(oldData.history || []),
-          { timestamp: updates.updatedAt, changes }
+          { timestamp: updates.updatedAt, actor: userName, changes }
         ];
       }
 
       await FirebaseAPI.updateRequest(activeRequestId, updates);
+
+      // Auto-create allocation when starting a request (status → in-progress)
+      if (isSolutionTeamMember && newStatus === 'in-progress' && oldData.status !== 'in-progress') {
+        await tryCreateAllocationForRequest(oldData, newAssignee, newDeadline, newEstimatedTime);
+      }
+
       showNotification('success', 'Request updated');
       closeRequestModal();
     } catch (err) {

@@ -29,13 +29,15 @@
     other:               { icon: '📦', label: 'Other' }
   };
 
+  // Must match AllocationData.MEMBERS for auto-allocation to work
   const TEAM_MEMBERS = [
     'Unassigned',
-    'Thap Nguyen',
-    'Team Member 2',
-    'Team Member 3',
-    'Team Member 4',
-    'Team Member 5'
+    'Nguyễn An',
+    'Trần Bảo',
+    'Lê Chi',
+    'Phạm Dũng',
+    'Hoàng Em',
+    'Đỗ Phúc'
   ];
 
   const PAGINATION = {

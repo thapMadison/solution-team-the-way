@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Technical Solution Team — Charter v1.0</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
   <link rel="stylesheet" href="css/charter.css" />
   <link rel="stylesheet" href="css/roles.css" />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
@@ -25,6 +26,7 @@
     <li><a href="request-process.html">Request Process</a></li>
     <li><a href="requests-log.html">Request Log</a></li>
   </ul>
+  <div class="nav-auth" aria-hidden="true"></div>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
 
@@ -1129,6 +1131,16 @@
 }
 </script>
 
+<!-- Firebase SDK (for auth) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth-service.js"></script>
+<script src="js/auth-ui.js"></script>
 <script src="js/common.js"></script>
 <script src="js/section-nav.js"></script>
 <script src="js/roles.js"></script>

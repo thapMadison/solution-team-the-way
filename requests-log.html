@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Request Log — Technical Solution Team</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
   <link rel="stylesheet" href="css/requests-log.css" />
+  <link rel="stylesheet" href="css/allocation-timeline.css" />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
 </head>
 <body class="requests-page">
@@ -24,6 +26,7 @@
     <li><a href="request-process.html">Request Process</a></li>
     <li><a href="requests-log.html" class="active">Request Log</a></li>
   </ul>
+  <div class="nav-auth" aria-hidden="true"></div>
   <button class="theme-toggle" id="themeToggle" title="Chuyển chế độ sáng/tối">🌙</button>
 </nav>
 
@@ -31,8 +34,17 @@
 <main class="rl-main">
 
   <!-- Page intro -->
-  <section class="rl-intro">
-    <h1 class="rl-title">Request Management</h1>
+  <section class="rl-intro rl-intro--with-action">
+    <div>
+      <h1 class="rl-title">Request Management</h1>
+    </div>
+    <button class="rl-alloc-trigger" id="btnAllocation" type="button" title="Mở Resource Allocation Timeline">
+      <span class="rl-alloc-trigger__icon">
+        <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span>Allocation</span>
+      <!-- <span class="rl-alloc-trigger__hint">80/20</span> -->
+    </button>
   </section>
 
   <!-- Stat strip -->
@@ -315,6 +327,39 @@
   </div>
 </div>
 
+<!-- RESOURCE ALLOCATION DRAWER -->
+<div id="allocationDrawer" class="alloc-drawer" hidden>
+  <div class="alloc-drawer__overlay"></div>
+  <aside class="alloc-drawer__panel" role="dialog" aria-labelledby="allocDrawerTitle">
+    <header class="alloc-drawer__head">
+      <button class="alloc-drawer__close" id="allocDrawerClose" type="button" aria-label="Đóng">×</button>
+      <h2 id="allocDrawerTitle">
+        <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Resource Allocation Timeline
+      </h2>
+      <!-- <p>
+        Capacity hiện tại của team theo mô hình 80/20 — project work (purple/pink) và
+        Solution Team tasks (amber/emerald). Dùng để refer trước khi assign request mới.
+      </p> -->
+    </header>
+    <div class="alloc-drawer__scroll">
+      <div id="allocTimeline"><!-- rendered by allocation-app.js --></div>
+    </div>
+  </aside>
+</div>
+
+<!-- ALLOCATION INLINE EDITOR -->
+<div id="allocEditorModal" class="modal" hidden>
+  <div class="modal-overlay" data-action="alloc-close-editor"></div>
+  <div id="allocEditorBody"><!-- populated dynamically --></div>
+</div>
+
+<!-- ALLOCATION DETAIL MODAL -->
+<div id="allocDetailModal" class="modal" hidden>
+  <div class="modal-overlay" data-action="alloc-close-detail"></div>
+  <div class="modal-content" id="allocDetailBody"><!-- populated dynamically --></div>
+</div>
+
 <!-- NOTIFICATION TOAST -->
 <div id="notification" class="notification" style="display:none;">
   <span class="notif-icon"></span>
@@ -324,13 +369,19 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
 <!-- App scripts (order matters) -->
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/firebase-api.js"></script>
+<script src="js/auth-service.js"></script>
+<script src="js/auth-ui.js"></script>
+<script src="js/access-control.js"></script>
 <script src="js/common.js"></script>
 <script src="js/requests-app.js"></script>
+<script src="js/allocation-data.js"></script>
+<script src="js/allocation-app.js"></script>
 </body>
 </html>

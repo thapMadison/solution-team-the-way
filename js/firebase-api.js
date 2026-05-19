@@ -1,11 +1,12 @@
 /**
- * Firebase Realtime Database access layer for the `requests` node.
+ * Firebase Realtime Database access layer for the `requests` + `allocations` nodes.
  * All callers should go through this object — never touch `firebase.database()` directly.
  */
 (function (global) {
   'use strict';
 
-  const REQUESTS_PATH = 'requests';
+  const REQUESTS_PATH    = 'requests';
+  const ALLOCATIONS_PATH = 'allocations';
 
   function toArray(snapshotVal) {
     if (!snapshotVal) return [];
@@ -16,6 +17,7 @@
   }
 
   const FirebaseAPI = {
+    // ── Requests ──────────────────────────────────────────────
     async createRequest(data) {
       const ref = firebaseDb.ref(REQUESTS_PATH).push();
       await ref.set(data);
@@ -40,6 +42,45 @@
      */
     onRequestsChange(callback) {
       const ref = firebaseDb.ref(REQUESTS_PATH);
+      const handler = (snapshot) => callback(toArray(snapshot.val()));
+      ref.on('value', handler);
+      return () => ref.off('value', handler);
+    },
+
+    // ── Allocations ───────────────────────────────────────────
+    /** One-shot read — used during seeding to detect an empty node. */
+    async getAllocationsOnce() {
+      const snapshot = await firebaseDb.ref(ALLOCATIONS_PATH).once('value');
+      return toArray(snapshot.val());
+    },
+
+    /** Bulk write — used to seed the node with `SEED_ASSIGNMENTS` on first run. */
+    async seedAllocations(records) {
+      const updates = {};
+      for (const r of records) {
+        const ref = firebaseDb.ref(ALLOCATIONS_PATH).push();
+        const { firebaseId, ...rest } = r;
+        updates[ref.key] = rest;
+      }
+      await firebaseDb.ref(ALLOCATIONS_PATH).update(updates);
+    },
+
+    async createAllocation(data) {
+      const ref = firebaseDb.ref(ALLOCATIONS_PATH).push();
+      await ref.set(data);
+      return ref.key;
+    },
+
+    async updateAllocation(firebaseId, updates) {
+      await firebaseDb.ref(`${ALLOCATIONS_PATH}/${firebaseId}`).update(updates);
+    },
+
+    async deleteAllocation(firebaseId) {
+      await firebaseDb.ref(`${ALLOCATIONS_PATH}/${firebaseId}`).remove();
+    },
+
+    onAllocationsChange(callback) {
+      const ref = firebaseDb.ref(ALLOCATIONS_PATH);
       const handler = (snapshot) => callback(toArray(snapshot.val()));
       ref.on('value', handler);
       return () => ref.off('value', handler);
