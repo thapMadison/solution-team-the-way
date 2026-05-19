@@ -903,6 +903,21 @@
   border-color: rgba(248,250,252,0.4);
   background: var(--rl-accent);
 }
+.alloc-status-opt.is-active[data-status="scheduled"] {
+  background: var(--rl-pending);
+  border-color: var(--rl-pending);
+  color: #000;
+}
+.alloc-status-opt.is-active[data-status="active"] {
+  background: var(--rl-progress);
+  border-color: var(--rl-progress);
+  color: #000;
+}
+.alloc-status-opt.is-active[data-status="done"] {
+  background: var(--rl-completed);
+  border-color: var(--rl-completed);
+  color: #000;
+}
 
 .alloc-detail__actions {
   display: flex;
