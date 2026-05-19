@@ -134,11 +134,14 @@
 
   // ── Auth actions ──────────────────────────────────────────────
 
+  // Azure AD Tenant ID - get from Azure Portal → Azure AD → Overview
+  const AZURE_TENANT_ID = 'YOUR_TENANT_ID_HERE';
+
   async function signInWithMicrosoft() {
     const provider = new firebase.auth.OAuthProvider('microsoft.com');
     provider.setCustomParameters({
       prompt: 'select_account',
-      tenant: 'common'
+      tenant: 'fa190090-4fc1-416a-bd41-a480b5dad5b7'
     });
     const result = await firebase.auth().signInWithPopup(provider);
     return result.user;
