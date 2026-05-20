@@ -370,7 +370,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
-<script src="js/app-check-debug.js" onerror=""></script>
+<script>if(location.protocol==='file:'||location.hostname==='localhost')document.write('<script src="js/app-check-debug.js"><\/script>')</script>
 
 <!-- App scripts (order matters) -->
 <script src="js/config.js"></script>
