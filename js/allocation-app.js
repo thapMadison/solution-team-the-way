@@ -37,10 +37,10 @@
     return { key: name, name, hue: hues[idx % hues.length] };
   });
 
-  const ROW_H_COMPACT = 56;
-  const PROJECT_TOP_COMPACT  = 6;
-  const SOLUTION_TOP_COMPACT = 30;
-  const SEG_H_COMPACT = 20;
+  const ROW_H_MIN = 48;
+  const ROW_PADDING = 6;
+  const SEG_H = 20;
+  const SEG_GAP = 4;
 
   const state = {
     assignments: [],
@@ -81,6 +81,47 @@
   function pxToISO(px) {
     const day = Math.round(px / dayW());
     return addDays(dataRange().start, day);
+  }
+
+  /**
+   * Calculate lanes for overlapping allocations.
+   * Returns array of allocations with `lane` property assigned.
+   */
+  function assignLanes(allocations) {
+    if (!allocations.length) return { allocations: [], laneCount: 0 };
+
+    // Sort by start date
+    const sorted = [...allocations].sort((a, b) => a.start.localeCompare(b.start));
+    const lanes = []; // Each lane tracks end date of last allocation in that lane
+
+    for (const alloc of sorted) {
+      // Find first lane where this allocation fits (no overlap)
+      let assignedLane = -1;
+      for (let i = 0; i < lanes.length; i++) {
+        if (alloc.start > lanes[i]) {
+          assignedLane = i;
+          lanes[i] = alloc.end;
+          break;
+        }
+      }
+      // No free lane found, create new one
+      if (assignedLane === -1) {
+        assignedLane = lanes.length;
+        lanes.push(alloc.end);
+      }
+      alloc.lane = assignedLane;
+    }
+
+    return { allocations: sorted, laneCount: lanes.length };
+  }
+
+  /**
+   * Calculate row height based on number of lanes.
+   */
+  function calcRowHeight(laneCount) {
+    if (laneCount === 0) return ROW_H_MIN;
+    const contentHeight = laneCount * SEG_H + (laneCount - 1) * SEG_GAP + ROW_PADDING * 2;
+    return Math.max(ROW_H_MIN, contentHeight);
   }
 
   // ── Boot / Firebase wiring ────────────────────────────────────
@@ -354,8 +395,23 @@
       return `<div class="alloc-month ${cls}" style="left:${left}px; width:${widthPx}px;">${MONTH_NAMES_SHORT[m.month]}</div>`;
     }).join('');
 
+    // Pre-calculate row heights and lanes for each member
+    const memberRowData = state.members.map((m) => {
+      const memberAllocs = state.assignments
+        .filter((a) => a.memberId === m.id)
+        .filter((a) => {
+          if (state.filter === 'project')  return a.kind === 'project';
+          if (state.filter === 'solution') return a.kind === 'solution';
+          return true;
+        });
+      const { allocations, laneCount } = assignLanes(memberAllocs);
+      const rowHeight = calcRowHeight(laneCount);
+      return { member: m, allocations, laneCount, rowHeight };
+    });
+
     // Member sidebar ──────────────────────────────────────────
-    dom.memberCol.innerHTML = state.members.map((m) => {
+    dom.memberCol.innerHTML = memberRowData.map((data) => {
+      const m = data.member;
       const alloc = getCurrentAllocation(m.id, TODAY, state.assignments);
       let pctCls = 'alloc-pct';
       if (alloc.total > 100)      pctCls += ' is-over';
@@ -366,7 +422,7 @@
         `border-color:oklch(0.7 0.22 ${m.hue} / 0.35);` +
         `color:oklch(0.95 0.12 ${m.hue});`;
       return `
-        <div class="alloc-member" style="height:${ROW_H_COMPACT}px;">
+        <div class="alloc-member" style="height:${data.rowHeight}px;">
           <span class="alloc-member__avatar" style="${initialsStyle}">${m.initials}</span>
           <div class="alloc-member__meta">
             <div class="alloc-member__name">${escapeHtml(m.name)}</div>
@@ -378,7 +434,7 @@
     }).join('');
 
     // Body grid ───────────────────────────────────────────────
-    const bodyHeight = state.members.length * ROW_H_COMPACT;
+    const bodyHeight = memberRowData.reduce((sum, d) => sum + d.rowHeight, 0);
     dom.bodyInner.style.width = total + 'px';
     dom.bodyInner.style.height = bodyHeight + 'px';
 
@@ -400,28 +456,26 @@
     }
 
     // Rows + blocks.
-    bg += state.members.map((m, rowIdx) => {
+    let rowTop = 0;
+    bg += memberRowData.map((data) => {
+      const m = data.member;
       const allocNow = getCurrentAllocation(m.id, TODAY, state.assignments);
       const isOver = allocNow.total > 100;
       const dim    = state.filter === 'over' && !isOver;
 
-      const blocks = state.assignments
-        .filter((a) => a.memberId === m.id)
-        .filter((a) => {
-          if (state.filter === 'project')  return a.kind === 'project';
-          if (state.filter === 'solution') return a.kind === 'solution';
-          return true;
-        })
+      const blocks = data.allocations
         .map((a) => renderBlock(a, w, total))
         .join('');
 
-      return `
+      const html = `
         <div class="alloc-trow ${dim ? 'is-dim' : ''}"
              data-row="${m.id}"
-             style="height:${ROW_H_COMPACT}px; top:${rowIdx * ROW_H_COMPACT}px;">
+             style="height:${data.rowHeight}px; top:${rowTop}px;">
           ${blocks}
         </div>
       `;
+      rowTop += data.rowHeight;
+      return html;
     }).join('');
 
     dom.bodyInner.innerHTML = bg;
@@ -449,7 +503,8 @@
     const left  = startPx + 1;
     const width = Math.max(20, endPx - startPx - 2);
     const isProject = a.kind === 'project';
-    const top = isProject ? PROJECT_TOP_COMPACT : SOLUTION_TOP_COMPACT;
+    const lane = a.lane || 0;
+    const top = ROW_PADDING + lane * (SEG_H + SEG_GAP);
 
     const bg = isProject
       ? 'linear-gradient(90deg, oklch(0.55 0.18 264 / 0.4), oklch(0.55 0.2 320 / 0.4))'
@@ -465,7 +520,7 @@
     return `
       <div class="alloc-block ${isProject ? 'is-project' : 'is-solution'}"
            data-block="${a.id}"
-           style="left:${left}px; width:${width}px; top:${top}px; height:${SEG_H_COMPACT}px;
+           style="left:${left}px; width:${width}px; top:${top}px; height:${SEG_H}px;
                   background:${bg}; border-color:${border}; color:${textColor};">
         <span class="alloc-block__accent" style="background:${accent};"></span>
         <span class="alloc-block__title">${escapeHtml(a.projectName)}</span>
@@ -503,7 +558,7 @@
         const x = e.clientX - rect.left;
         hint.style.display = 'inline-flex';
         hint.style.left = (rowEl.offsetLeft + x + 8) + 'px';
-        hint.style.top  = (rowEl.offsetTop + ROW_H_COMPACT / 2 - 12) + 'px';
+        hint.style.top  = (rowEl.offsetTop + rowEl.offsetHeight / 2 - 12) + 'px';
       });
       rowEl.addEventListener('mouseleave', () => { hint.style.display = 'none'; });
 
