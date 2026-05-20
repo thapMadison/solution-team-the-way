@@ -17,7 +17,10 @@ Thumbs.db
 *.tmp
 
 # Firebase App Check debug token (local only)
-js/app-check-debug.js
+js/config/app-check-debug.js
+
+# Playwright baseline screenshots (local only)
+.baseline-screenshots/
 
 # Build/cache
 .cache/

@@ -12,150 +12,18 @@
  *   8. Detail modal (load / render / save / delete)
  *   9. Event wiring + bootstrap
  */
-(function () {
-  'use strict';
-
-  const { escapeHtml, formatDate, formatDateTime, statusInfo, priorityInfo, typeInfo, isValidEmail, showNotification } = Utils;
-  const { PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE, PROJECTS } = AppConfig;
-
-  // ────────────────────────────────────────────────────────────
-  // 1. State
-  // ────────────────────────────────────────────────────────────
-
-  const STATUS_KEYS = Object.keys(STATUS);
-  const PRIORITY_KEYS = Object.keys(PRIORITY);
-
-  const CHUNK_SIZE = 30; // how many rows to add per infinite-scroll tick
-
-  const state = {
-    all:          [],
-    filtered:     [],
-    visibleCount: CHUNK_SIZE,
-    view:         'rows',          // 'rows' | 'board'
-    status:       'all',           // 'all' | one of STATUS_KEYS
-    type:         'all',
-    priority:     'all',
-    query:        '',
-    unsubscribe:  null,
-    rowsObserver: null,
-    teamMembers:  ['Unassigned']   // Dynamic list from Firebase
-  };
-
-  const dom = {};
-
-  function statusClass(status) {
-    if (status === 'in-progress') return 'is-progress';
-    if (status === 'pending')     return 'is-pending';
-    if (status === 'completed')   return 'is-completed';
-    if (status === 'cancelled')   return 'is-cancelled';
-    return '';
-  }
-
-  function priorityClass(priority) {
-    return `is-${priority || 'medium'}`;
-  }
-
-  function priorityBars(priority) {
-    return ({ low: 1, medium: 2, high: 3, critical: 4 })[priority] || 2;
-  }
-
-  function initials(name) {
-    const s = String(name || '').trim();
-    if (!s) return '?';
-    const parts = s.split(/\s+/);
-    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-  }
-
-  function shortId(req) {
-    const raw = String(req.id || '').trim();
-    if (!raw) return 'REQ-----';
-    // New format: stored as "REQ-N" → display with 4-digit zero-pad.
-    const reqMatch = raw.match(/^REQ-(\d+)$/i);
-    if (reqMatch) return `REQ-${reqMatch[1].padStart(4, '0')}`;
-    // Legacy format: stored as a timestamp/numeric string — take last 4 digits.
-    const digits = raw.replace(/\D/g, '');
-    return `REQ-${digits.slice(-4).padStart(4, '0')}`;
-  }
-
-  /**
-   * Compute the next sequential request ID by scanning the current cached
-   * list and returning `REQ-{max+1}`. For "REQ-N" records the counter is
-   * `N`; for legacy timestamp IDs we extract the last 4 digits so the new
-   * series doesn't collide with the displayed shortId of older records.
-   */
-  function nextRequestId() {
-    let max = 0;
-    for (const r of state.all) {
-      const raw = String(r.id || '').trim();
-      const m = raw.match(/^REQ-(\d+)$/i);
-      let n = NaN;
-      if (m) {
-        n = parseInt(m[1], 10);
-      } else {
-        const digits = raw.replace(/\D/g, '');
-        if (digits) n = parseInt(digits.slice(-4), 10);
-      }
-      if (Number.isFinite(n) && n > max) max = n;
-    }
-    return `REQ-${max + 1}`;
-  }
-
-  /**
-   * Derive a 0–100 progress number for a request.
-   *
-   * Rules (highest precedence first):
-   *   - completed  → always 100
-   *   - cancelled  → always 0
-   *   - explicit numeric `progress` on the record → respect as manual override
-   *   - pending    → 0
-   *   - in-progress with estimate + logged → round(logged / estimate × 100),
-   *     capped at 95 so 100% is reserved for the explicit "completed" state
-   *   - in-progress without time tracking → 25 (sensible default)
-   */
-  function safeProgress(req) {
-    const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
-
-    if (req.status === 'completed') return 100;
-    if (req.status === 'cancelled') return 0;
-
-    if (typeof req.progress === 'number') return clamp(req.progress, 0, 100);
-
-    if (req.status === 'pending') return 0;
-
-    // in-progress: derive from time tracking
-    const est = parseFloat(req.estimatedTime);
-    const log = parseFloat(req.loggedEffort);
-    if (Number.isFinite(est) && est > 0 && Number.isFinite(log) && log >= 0) {
-      return clamp(Math.round((log / est) * 100), 0, 95);
-    }
-    return 25;
-  }
-
-  function commentsCount(req) {
-    if (Array.isArray(req.comments)) return req.comments.length;
-    if (typeof req.comments === 'number') return req.comments;
-    return 0;
-  }
-
-  // ────────────────────────────────────────────────────────────
-  // 2. SVG icons
-  // ────────────────────────────────────────────────────────────
-
-  const ICONS = {
-    clock: '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>',
-    chat:  '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.4 7.3L4 21l1.7-5.6A8 8 0 1 1 21 12z" stroke-linejoin="round"/></svg>',
-    chev:  '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    folder:'<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
-    plus:  '<svg viewBox="0 0 24 24" class="rl-icon-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>',
-    x:     '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>',
-    trash: '<svg viewBox="0 0 24 24" class="rl-icon-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m1 0v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6"/></svg>',
-    save:  '<svg viewBox="0 0 24 24" class="rl-icon-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>',
-    calendar: '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
-    dot:   '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
-    commit:'<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M2 12h6M16 12h6"/></svg>',
-    check: '<svg viewBox="0 0 24 24" class="rl-icon-3" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-  };
+import { escapeHtml, formatDate, formatDateTime, statusInfo, priorityInfo, typeInfo, initials } from '../../core/format.js';
+import { isValidEmail }                       from '../../core/validation.js';
+import { showNotification }                   from '../../core/notifications.js';
+import { PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE, PROJECTS } from '../../config/constants.js';
+import { FirebaseAPI }                        from '../../data/firebase-api.js';
+import * as Auth                              from '../auth/auth-service.js';
+import { ICONS }                              from './icons.js';
+import {
+  state, dom, STATUS_KEYS, PRIORITY_KEYS, CHUNK_SIZE,
+  statusClass, priorityClass, priorityBars,
+  shortId, nextRequestId, safeProgress, commentsCount
+} from './state.js';
 
   // ────────────────────────────────────────────────────────────
   // 3. Stat strip + status rail
@@ -402,7 +270,7 @@
   }
 
   function shouldMaskMemberInfo() {
-    return window.AuthService && !AuthService.isSolutionTeam();
+    return !Auth.isSolutionTeam();
   }
 
   const MASKED_ASSIGNEE_NAME = 'Solution Team';
@@ -427,7 +295,7 @@
    * Check if user can perform full edit (solution team member).
    */
   function canFullEdit() {
-    return window.AuthService && AuthService.isSolutionTeam();
+    return Auth.isSolutionTeam();
   }
 
   function assigneeMarkup(name) {
@@ -751,8 +619,8 @@
     const emailEl = document.getElementById('requesterEmail');
 
     // Autofill from logged-in user profile
-    if (window.AuthService && AuthService.isLoggedIn()) {
-      const profile = AuthService.getProfile();
+    if (Auth.isLoggedIn()) {
+      const profile = Auth.getProfile();
       if (profile) {
         requesterEl.value = profile.displayName || '';
         emailEl.value = profile.email || '';
@@ -1186,7 +1054,7 @@
 
   function renderCommentWithReplies(comment, repliesByParent) {
     const commentReplies = repliesByParent[comment.id] || [];
-    const currentUserEmail = window.AuthService?.getProfile()?.email;
+    const currentUserEmail = Auth.getProfile()?.email;
     const isOwner = currentUserEmail === comment.authorEmail;
     const canDelete = isOwner || canFullEdit();
     const editedIndicator = comment.editedAt ? `<span class="rl-comment__edited">(edited)</span>` : '';
@@ -1220,7 +1088,7 @@
   }
 
   function renderReply(reply, parentId) {
-    const currentUserEmail = window.AuthService?.getProfile()?.email;
+    const currentUserEmail = Auth.getProfile()?.email;
     const isOwner = currentUserEmail === reply.authorEmail;
     const canDelete = isOwner || canFullEdit();
     const editedIndicator = reply.editedAt ? `<span class="rl-comment__edited">(edited)</span>` : '';
@@ -1335,8 +1203,8 @@
 
     if (!activeRequestId) return;
 
-    const profile = window.AuthService?.getProfile();
-    const user = window.AuthService?.getUser();
+    const profile = Auth.getProfile();
+    const user = Auth.getUser();
 
     const comment = {
       id: 'c-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
@@ -1571,8 +1439,6 @@
    * - ProjectName = request title
    */
   async function tryCreateAllocationForRequest(reqData, assignee, deadline, estimatedTime) {
-    if (!window.FirebaseAPI) return;
-
     // Get solution-team members from Firebase
     let members;
     try {
@@ -1703,8 +1569,8 @@
         updatedAt:          new Date().toISOString()
       };
 
-      const userName = window.AuthService && AuthService.getProfile()
-        ? AuthService.getProfile().displayName || AuthService.getUser()?.email
+      const userName = Auth.getProfile()
+        ? Auth.getProfile().displayName || Auth.getUser()?.email
         : 'Unknown';
 
       if (changes.length > 0) {
@@ -2061,14 +1927,13 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    cacheDom();
-    populateTypeDropdown();
-    populatePriorityDropdown();
-    populateProjectDropdown();
-    populateProjectFilter();
-    fetchTeamMembers().then(() => populateAssigneeFilter());
-    bindEvents();
-    subscribeToRequests();
-  });
-})();
+export function initRequests() {
+  cacheDom();
+  populateTypeDropdown();
+  populatePriorityDropdown();
+  populateProjectDropdown();
+  populateProjectFilter();
+  fetchTeamMembers().then(() => populateAssigneeFilter());
+  bindEvents();
+  subscribeToRequests();
+}

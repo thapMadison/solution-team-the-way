@@ -20,27 +20,32 @@
  *
  * Persistence: Firebase Realtime Database under the `allocations` node.
  */
-(function (global) {
-  'use strict';
+import {
+  parseDate, toISO, daysBetween, addDays, buildMonths,
+  MONTH_NAMES_SHORT
+} from '../../core/dates.js';
+import { escapeHtml }                             from '../../core/format.js';
+import { showNotification }                       from '../../core/notifications.js';
+import { PROJECTS as PROJECT_NAMES, HUE_PALETTE } from '../../config/constants.js';
+import { TODAY, DAY_W_BY_RANGE, TIMELINE_LAYOUT } from '../../config/timeline.js';
+import {
+  getDataRange, getCurrentAllocation,
+  getTimeRangeDays, getTimeRangeLabel
+} from './data.js';
+import { FirebaseAPI }                            from '../../data/firebase-api.js';
+import { iconEdit, iconChevron, iconTrash }       from './icons.js';
 
-  const D = global.AllocationData;
-  const {
-    TODAY, MONTH_NAMES_SHORT,
-    DAY_W_BY_RANGE,
-    parseDate, toISO, daysBetween, addDays, buildMonths,
-    getDataRange, getCurrentAllocation, getTimeRangeDays, getTimeRangeLabel
-  } = D;
+// Project list with hue rotation for color-coded blocks.
+const PROJECTS = PROJECT_NAMES.map((name, idx) => ({
+  key: name,
+  name,
+  hue: HUE_PALETTE[idx % HUE_PALETTE.length]
+}));
 
-  // Projects from config.js (converted to allocation format)
-  const PROJECTS = (global.AppConfig?.PROJECTS || []).map((name, idx) => {
-    const hues = ['264', '200', '320', '20', '120', '340', '30', '60', '40', '50', '70', '160'];
-    return { key: name, name, hue: hues[idx % hues.length] };
-  });
-
-  const ROW_H_MIN = 48;
-  const ROW_PADDING = 6;
-  const SEG_H = 20;
-  const SEG_GAP = 4;
+const ROW_H_MIN   = TIMELINE_LAYOUT.rowMinHeight;
+const ROW_PADDING = TIMELINE_LAYOUT.rowPadding;
+const SEG_H       = TIMELINE_LAYOUT.segHeight;
+const SEG_GAP     = TIMELINE_LAYOUT.segGap;
 
   const state = {
     assignments: [],
@@ -188,7 +193,6 @@
   }
 
   function subscribeFirebase() {
-    if (!global.FirebaseAPI) return;
     state.unsubscribe = FirebaseAPI.onAllocationsChange(async (records) => {
       state.assignments = records.map((r) => ({
         id: r.firebaseId,
@@ -209,7 +213,6 @@
   // ── Drawer open/close ─────────────────────────────────────────
 
   async function fetchMembers() {
-    if (!global.FirebaseAPI) return;
     try {
       const members = await FirebaseAPI.getSolutionTeamMembersFull();
       if (members.length > 0) {
@@ -776,7 +779,7 @@
   async function saveInline(data) {
     if (state.editingBlock) {
       const fid = state.editingBlock.firebaseId;
-      if (fid && global.FirebaseAPI) {
+      if (fid) {
         try { await FirebaseAPI.updateAllocation(fid, data); }
         catch (err) { console.error(err); notify('Cập nhật thất bại — ' + fbErr(err), 'error'); return; }
       } else {
@@ -785,20 +788,15 @@
       }
       notify('Đã cập nhật allocation');
     } else {
-      if (global.FirebaseAPI) {
-        try { await FirebaseAPI.createAllocation(data); }
-        catch (err) { console.error(err); notify('Tạo allocation thất bại — ' + fbErr(err), 'error'); return; }
-      } else {
-        state.assignments.push({ id: 'tmp-' + Date.now(), ...data });
-        renderTimeline();
-      }
+      try { await FirebaseAPI.createAllocation(data); }
+      catch (err) { console.error(err); notify('Tạo allocation thất bại — ' + fbErr(err), 'error'); return; }
       notify('Đã tạo allocation mới');
     }
     cancelEditor();
   }
 
   async function deleteAllocation(a) {
-    if (a.firebaseId && global.FirebaseAPI) {
+    if (a.firebaseId) {
       try { await FirebaseAPI.deleteAllocation(a.firebaseId); }
       catch (err) { console.error(err); notify('Xóa thất bại — ' + fbErr(err), 'error'); return; }
     } else {
@@ -925,7 +923,7 @@
         end:         fd.get('end'),
         status:      fd.get('status')
       };
-      if (a.firebaseId && global.FirebaseAPI) {
+      if (a.firebaseId) {
         try { await FirebaseAPI.updateAllocation(a.firebaseId, data); }
         catch (err) { console.error(err); notify('Cập nhật thất bại', 'error'); return; }
       } else {
@@ -946,36 +944,12 @@
 
   // ── Helpers ───────────────────────────────────────────────────
 
-  function escapeHtml(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
   function notify(text, type) {
-    if (global.Utils && Utils.showNotification) {
-      Utils.showNotification(type || 'success', text);
-    }
+    showNotification(type || 'success', text);
   }
 
-  function iconEdit() {
-    return `<svg viewBox="0 0 24 24" class="alloc-icon"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  }
-  function iconChevron() {
-    return `<svg viewBox="0 0 24 24" class="alloc-icon"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  }
-  function iconTrash() {
-    return `<svg viewBox="0 0 24 24" class="alloc-icon"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  }
+// ── Init ──────────────────────────────────────────────────────
 
-  // ── Init ──────────────────────────────────────────────────────
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootstrap);
-  } else {
-    bootstrap();
-  }
-})(window);
+export function initAllocation() {
+  bootstrap();
+}

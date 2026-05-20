@@ -8,7 +8,13 @@
 /* ── Reset & base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ──────────────────────────────────────────────────────────────
+   Design tokens
+   Colors theme-aware (overridden by [data-theme="light"] below).
+   Spacing / typography / motion are theme-independent.
+   ────────────────────────────────────────────────────────────── */
 :root {
+  /* Colors — dark theme (default) */
   --bg:        #0a0f1e;
   --surface:   #111827;
   --surface2:  #1a2235;
@@ -21,10 +27,55 @@
   --text:      #e2e8f0;
   --muted:     #94a3b8;
   --heading:   #f8fafc;
-  --radius:    14px;
-  --glow:      0 0 40px rgba(59,130,246,.18);
   --nav-bg:    rgba(10,15,30,.85);
   --bar-track: rgba(255,255,255,.07);
+
+  /* Spacing scale (4-px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 56px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Typography scale */
+  --text-xs:  11px;
+  --text-sm:  12px;
+  --text-md:  14px;
+  --text-base:15px;
+  --text-lg:  17px;
+  --text-xl:  20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --text-4xl: 44px;
+
+  /* Shadows / glows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.18);
+  --shadow:    0 8px 24px rgba(0,0,0,.28);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.36);
+  --glow:      0 0 40px rgba(59,130,246,.18);
+
+  /* Motion */
+  --ease:        cubic-bezier(.4,.0,.2,1);
+  --duration-fast:   .15s;
+  --duration:        .22s;
+  --duration-slow:   .35s;
+
+  /* z-index stack */
+  --z-nav:    100;
+  --z-modal:  1000;
+  --z-toast:  1500;
+  --z-menu:   9999;
 }
 
 [data-theme="light"] {
@@ -38,6 +89,10 @@
   --glow:      0 0 40px rgba(59,130,246,.12);
   --nav-bg:    rgba(240,244,255,.88);
   --bar-track: rgba(0,0,0,.08);
+
+  --shadow-sm: 0 2px 8px rgba(15,23,42,.06);
+  --shadow:    0 8px 24px rgba(15,23,42,.10);
+  --shadow-lg: 0 16px 48px rgba(15,23,42,.14);
 }
 
 html { scroll-behavior: smooth; }

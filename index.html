@@ -1132,20 +1132,13 @@
 }
 </script>
 
-<!-- Firebase SDK (for auth) -->
+<!-- Firebase compat SDK (classic scripts — populate window.firebase before modules run) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
-<script>if(location.protocol==='file:'||location.hostname==='localhost')document.write('<script src="js/app-check-debug.js"><\/script>')</script>
+<script>if(['localhost','127.0.0.1',''].includes(location.hostname)||location.protocol==='file:')document.write('<script src="js/config/app-check-debug.js"><\/script>')</script>
 
-<script src="js/config.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/firebase-config.js"></script>
-<script src="js/auth-service.js"></script>
-<script src="js/auth-ui.js"></script>
-<script src="js/common.js"></script>
-<script src="js/section-nav.js"></script>
-<script src="js/roles.js"></script>
+<script type="module" src="js/pages/index.js"></script>
 </body>
 </html>
