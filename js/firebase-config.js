@@ -18,5 +18,10 @@
   };
 
   firebase.initializeApp(firebaseConfig);
+
+  // App Check with reCAPTCHA v3
+  const appCheck = firebase.appCheck();
+  appCheck.activate('6LfwAfMsAAAAALaOyFaWAgofFAjLJEOYkM8BwLwz', true);
+
   window.firebaseDb = firebase.database();
 })();

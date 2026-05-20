@@ -16,6 +16,9 @@ Thumbs.db
 *.log
 *.tmp
 
+# Firebase App Check debug token (local only)
+js/app-check-debug.js
+
 # Build/cache
 .cache/
 dist/
