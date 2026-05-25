@@ -33,9 +33,37 @@ export const MOCK_USERS = {
 };
 
 /** True when running on localhost, 127.0.0.1, or file:// (dev mode). */
-export const IS_LOCALHOST =
+const isLocalHost =
   ['localhost', '127.0.0.1', ''].includes(location.hostname) ||
   location.protocol === 'file:';
+
+/**
+ * Mock login toggle:
+ * - URL param `?mock=0` or `?realauth=1` → force real Microsoft OAuth
+ * - URL param `?mock=1` → force mock login
+ * - localStorage `mockLogin` = 'false' → force real auth
+ * - localStorage `mockLogin` = 'true' → force mock login
+ * - Default: mock on localhost, real auth on production
+ *
+ * Toggle via console: localStorage.setItem('mockLogin', 'false') then reload
+ */
+function shouldUseMockLogin() {
+  const params = new URLSearchParams(location.search);
+
+  // URL params take priority
+  if (params.get('mock') === '0' || params.get('realauth') === '1') return false;
+  if (params.get('mock') === '1') return true;
+
+  // localStorage preference
+  const stored = localStorage.getItem('mockLogin');
+  if (stored === 'false') return false;
+  if (stored === 'true') return true;
+
+  // Default: mock on localhost only
+  return isLocalHost;
+}
+
+export const IS_LOCALHOST = shouldUseMockLogin();
 
 /** Cache key in localStorage for the auth session snapshot. */
 export const AUTH_CACHE_KEY = 'auth_cache';

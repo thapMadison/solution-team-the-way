@@ -203,33 +203,38 @@
       <span>REQUEST TEMPLATE</span>
     </div>
     <h2>Template gồm 5 phần</h2>
-    <p>Copy template này vào Microsoft Teams Group Chat <strong>"DC1 PM &amp; Leader"</strong> và điền thông tin.</p>
+    <p>Template này khớp với form <strong>"Create new request"</strong> trên Request Log — copy vào Teams hoặc dùng trực tiếp form.</p>
   </div>
 
   <div class="rp-parts">
     <div class="rp-part fade-in" style="--h: 264">
       <div class="rp-part__stripe"></div>
       <div class="rp-part__num">01</div>
+      <span class="rp-part__icon" aria-hidden="true">👤</span>
       <span class="rp-part__label">Thông tin cơ bản</span>
     </div>
     <div class="rp-part fade-in" style="--h: 290">
       <div class="rp-part__stripe"></div>
       <div class="rp-part__num">02</div>
-      <span class="rp-part__label">Mô tả yêu cầu</span>
+      <span class="rp-part__icon" aria-hidden="true">🚦</span>
+      <span class="rp-part__label">Phân loại, Priority &amp; Timeline</span>
     </div>
     <div class="rp-part fade-in" style="--h: 320">
       <div class="rp-part__stripe"></div>
       <div class="rp-part__num">03</div>
-      <span class="rp-part__label">Priority &amp; Timeline</span>
+      <span class="rp-part__icon" aria-hidden="true">📝</span>
+      <span class="rp-part__label">Chi tiết yêu cầu</span>
     </div>
     <div class="rp-part fade-in" style="--h: 30">
       <div class="rp-part__stripe"></div>
       <div class="rp-part__num">04</div>
+      <span class="rp-part__icon" aria-hidden="true">🎯</span>
       <span class="rp-part__label">Kết quả mong đợi</span>
     </div>
     <div class="rp-part fade-in" style="--h: 160">
       <div class="rp-part__stripe"></div>
       <div class="rp-part__num">05</div>
+      <span class="rp-part__icon" aria-hidden="true">💰</span>
       <span class="rp-part__label">Budget (optional)</span>
     </div>
   </div>
@@ -255,31 +260,29 @@
         </button>
       </div>
     </div>
-    <pre id="templateContent" class="rp-template__code"><code>@Solution-Team-Lead
+    <pre id="templateContent" class="rp-template__code"><code><span class="rp-tpl-mention">@Solution-Team-Lead</span>
+<span class="rp-tpl-heading">REQUEST HỖ TRỢ TỪ SOLUTION TEAM</span>
 
-REQUEST HỖ TRỢ TỪ SOLUTION TEAM
+<span class="rp-tpl-section rp-tpl-section--1">1. 👤 THÔNG TIN CƠ BẢN</span>
+   - Người yêu cầu (Name - Email):
+   - Dự án liên quan:
 
-1. THÔNG TIN CƠ BẢN
-   - Người yêu cầu:
-   - Dự án:
-   - PM dự án:
+<span class="rp-tpl-section rp-tpl-section--2">2. 🚦 PHÂN LOẠI, PRIORITY &amp; TIMELINE</span>
+   - Loại hỗ trợ: [Technical Support / Proposal / Code Review / Architecture / DevOps / R&amp;D / Training / Other]
+   - Priority: [Critical / High / Medium / Low]
+   - Timeline/Deadline mong muốn (nếu có):
 
-2. MÔ TẢ YÊU CẦU
-   - Loại hỗ trợ: [Troubleshooting/Architecture Review/Code Review/Security/Performance/Tech Consulting]
-   - Vấn đề:
-   - Context:
-   - Tech details:
+<span class="rp-tpl-section rp-tpl-section--3">3. 📝 CHI TIẾT YÊU CẦU</span>
+   - Title (tóm tắt ngắn gọn):
+   - Mô tả yêu cầu:
+     • Vấn đề:
+     • Context:
+     • Tech details:
 
-3. PRIORITY &amp; TIMELINE
-   - Priority: [Critical/High/Medium/Low]
-   - Timeline cần:
-   - Deadline dự án:
+<span class="rp-tpl-section rp-tpl-section--4">4. 🎯 KẾT QUẢ MONG ĐỢI</span>
+   - Output mong đợi &amp; tiêu chí hoàn thành:
 
-4. KẾT QUẢ MONG ĐỢI
-   - Output mong đợi:
-   - Tiêu chí hoàn thành:
-
-5. BUDGET (Bỏ qua nếu chấp nhận default Yes/Yes)
+<span class="rp-tpl-section rp-tpl-section--5">5. 💰 BUDGET (Bỏ qua nếu chấp nhận default Yes/Yes)</span>
    - Dự án có budget: Yes
    - Chấp nhận allocation: Yes</code></pre>
   </div>

@@ -122,6 +122,33 @@ python -m http.server 8765
 
 The localhost detection (`localhost`, `127.0.0.1`, `file:`) injects `js/config/app-check-debug.js` automatically, so Firebase App Check accepts the local origin.
 
+### Mock Login Toggle
+
+By default, localhost uses mock login (no real Microsoft OAuth). To toggle:
+
+**URL parameter (temporary):**
+```
+http://127.0.0.1:8765/?mock=0      # Force real Microsoft OAuth
+http://127.0.0.1:8765/?mock=1      # Force mock login
+```
+
+**localStorage (persistent):**
+```javascript
+// Disable mock login (use real Microsoft OAuth)
+localStorage.setItem('mockLogin', 'false');
+location.reload();
+
+// Enable mock login
+localStorage.setItem('mockLogin', 'true');
+location.reload();
+
+// Reset to default behavior
+localStorage.removeItem('mockLogin');
+location.reload();
+```
+
+Priority: URL param > localStorage > default (mock on localhost, real on production).
+
 ## Security note
 
 The Firebase API key in [js/config/firebase.js](js/config/firebase.js) is intentionally public — see [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md) for why and how Database Rules enforce real access control.

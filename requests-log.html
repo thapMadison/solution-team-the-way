@@ -262,19 +262,19 @@
     <form id="requestForm">
       <div class="form-row">
         <div class="form-group">
-          <label for="requester">Requester *</label>
+          <label for="requester">Requester <span class="required-mark">*</span></label>
           <input type="text" id="requester" required maxlength="100" placeholder="Name and role (e.g., Nguyen Van A - PM)">
         </div>
 
         <div class="form-group">
-          <label for="requesterEmail">Contact email *</label>
+          <label for="requesterEmail">Contact email <span class="required-mark">*</span></label>
           <input type="email" id="requesterEmail" required maxlength="100" placeholder="email@example.com">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="requestType">Type *</label>
+          <label for="requestType">Type <span class="required-mark">*</span></label>
           <select id="requestType" required>
             <option value="">-- Select type --</option>
             <!-- Populated from AppConfig.TYPE -->
@@ -282,7 +282,7 @@
         </div>
 
         <div class="form-group">
-          <label for="priority">Priority *</label>
+          <label for="priority">Priority <span class="required-mark">*</span></label>
           <select id="priority" required>
             <option value="">-- Select priority --</option>
             <!-- Populated from AppConfig.PRIORITY -->
@@ -291,13 +291,13 @@
       </div>
 
       <div class="form-group">
-        <label for="title">Title *</label>
+        <label for="title">Title <span class="required-mark">*</span></label>
         <input type="text" id="title" required maxlength="200" placeholder="Short summary of the request">
       </div>
 
       <div class="form-group">
-        <label for="description">Description *</label>
-        <textarea id="description" required rows="6" maxlength="2000" placeholder="Detailed description, context, and desired outcome..."></textarea>
+        <label for="description">Mô tả yêu cầu <span class="required-mark">*</span></label>
+        <textarea id="description" required rows="6" maxlength="2000" placeholder="- Vấn đề: ...&#10;- Context: ...&#10;- Tech details: ..."></textarea>
         <span class="char-count">0/2000</span>
       </div>
 
@@ -314,6 +314,27 @@
           </select>
         </div>
       </div>
+
+      <div class="form-group">
+        <label for="expectedOutcome">Kết quả mong đợi &amp; tiêu chí hoàn thành <span class="required-mark">*</span></label>
+        <textarea id="expectedOutcome" rows="3" maxlength="1000" required placeholder="Output mong đợi và tiêu chí để xem là hoàn thành..."></textarea>
+      </div>
+
+      <fieldset class="form-group form-fieldset">
+        <legend>Budget (optional — mặc định Yes/Yes)</legend>
+        <div class="rl-budget-toggles">
+          <label class="rl-toggle">
+            <input type="checkbox" id="hasBudget" checked>
+            <span class="rl-toggle__track"></span>
+            <span class="rl-toggle__label">Dự án có budget</span>
+          </label>
+          <label class="rl-toggle">
+            <input type="checkbox" id="acceptAllocation" checked>
+            <span class="rl-toggle__track"></span>
+            <span class="rl-toggle__label">Chấp nhận allocation</span>
+          </label>
+        </div>
+      </fieldset>
 
       <div class="form-actions">
         <button type="button" class="modal-btn" data-action="close-new-request">Cancel</button>

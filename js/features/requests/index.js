@@ -544,6 +544,7 @@ import {
 
   function collectFormData() {
     const get = (id) => document.getElementById(id).value.trim();
+    const checked = (id) => !!document.getElementById(id)?.checked;
     const now = new Date().toISOString();
 
     return {
@@ -557,6 +558,9 @@ import {
       description:      get('description'),
       deadline:         document.getElementById('deadline').value || null,
       project:          get('project') || null,
+      expectedOutcome:  get('expectedOutcome') || null,
+      hasBudget:        checked('hasBudget'),
+      acceptAllocation: checked('acceptAllocation'),
       status:           'pending',
       assignee:         'Unassigned',
       createdAt:        now,
@@ -577,6 +581,7 @@ import {
     if (!data.priority || !(data.priority in PRIORITY)) return 'Invalid priority';
     if (!data.title       || data.title.length       > VALIDATION.title.max)       return 'Invalid title';
     if (!data.description || data.description.length > VALIDATION.description.max) return 'Invalid description';
+    if (!data.expectedOutcome) return 'Vui lòng nhập Kết quả mong đợi & tiêu chí hoàn thành';
     return null;
   }
 
@@ -760,6 +765,32 @@ import {
               ${!canFullEdit() && canNormalUserEdit(data)
                 ? `<textarea id="descriptionEdit" class="modal-input" rows="4">${escapeHtml(data.description || '')}</textarea>`
                 : `<div class="rl-section__body"><p>${escapeHtml(data.description)}</p></div>`
+              }
+            </div>
+
+            <div class="rl-section">
+              <div class="rl-section__title">Kết quả mong đợi &amp; tiêu chí hoàn thành</div>
+              ${data.status === 'pending'
+                ? `<textarea id="expectedOutcomeEdit" class="modal-input" rows="3" placeholder="Output mong đợi và tiêu chí để xem là hoàn thành…">${escapeHtml(data.expectedOutcome || '')}</textarea>`
+                : `<div class="rl-section__body"><p>${data.expectedOutcome ? escapeHtml(data.expectedOutcome) : '<span style="color:var(--rl-muted);">Not set</span>'}</p></div>`
+              }
+            </div>
+
+            <div class="rl-section">
+              <div class="rl-section__title">Budget</div>
+              ${data.status === 'pending'
+                ? `<div class="rl-budget-toggles">
+                     <label class="rl-toggle"><input type="checkbox" id="hasBudgetEdit" ${data.hasBudget !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Dự án có budget</span></label>
+                     <label class="rl-toggle"><input type="checkbox" id="acceptAllocationEdit" ${data.acceptAllocation !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Chấp nhận allocation</span></label>
+                   </div>`
+                : `<div class="rl-budget-readonly">
+                     <span class="rl-budget-item ${data.hasBudget !== false ? 'is-yes' : 'is-no'}">
+                       ${data.hasBudget !== false ? '✓' : '✗'} Có budget
+                     </span>
+                     <span class="rl-budget-item ${data.acceptAllocation !== false ? 'is-yes' : 'is-no'}">
+                       ${data.acceptAllocation !== false ? '✓' : '✗'} Chấp nhận allocation
+                     </span>
+                   </div>`
               }
             </div>
 
@@ -1505,6 +1536,14 @@ import {
       const descriptionEl = document.getElementById('descriptionEdit');
       const newDescription = descriptionEl ? descriptionEl.value.trim() : oldData.description;
 
+      // Expected outcome + Budget toggles — editable for both solution-team and pending-user.
+      const expectedOutcomeEl     = document.getElementById('expectedOutcomeEdit');
+      const hasBudgetEl           = document.getElementById('hasBudgetEdit');
+      const acceptAllocationEl    = document.getElementById('acceptAllocationEdit');
+      const newExpectedOutcome    = expectedOutcomeEl  ? expectedOutcomeEl.value.trim() : (oldData.expectedOutcome || '');
+      const newHasBudget          = hasBudgetEl        ? hasBudgetEl.checked        : (oldData.hasBudget !== false);
+      const newAcceptAllocation   = acceptAllocationEl ? acceptAllocationEl.checked : (oldData.acceptAllocation !== false);
+
       let newStatus, newAssignee, newDeadline, newEstimatedTime, newLoggedEffort, newOutcome, newLessons, newPriority;
 
       if (isSolutionTeamMember) {
@@ -1543,6 +1582,9 @@ import {
       }
 
       const hours = (v) => `${v}h`;
+      const yesNo = (v) => (v === false ? 'No' : 'Yes');
+      const oldHasBudget        = oldData.hasBudget !== false;
+      const oldAcceptAllocation = oldData.acceptAllocation !== false;
       const candidates = [
         diffField('Description',        oldData.description,        newDescription,   () => 'Updated'),
         diffField('Status',             oldData.status,             newStatus,        (k) => statusInfo(k).label),
@@ -1552,7 +1594,10 @@ import {
         diffField('Estimated Time',     oldData.estimatedTime,      newEstimatedTime, hours),
         diffField('Time Spent',         oldData.loggedEffort,       newLoggedEffort,  hours),
         diffField('Outcome & Feedback', oldData.outcomeAndFeedback, newOutcome,       () => 'Updated'),
-        diffField('Lessons Learned',    oldData.lessonsLearned,     newLessons,       () => 'Updated')
+        diffField('Lessons Learned',    oldData.lessonsLearned,     newLessons,       () => 'Updated'),
+        diffField('Expected Outcome',   oldData.expectedOutcome || '', newExpectedOutcome, () => 'Updated'),
+        diffField('Has Budget',         String(oldHasBudget),       String(newHasBudget),        (v) => yesNo(v === 'true' || v === true)),
+        diffField('Accept Allocation',  String(oldAcceptAllocation),String(newAcceptAllocation), (v) => yesNo(v === 'true' || v === true))
       ];
       const changes = candidates.filter(Boolean);
 
@@ -1566,6 +1611,9 @@ import {
         loggedEffort:       newLoggedEffort  || null,
         outcomeAndFeedback: newOutcome       || null,
         lessonsLearned:     newLessons       || null,
+        expectedOutcome:    newExpectedOutcome || null,
+        hasBudget:          newHasBudget,
+        acceptAllocation:   newAcceptAllocation,
         updatedAt:          new Date().toISOString()
       };
 
@@ -1936,4 +1984,9 @@ export function initRequests() {
   fetchTeamMembers().then(() => populateAssigneeFilter());
   bindEvents();
   subscribeToRequests();
+
+  // Re-render when auth state changes (so masking updates correctly)
+  Auth.onAuthChange(() => {
+    renderViews();
+  });
 }

@@ -120,6 +120,11 @@
   color: oklch(0.92 0.12 var(--h, 264));
   flex-shrink: 0;
 }
+.rp-part__icon {
+  font-size: 16px;
+  line-height: 1;
+  filter: saturate(1.1);
+}
 .rp-part__label { font-size: 12px; color: var(--ch-muted); }
 
 .rp-template {
@@ -202,6 +207,38 @@
   cursor: text;
   background: transparent;
 }
+
+/* Template syntax highlighting */
+.rp-tpl-mention {
+  color: oklch(0.85 0.18 125); /* pear — match Teams paste color */
+  font-weight: 600;
+}
+.rp-tpl-heading {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.5px;
+  color: oklch(0.7 0.18 15); /* red — match Teams paste color */
+}
+[data-theme="light"] .rp-tpl-heading { color: oklch(0.5 0.18 15); }
+.rp-tpl-section {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 1px 0;
+}
+.rp-tpl-section--1 { color: oklch(0.72 0.06 190); } /* faded jade */
+.rp-tpl-section--2 { color: oklch(0.82 0.18 30);  } /* traffic light / priority — orange */
+.rp-tpl-section--3 { color: oklch(0.82 0.16 320); } /* details — magenta */
+.rp-tpl-section--4 { color: oklch(0.82 0.17 160); } /* outcome — green */
+.rp-tpl-section--5 { color: oklch(0.85 0.16 90);  } /* budget — gold */
+
+[data-theme="light"] .rp-tpl-section--1 { color: oklch(0.45 0.08 190); }
+[data-theme="light"] .rp-tpl-section--2 { color: oklch(0.55 0.2  30);  }
+[data-theme="light"] .rp-tpl-section--3 { color: oklch(0.5  0.2  320); }
+[data-theme="light"] .rp-tpl-section--4 { color: oklch(0.45 0.18 160); }
+[data-theme="light"] .rp-tpl-section--5 { color: oklch(0.55 0.18 70);  }
+[data-theme="light"] .rp-tpl-mention    { color: oklch(0.55 0.18 125); }
 
 .rp-tip {
   margin-top: 16px;
