@@ -15,7 +15,7 @@
 import { escapeHtml, formatDate, formatDateTime, statusInfo, priorityInfo, typeInfo, initials } from '../../core/format.js';
 import { isValidEmail }                       from '../../core/validation.js';
 import { showNotification }                   from '../../core/notifications.js';
-import { PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE, PROJECTS } from '../../config/constants.js';
+import { PAGINATION, VALIDATION, STATUS, PRIORITY, TYPE, PROJECTS, TIMING } from '../../config/constants.js';
 import { FirebaseAPI }                        from '../../data/firebase-api.js';
 import * as Auth                              from '../auth/auth-service.js';
 import { ICONS }                              from './icons.js';
@@ -581,7 +581,7 @@ import {
     if (!data.priority || !(data.priority in PRIORITY)) return 'Invalid priority';
     if (!data.title       || data.title.length       > VALIDATION.title.max)       return 'Invalid title';
     if (!data.description || data.description.length > VALIDATION.description.max) return 'Invalid description';
-    if (!data.expectedOutcome) return 'Vui lòng nhập Kết quả mong đợi & tiêu chí hoàn thành';
+    if (!data.expectedOutcome) return 'Please enter the Expected outcome & acceptance criteria';
     return null;
   }
 
@@ -607,6 +607,7 @@ import {
       e.target.reset();
       document.querySelector('.char-count').textContent = `0/${VALIDATION.description.max}`;
       closeNewRequestModal();
+      openRequestCreatedModal(data);
     } catch (err) {
       console.error('Error submitting request:', err);
       showNotification('error', `Error: ${err.message}`);
@@ -664,9 +665,11 @@ import {
   // ────────────────────────────────────────────────────────────
 
   let activeRequestId = null;
+  let activeRequestData = null;
 
   function openRequestDetail(firebaseId) {
     activeRequestId = firebaseId;
+    activeRequestData = null;
     dom.modalBody.innerHTML = `
       <div class="rl-loading">
         <div class="rl-loader"></div>
@@ -678,6 +681,7 @@ import {
     FirebaseAPI.getRequest(firebaseId)
       .then((data) => {
         if (!data) throw new Error('Request not found');
+        activeRequestData = data;
         dom.modalBody.innerHTML = renderRequestDetail(data);
       })
       .catch((err) => {
@@ -724,6 +728,10 @@ import {
               <span class="rl-dot ${sCls}"></span>
               <span class="rl-row__status-text ${sCls}">${escapeHtml(status.label)}</span>
             </span>
+            <button class="rl-copy-ctx" data-action="copy-context" type="button" title="Copy context để gửi vào Microsoft Teams">
+              <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span data-btn-label>Copy context</span>
+            </button>
           </div>
 
           <div class="rl-detail__scroll">
@@ -769,9 +777,9 @@ import {
             </div>
 
             <div class="rl-section">
-              <div class="rl-section__title">Kết quả mong đợi &amp; tiêu chí hoàn thành</div>
+              <div class="rl-section__title">Expected outcome &amp; acceptance criteria</div>
               ${data.status === 'pending'
-                ? `<textarea id="expectedOutcomeEdit" class="modal-input" rows="3" placeholder="Output mong đợi và tiêu chí để xem là hoàn thành…">${escapeHtml(data.expectedOutcome || '')}</textarea>`
+                ? `<textarea id="expectedOutcomeEdit" class="modal-input" rows="3" placeholder="Expected outcome and criteria for completion…">${escapeHtml(data.expectedOutcome || '')}</textarea>`
                 : `<div class="rl-section__body"><p>${data.expectedOutcome ? escapeHtml(data.expectedOutcome) : '<span style="color:var(--rl-muted);">Not set</span>'}</p></div>`
               }
             </div>
@@ -780,15 +788,15 @@ import {
               <div class="rl-section__title">Budget</div>
               ${data.status === 'pending'
                 ? `<div class="rl-budget-toggles">
-                     <label class="rl-toggle"><input type="checkbox" id="hasBudgetEdit" ${data.hasBudget !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Dự án có budget</span></label>
-                     <label class="rl-toggle"><input type="checkbox" id="acceptAllocationEdit" ${data.acceptAllocation !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Chấp nhận allocation</span></label>
+                     <label class="rl-toggle"><input type="checkbox" id="hasBudgetEdit" ${data.hasBudget !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Project has budget</span></label>
+                     <label class="rl-toggle"><input type="checkbox" id="acceptAllocationEdit" ${data.acceptAllocation !== false ? 'checked' : ''}><span class="rl-toggle__track"></span><span class="rl-toggle__label">Accept allocation</span></label>
                    </div>`
                 : `<div class="rl-budget-readonly">
                      <span class="rl-budget-item ${data.hasBudget !== false ? 'is-yes' : 'is-no'}">
-                       ${data.hasBudget !== false ? '✓' : '✗'} Có budget
+                       ${data.hasBudget !== false ? '✓' : '✗'} Has budget
                      </span>
                      <span class="rl-budget-item ${data.acceptAllocation !== false ? 'is-yes' : 'is-no'}">
-                       ${data.acceptAllocation !== false ? '✓' : '✗'} Chấp nhận allocation
+                       ${data.acceptAllocation !== false ? '✓' : '✗'} Accept allocation
                      </span>
                    </div>`
               }
@@ -1666,6 +1674,166 @@ import {
   function closeRequestModal() {
     dom.requestModal.style.display = 'none';
     activeRequestId = null;
+    activeRequestData = null;
+  }
+
+  // ── Copy request context (mirrors the template in request-process.html) ──
+
+  const COPY_CTX_COLORS = {
+    jade:    '#5B9595',
+    pear:    '#A4D75C',
+    orange:  '#F7630C',
+    magenta: '#B146C2',
+    green:   '#13A10E',
+    gold:    '#FFB900',
+    red:     '#C4314B'
+  };
+
+  function buildRequestContextText(data) {
+    const na = (s) => {
+      const v = (s == null ? '' : String(s)).trim();
+      return v || 'N/A';
+    };
+    const typeLabel     = data.type     ? typeInfo(data.type).label         : '';
+    const priorityLabel = data.priority ? priorityInfo(data.priority).label : '';
+    const requester     = (data.requester || '').trim();
+    const email         = (data.requesterEmail || '').trim();
+    const reqLine       = requester && email ? `${requester} - ${email}` : (requester || email);
+    const deadline      = data.deadline ? formatDate(data.deadline) : '';
+    const description   = (data.description || '').trim();
+    const hasBudget        = data.hasBudget        !== false ? '✅ Yes' : '❌ No';
+    const acceptAllocation = data.acceptAllocation !== false ? '✅ Yes' : '❌ No';
+
+    const descBlock = description
+      ? description.split(/\r?\n/).map(l => `     ${l}`).join('\n')
+      : '     N/A';
+
+    return [
+      '@Solution-Team-Lead',
+      'SOLUTION TEAM SUPPORT REQUEST',
+      '',
+      '1. 👤 BASIC INFORMATION',
+      `   - Requester (Name - Email): ${na(reqLine)}`,
+      `   - Related project: ${na(data.project)}`,
+      '',
+      '2. 🚦 CLASSIFICATION, PRIORITY & TIMELINE',
+      `   - Support type: ${na(typeLabel)}`,
+      `   - Priority: ${na(priorityLabel)}`,
+      `   - Desired timeline/deadline (if any): ${na(deadline)}`,
+      '',
+      '3. 📝 REQUEST DETAILS',
+      `   - Title (short summary): ${na(data.title)}`,
+      '   - Description:',
+      descBlock,
+      '',
+      '4. 🎯 EXPECTED OUTCOME & ACCEPTANCE CRITERIA',
+      `   ${na(data.expectedOutcome)}`,
+      '',
+      '5. 💰 BUDGET',
+      `   - Project has budget: ${hasBudget}`,
+      `   - Accept allocation: ${acceptAllocation}`
+    ].join('\n');
+  }
+
+  function buildRequestContextHtml(data) {
+    const C = COPY_CTX_COLORS;
+    const h = (color, text) => `<span style="color:${color};font-weight:bold"><b>${text}</b></span>`;
+    const br = '<br>';
+    const indent = '&nbsp;&nbsp;&nbsp;';
+    const indent2 = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    const esc = (s) => {
+      const v = (s == null ? '' : String(s)).trim();
+      return v ? escapeHtml(v) : 'N/A';
+    };
+
+    const typeLabel     = data.type     ? typeInfo(data.type).label         : '';
+    const priorityLabel = data.priority ? priorityInfo(data.priority).label : '';
+    const requester     = (data.requester || '').trim();
+    const email         = (data.requesterEmail || '').trim();
+    const reqLine       = requester && email ? `${requester} - ${email}` : (requester || email);
+    const deadline      = data.deadline ? formatDate(data.deadline) : '';
+    const description   = (data.description || '').trim();
+    const hasBudget        = data.hasBudget        !== false ? '✅ Yes' : '❌ No';
+    const acceptAllocation = data.acceptAllocation !== false ? '✅ Yes' : '❌ No';
+
+    const descHtml = description
+      ? escapeHtml(description).replace(/\r?\n/g, br + indent2)
+      : 'N/A';
+
+    return [
+      h(C.pear, '@Solution-Team-Lead'), br,
+      h(C.red, 'SOLUTION TEAM SUPPORT REQUEST'), br, br,
+      h(C.jade, '1. 👤 BASIC INFORMATION'), br,
+      `${indent}- Requester (Name - Email): ${esc(reqLine)}`, br,
+      `${indent}- Related project: ${esc(data.project)}`, br, br,
+      h(C.orange, '2. 🚦 CLASSIFICATION, PRIORITY &amp; TIMELINE'), br,
+      `${indent}- Support type: ${esc(typeLabel)}`, br,
+      `${indent}- Priority: ${esc(priorityLabel)}`, br,
+      `${indent}- Desired timeline/deadline (if any): ${esc(deadline)}`, br, br,
+      h(C.magenta, '3. 📝 REQUEST DETAILS'), br,
+      `${indent}- Title (short summary): ${esc(data.title)}`, br,
+      `${indent}- Description:`, br,
+      `${indent2}${descHtml}`, br, br,
+      h(C.green, '4. 🎯 EXPECTED OUTCOME &amp; ACCEPTANCE CRITERIA'), br,
+      `${indent}${esc(data.expectedOutcome)}`, br, br,
+      h(C.gold, '5. 💰 BUDGET'), br,
+      `${indent}- Project has budget: ${hasBudget}`, br,
+      `${indent}- Accept allocation: ${acceptAllocation}`
+    ].join('');
+  }
+
+  async function copyRequestContext(btn, data) {
+    const src = data || activeRequestData;
+    if (!src) return;
+    const text = buildRequestContextText(src);
+    const html = buildRequestContextHtml(src);
+    const label = btn.querySelector('[data-btn-label]') || btn;
+    const original = label.textContent;
+    const flash = (msg) => {
+      label.textContent = msg;
+      btn.classList.add('is-flash');
+      setTimeout(() => { label.textContent = original; btn.classList.remove('is-flash'); }, TIMING.copyFeedback);
+    };
+
+    try {
+      if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
+        const item = new ClipboardItem({
+          'text/html':  new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' })
+        });
+        await navigator.clipboard.write([item]);
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } finally { document.body.removeChild(ta); }
+      }
+      flash('Copied');
+    } catch (_) {
+      try { await navigator.clipboard?.writeText(text); flash('Copied (plain)'); }
+      catch { flash('Failed'); }
+    }
+  }
+
+  // Success popup shown right after creating a request — lets user copy
+  // the context immediately without reopening the detail modal.
+  let createdRequestData = null;
+
+  function openRequestCreatedModal(data) {
+    createdRequestData = data;
+    const el = document.getElementById('requestCreatedModal');
+    if (el) el.style.display = 'flex';
+  }
+
+  function closeRequestCreatedModal() {
+    const el = document.getElementById('requestCreatedModal');
+    if (el) el.style.display = 'none';
+    createdRequestData = null;
   }
 
   // ────────────────────────────────────────────────────────────
@@ -1775,6 +1943,10 @@ import {
       const action = e.target.closest('[data-action]')?.dataset.action;
       if (action === 'save-request')   saveRequest();
       if (action === 'delete-request') deleteRequest();
+      if (action === 'copy-context') {
+        const btn = e.target.closest('[data-action="copy-context"]');
+        if (btn) copyRequestContext(btn);
+      }
       if (action === 'submit-comment') submitComment();
       if (action === 'cancel-reply')   cancelReply();
       if (action === 'reply-comment') {
@@ -1876,6 +2048,19 @@ import {
     dom.newRequestModal.querySelectorAll('[data-action="close-new-request"]').forEach((el) => {
       el.addEventListener('click', closeNewRequestModal);
     });
+
+    // Request-created success modal
+    const createdModal = document.getElementById('requestCreatedModal');
+    if (createdModal) {
+      createdModal.addEventListener('click', (e) => {
+        const action = e.target.closest('[data-action]')?.dataset.action;
+        if (action === 'close-created') closeRequestCreatedModal();
+        if (action === 'copy-created-context') {
+          const btn = e.target.closest('[data-action="copy-created-context"]');
+          if (btn && createdRequestData) copyRequestContext(btn, createdRequestData);
+        }
+      });
+    }
   }
 
   function subscribeToRequests() {

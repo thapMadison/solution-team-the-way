@@ -203,7 +203,56 @@
       <span>REQUEST TEMPLATE</span>
     </div>
     <h2>Template gồm 5 phần</h2>
-    <p>Template này khớp với form <strong>"Create new request"</strong> trên Request Log — copy vào Teams hoặc dùng trực tiếp form.</p>
+    <p>Bạn không cần copy template thủ công. Khi tạo request mới trên <a href="requests-log.html"><strong>Request Log</strong></a>, hệ thống sẽ tự sinh context theo đúng format dưới đây — chỉ cần nhấn <strong>Copy context</strong> rồi paste vào Teams.</p>
+  </div>
+
+  <div class="rp-flow fade-in" role="list">
+    <div class="rp-flow__header">
+      <span class="rp-flow__chip">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+        <span>Quy trình raise request</span>
+      </span>
+      <span class="rp-flow__hint">3 bước · ~1 phút</span>
+    </div>
+
+    <div class="rp-flow__steps">
+      <a class="rp-flow__step" role="listitem" href="requests-log.html">
+        <span class="rp-flow__num">1</span>
+        <span class="rp-flow__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+        <span class="rp-flow__body">
+          <span class="rp-flow__title">Tạo request mới</span>
+          <span class="rp-flow__desc">Vào <b>Request Log</b> và submit form "Create new request"</span>
+        </span>
+      </a>
+
+      <span class="rp-flow__arrow" aria-hidden="true">→</span>
+
+      <div class="rp-flow__step" role="listitem">
+        <span class="rp-flow__num">2</span>
+        <span class="rp-flow__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </span>
+        <span class="rp-flow__body">
+          <span class="rp-flow__title">Copy context</span>
+          <span class="rp-flow__desc">Nhấn <b>Copy context</b> trên popup vừa hiện ra (hoặc trong request detail)</span>
+        </span>
+      </div>
+
+      <span class="rp-flow__arrow" aria-hidden="true">→</span>
+
+      <div class="rp-flow__step" role="listitem">
+        <span class="rp-flow__num">3</span>
+        <span class="rp-flow__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </span>
+        <span class="rp-flow__body">
+          <span class="rp-flow__title">Post lên Teams</span>
+          <span class="rp-flow__desc">Paste vào group <b>"DC1 PM &amp; Leader"</b> và inform Solution Team Lead</span>
+        </span>
+      </div>
+    </div>
   </div>
 
   <div class="rp-parts">
@@ -246,8 +295,8 @@
         <span class="rp-template__head-icon">
           <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </span>
-        <span class="rp-template__head-title">Template để copy</span>
-        <span class="rp-template__head-meta">· markdown</span>
+        <span class="rp-template__head-title">Context preview</span>
+        <span class="rp-template__head-meta">· auto-generated when you create a request</span>
       </div>
       <div class="rp-template__actions">
         <button class="rp-template__btn" data-action="select-template">
@@ -261,36 +310,32 @@
       </div>
     </div>
     <pre id="templateContent" class="rp-template__code"><code><span class="rp-tpl-mention">@Solution-Team-Lead</span>
-<span class="rp-tpl-heading">REQUEST HỖ TRỢ TỪ SOLUTION TEAM</span>
+<span class="rp-tpl-heading">SOLUTION TEAM SUPPORT REQUEST</span>
 
-<span class="rp-tpl-section rp-tpl-section--1">1. 👤 THÔNG TIN CƠ BẢN</span>
-   - Người yêu cầu (Name - Email):
-   - Dự án liên quan:
+<span class="rp-tpl-section rp-tpl-section--1">1. 👤 BASIC INFORMATION</span>
+   - Requester (Name - Email):
+   - Related project:
 
-<span class="rp-tpl-section rp-tpl-section--2">2. 🚦 PHÂN LOẠI, PRIORITY &amp; TIMELINE</span>
-   - Loại hỗ trợ: [Technical Support / Proposal / Code Review / Architecture / DevOps / R&amp;D / Training / Other]
+<span class="rp-tpl-section rp-tpl-section--2">2. 🚦 CLASSIFICATION, PRIORITY &amp; TIMELINE</span>
+   - Support type: [Technical Support / Proposal / Code Review / Architecture / DevOps / R&amp;D / Training / Other]
    - Priority: [Critical / High / Medium / Low]
-   - Timeline/Deadline mong muốn (nếu có):
+   - Desired timeline/deadline (if any):
 
-<span class="rp-tpl-section rp-tpl-section--3">3. 📝 CHI TIẾT YÊU CẦU</span>
-   - Title (tóm tắt ngắn gọn):
-   - Mô tả yêu cầu:
-     • Vấn đề:
+<span class="rp-tpl-section rp-tpl-section--3">3. 📝 REQUEST DETAILS</span>
+   - Title (short summary):
+   - Description:
+     • Problem:
      • Context:
      • Tech details:
 
-<span class="rp-tpl-section rp-tpl-section--4">4. 🎯 KẾT QUẢ MONG ĐỢI</span>
-   - Output mong đợi &amp; tiêu chí hoàn thành:
+<span class="rp-tpl-section rp-tpl-section--4">4. 🎯 EXPECTED OUTCOME &amp; ACCEPTANCE CRITERIA</span>
+   - Expected outcome &amp; acceptance criteria:
 
-<span class="rp-tpl-section rp-tpl-section--5">5. 💰 BUDGET (Bỏ qua nếu chấp nhận default Yes/Yes)</span>
-   - Dự án có budget: Yes
-   - Chấp nhận allocation: Yes</code></pre>
+<span class="rp-tpl-section rp-tpl-section--5">5. 💰 BUDGET (Skip if accepting default Yes/Yes)</span>
+   - Project has budget: ✅ Yes
+   - Accept allocation: ✅ Yes</code></pre>
   </div>
 
-  <div class="rp-tip fade-in">
-    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
-    <p><b>Cách copy:</b> Click "Copy" để copy tự động, hoặc click "Select All" → Ctrl+C để copy thủ công.</p>
-  </div>
 </section>
 
 <!-- COST MODEL -->
@@ -558,7 +603,7 @@
           <span class="rp-step__name">Submit</span>
         </div>
         <span class="rp-step__who">PM/Team Lead</span>
-        <p class="rp-step__what">Post request lên Teams Group Chat "DC1 PM &amp; Leader" + mention @Solution-Team-Lead. Critical có thể DM.</p>
+        <p class="rp-step__what">(1) Tạo request mới trên <a href="requests-log.html">Request Log</a> → (2) Nhấn <b>Copy context</b> ngay trên popup vừa hiện ra → (3) Paste vào Teams group <b>"DC1 PM &amp; Leader"</b> và inform Solution Team Lead. Critical có thể DM thêm.</p>
       </div>
     </div>
 

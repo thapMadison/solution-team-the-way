@@ -128,7 +128,7 @@ body.charter-page [hidden] { display: none !important; }
   color: var(--ch-muted);
   font-size: 14px;
   line-height: 1.65;
-  max-width: 640px;
+  /* max-width: 640px; */
   margin: 0;
 }
 .ch-section-header.is-center p { margin-left: auto; margin-right: auto; }

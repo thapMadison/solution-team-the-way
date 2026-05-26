@@ -296,8 +296,8 @@
       </div>
 
       <div class="form-group">
-        <label for="description">Mô tả yêu cầu <span class="required-mark">*</span></label>
-        <textarea id="description" required rows="6" maxlength="2000" placeholder="- Vấn đề: ...&#10;- Context: ...&#10;- Tech details: ..."></textarea>
+        <label for="description">Description <span class="required-mark">*</span></label>
+        <textarea id="description" required rows="6" maxlength="2000" placeholder="- Problem: ...&#10;- Context: ...&#10;- Tech details: ..."></textarea>
         <span class="char-count">0/2000</span>
       </div>
 
@@ -316,22 +316,22 @@
       </div>
 
       <div class="form-group">
-        <label for="expectedOutcome">Kết quả mong đợi &amp; tiêu chí hoàn thành <span class="required-mark">*</span></label>
-        <textarea id="expectedOutcome" rows="3" maxlength="1000" required placeholder="Output mong đợi và tiêu chí để xem là hoàn thành..."></textarea>
+        <label for="expectedOutcome">Expected outcome &amp; acceptance criteria <span class="required-mark">*</span></label>
+        <textarea id="expectedOutcome" rows="3" maxlength="1000" required placeholder="Expected outcome and criteria for completion..."></textarea>
       </div>
 
       <fieldset class="form-group form-fieldset">
-        <legend>Budget (optional — mặc định Yes/Yes)</legend>
+        <legend>Budget (optional — defaults to Yes/Yes)</legend>
         <div class="rl-budget-toggles">
           <label class="rl-toggle">
             <input type="checkbox" id="hasBudget" checked>
             <span class="rl-toggle__track"></span>
-            <span class="rl-toggle__label">Dự án có budget</span>
+            <span class="rl-toggle__label">Project has budget</span>
           </label>
           <label class="rl-toggle">
             <input type="checkbox" id="acceptAllocation" checked>
             <span class="rl-toggle__track"></span>
-            <span class="rl-toggle__label">Chấp nhận allocation</span>
+            <span class="rl-toggle__label">Accept allocation</span>
           </label>
         </div>
       </fieldset>
@@ -344,6 +344,26 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- REQUEST CREATED SUCCESS MODAL -->
+<div id="requestCreatedModal" class="modal" style="display:none;">
+  <div class="modal-overlay" data-action="close-created"></div>
+  <div class="modal-content modal-content--narrow rl-created">
+    <button class="modal-close" data-action="close-created">×</button>
+    <div class="rl-created__icon">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <h3 class="rl-created__title">Request created!</h3>
+    <p class="rl-created__desc">Copy the request context now to share it on Teams.</p>
+    <div class="rl-created__actions">
+      <button type="button" class="modal-btn" data-action="close-created">Later</button>
+      <button type="button" class="rl-copy-ctx" data-action="copy-created-context">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span data-btn-label>Copy context</span>
+      </button>
+    </div>
   </div>
 </div>
 
