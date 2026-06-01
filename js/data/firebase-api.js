@@ -138,6 +138,13 @@ export async function getSolutionTeamMembersFull() {
   })).sort((a, b) => a.name.localeCompare(b.name));
 }
 
+/** Atomically increment the request counter and return the next ID string. */
+export async function getNextRequestId() {
+  const ref = firebaseDb.ref(`${PATHS.counters}/requests`);
+  const result = await ref.transaction((current) => (current || 0) + 1);
+  return `REQ-${result.snapshot.val()}`;
+}
+
 /**
  * Backward-compatible namespaced object — eases gradual migration in large
  * caller files (e.g. requests-app.js).
@@ -147,5 +154,6 @@ export const FirebaseAPI = {
   getAllocationsOnce, seedAllocations,
   createAllocation, updateAllocation, deleteAllocation, onAllocationsChange,
   getAllocationsByRequestKey, syncAllocationStatusForRequest,
-  getSolutionTeamMembers, getSolutionTeamMembersFull
+  getSolutionTeamMembers, getSolutionTeamMembersFull,
+  getNextRequestId,
 };

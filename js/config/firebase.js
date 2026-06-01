@@ -21,5 +21,6 @@ export const RECAPTCHA_KEY = '6LfwAfMsAAAAALaOyFaWAgofFAjLJEOYkM8BwLwz';
 export const PATHS = {
   requests:    'requests',
   allocations: 'allocations',
-  users:       'users'
+  users:       'users',
+  counters:    'counters',
 };

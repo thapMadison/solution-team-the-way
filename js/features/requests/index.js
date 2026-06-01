@@ -22,7 +22,7 @@ import { ICONS }                              from './icons.js';
 import {
   state, dom, STATUS_KEYS, PRIORITY_KEYS, CHUNK_SIZE,
   statusClass, priorityClass, priorityBars,
-  shortId, nextRequestId, safeProgress, commentsCount
+  shortId, safeProgress, commentsCount
 } from './state.js';
 
   // ────────────────────────────────────────────────────────────
@@ -548,7 +548,6 @@ import {
     const now = new Date().toISOString();
 
     return {
-      id:               nextRequestId(),
       timestamp:        now,
       requester:        get('requester'),
       requesterEmail:   get('requesterEmail'),
@@ -601,6 +600,7 @@ import {
       const error = validateRequest(data);
       if (error) throw new Error(error);
 
+      data.id = await FirebaseAPI.getNextRequestId();
       await FirebaseAPI.createRequest(data);
 
       showNotification('success', 'Request created!');
